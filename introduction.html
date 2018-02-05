@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="english">
+<head>
+
+    <meta charset="utf-8">
+    <title>Introduction to my Python Data Analysis Hacking - net-analysis.com Data Analysis Blog</title>
+    <meta name="description" content="">
+    <meta name="author" content="Don Cameron">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="./theme/html5.js"></script>
+    <![endif]-->
+
+
+    <!-- Le styles -->
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap.no-icons.min.css" rel="stylesheet">
+    <link href="./theme/local.css" rel="stylesheet">
+    <link href="./theme/pygments.css" rel="stylesheet">
+    <link href="./theme/font-awesome.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Gudea:400,400italic|Alegreya+SC' rel='stylesheet' type='text/css'>
+
+</head>
+
+<body>
+<header class="blog-header">
+  <div class="container">
+    <div class="row-fluid">
+      <div class="span9">
+	<a href="." class="brand">net-analysis.com Data Analysis Blog</a>
+      </div>
+
+      <div class="span3" id="blog-nav">
+	<ul class="nav nav-pills pull-right">
+	    <li >
+	      <a href="./category/basemap.html ">Basemap</a>
+	    <li >
+	      <a href="./category/cartopy.html ">Cartopy</a>
+	    <li >
+	      <a href="./category/geopandas.html ">GeoPandas</a>
+	    <li  class="active" >
+	      <a href="./category/introduction.html ">Introduction</a>
+	    <li >
+	      <a href="./category/landsat.html ">LANDSAT</a>
+	    <li >
+	      <a href="./category/visualizations.html ">Visualizations</a>
+	</ul>
+      </div>
+    </div> <!-- End of fluid row-->
+  </div>   <!-- End of Container-->
+</header>
+    
+<div class="container">
+    <div class="content">
+    <div class="row-fluid">
+
+        <div class="span10">
+    <div class='article'>
+      <div class="row-fluid">
+           <div class="content-title span9">
+             <h1>Introduction to my Python Data Analysis Hacking</h1>
+           </div>
+      </div>
+    <div class="row-fluid">
+      <div class="span2">
+<p>Sun 19 February 2017 </p>
+
+<p style="text-align: left;">
+Filed under <a href="./category/introduction.html">Introduction</a>
+</p>
+<p style="text-align: left;">
+ 
+    Tags <a href="./tag/basemap.html">basemap</a> <a href="./tag/python.html">python</a> <a href="./tag/notebook.html">notebook</a> </p>
+<p>
+</p>
+      </div>
+      
+      <div class="span8">
+	<h1>Introduction</h1>
+<p>This the first of a set of blogs posts about the experience of learning about the current crop of Python visualization
+ and mapping tools. These tools include:</p>
+<h3>Mapping tools</h3>
+<ul>
+<li>Basemap</li>
+<li>Cartopy</li>
+<li>Geopandas</li>
+</ul>
+<h3>Visualization tools</h3>
+<ul>
+<li>Bokeh</li>
+<li>Seaborn</li>
+<li>ggplot</li>
+</ul>
+<h3>Data management tools</h3>
+<ul>
+<li>pandas</li>
+<li>numpy</li>
+</ul>
+<p>Each investigation into a given tool is captured by a Jupyter Notebook, and an HTML version of these will
+ be provided in each blog post.</p>
+<p>One point to note is that I am a very happy user on conda / Anaconda, and their curated packages certainly make life very easy, 
+but it does mean that you might not have the latest and greatest version of a package. Always remember to check before banging
+ an issue on the latest version in GitHub.</p>
+<p>The first investigation was to display all the map projections that Basemap supports, but with the twist of having the map
+ centred as much as possible on Australia, or to be more precise, near me (longitude 150 East, latitude=24 South).  Basemap 
+handled each projection as expected, except:</p>
+<ul>
+<li>
+<p>the Polyconic Projection (<code>poly</code>) did not show the meridians and parallels</p>
+</li>
+<li>
+<p>the Rotated Pole (<code>rotpole</code>) could not be made to display Australia  (I guess I didn't understand how the parameters worked
+and to be fair, I did try to display mots of the globe, whicjh is probably not in the spirit of the projection)</p>
+</li>
+</ul>
+<p>Come from a background of working in Defence projects, one wonders why you wouldn't always use UTM, but
+ I guess that projections (especially of the whole globe) have purposes other that just distortion-free distance measurement.
+When I was in Sweden, I learned about one of their projections, which was "run a line North-South through the middle of Sweden to give Y, and then measure X as distance from the line".
+Fair enough, for a very long thin country near the North Pole.</p>
+<p>Anyhow, a typical code fragment looks like:</p>
+<div class="highlight"><pre><span></span>    # lon_0 is central longitude of projection.
+    # resolution = &#39;c&#39; means use crude resolution coastlines.
+    my_map = Basemap(projection=&#39;kav7&#39;,lon_0=140,resolution=&#39;c&#39;)
+
+    my_map.drawcoastlines()
+    my_map.drawparallels(np.arange(-80.,81.,20.))
+    my_map.drawmeridians(np.arange(-180.,181.,20 )) 
+    plt.title(&#39;kav7 Kavrayskiy VII&#39;)
+    plt.show()
+</pre></div>
+
+
+<p>This yields a map that looks like:</p>
+<p><img alt="Kavrayskiy Projection" src="./images/Kavrayskiy.png"></p>
+<p>As a spoiler alert for a subsequent post, I later discovered that Basemap is not so good at showing polygons and lines
+ that wrap around the latitude 180 East / 180 West line.  Sometimes it becomes necessary to have the map display
+ centred on London (latitude 0).  One set of Shapefiles I read in (tectonic plate boundaries) in fact split its Polygon
+ shapes into two if they crossed this line.  In fact, this is one area where Cartopy shines, even though it has fewer
+ projections than Basemap.</p>
+<p>The notebook that has all the code is <a href="./notebooks/AllProjectionsNotebook.html">here</a></p>
+	<hr />
+      </div>
+    </div>
+    <div class="span10">
+      <h3>Comments</h3>
+    
+    </div>  
+    </div>
+        </div>
+        
+        
+    </div>     </div> </div>
+
+<!--footer-->
+<div class="container">
+  <div class="well" style="background-color: #E9EFF6">
+    <div id="blog-footer">
+      <div class="row-fluid">
+	<div class="social span2" align="center" id="socialist">
+	  <ul class="nav nav-list">
+	    <li class="nav-header">
+	      Social
+	    </li>
+	    <li><a href="https://www.linkedin.com/in/donrcameron/"><i class="icon-Linkedin Page" style="color: #1f334b"></i>Linkedin Page</a></li>
+	    <li><a href="https://www.flickr.com/photos/donrcameron/"><i class="icon-flickr Page" style="color: #1f334b"></i>flickr Page</a></li>
+            <a href="mailto:donrcameron@gmail.com"><i class="icon-envelope" style="color: #1f334b" ></i> email</a>
+
+	  </ul>
+	</div>
+<div class="span8" id="colophon">
+  <h2 align="center">About</h2>
+  <p align="justify"> 
+
+This series of blog posts is provided as a resource by 
+
+net-analysis.com - PO Box 857, Coolum Beach, QLD 4573, AUSTRALIA. ABN 19469649963.
+
+Ring 0413 208 746, or visit the company website:
+
+http://www.net-analysis.com.   It documents a learning process, and hence owes a debt of gratitude to all the people who have documented their own experiences on the web: the list is too large to enumerate.
+ </p>
+</div>
+        <div class="links span2" align="center">
+          <ul class="nav nav-list">
+            <li class="nav-header"> 
+              Links
+            </li>
+            
+            <li><a href="http://getpelican.com/">Pelican</a></li>
+            <li><a href="http://python.org/">Python.org</a></li>
+          </ul>
+        </div>
+	<div class="site-nav span2" align="center">
+          <ul class="nav nav-list" id="site-links">
+            <li class="nav-header"> 
+              Site
+            </li>
+            <li><a href="."><i class="icon-home" style="color: #1f334b">
+                </i>Home</a></li>
+            <li><a href="./archives.html"><i class="icon-list" style="color: #1f334b">
+                </i>Archives</a></li>
+	    <li><a href="./tags.html"><i class="icon-tags" style="color: #1f334b">
+                </i>Tags</a></li>
+	    
+	  </ul>
+
+        </div>
+
+      </div> <!--end of fluid row-->
+    </div> <!--end of blog-footer-->
+    <hr />
+    <p align="center"><a href=".">net-analysis.com Data Analysis Blog</a>
+      &copy; Don Cameron
+    Powered by <a href="https://github.com/getpelican/pelican">Pelican</a> and
+        <a href="https://twitter.github.com/bootstrap">Twitter Bootstrap</a>. 
+        Icons by <a href="https://fortawesome.github.com/Font-Awesome">Font Awesome</a> and 
+        <a href="https://gregoryloucas.github.com/Font-Awesome-More">Font Awesome More</a></p>
+
+  </div> <!--end of well -->
+</div> <!--end of container -->
+
+<!--/footer-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+
+
+
+</body>
+</html>

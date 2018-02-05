@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="english">
+<head>
+
+    <meta charset="utf-8">
+    <title>net-analysis.com Data Analysis Blog <small>tiles</small></title>
+    <meta name="description" content="">
+    <meta name="author" content="Don Cameron">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="../theme/html5.js"></script>
+    <![endif]-->
+
+
+    <!-- Le styles -->
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap.no-icons.min.css" rel="stylesheet">
+    <link href="../theme/local.css" rel="stylesheet">
+    <link href="../theme/pygments.css" rel="stylesheet">
+    <link href="../theme/font-awesome.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Gudea:400,400italic|Alegreya+SC' rel='stylesheet' type='text/css'>
+
+</head>
+
+<body>
+<header class="blog-header">
+  <div class="container">
+    <div class="row-fluid">
+      <div class="span9">
+	<a href=".." class="brand">net-analysis.com Data Analysis Blog</a>
+      </div>
+
+      <div class="span3" id="blog-nav">
+	<ul class="nav nav-pills pull-right">
+	    <li >
+	      <a href="../category/basemap.html ">Basemap</a>
+	    <li >
+	      <a href="../category/cartopy.html ">Cartopy</a>
+	    <li >
+	      <a href="../category/geopandas.html ">GeoPandas</a>
+	    <li >
+	      <a href="../category/introduction.html ">Introduction</a>
+	    <li >
+	      <a href="../category/landsat.html ">LANDSAT</a>
+	    <li >
+	      <a href="../category/visualizations.html ">Visualizations</a>
+	</ul>
+      </div>
+    </div> <!-- End of fluid row-->
+  </div>   <!-- End of Container-->
+</header>
+    
+<div class="container">
+    <div class="content">
+    <div class="row-fluid">
+
+        <div class="span10">
+        
+
+        
+
+    <div class='row-fluid''>
+        <div class="article-title span9">
+            <a href="../cartopytiles.html"><h1>More Cartopy Tiles</h1></a>
+        </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span2">
+<p>Mon 27 February 2017 </p>
+
+<p style="text-align: left;">
+Filed under <a href="../category/cartopy.html">Cartopy</a>
+</p>
+<p style="text-align: left;">
+ 
+    Tags <a href="../tag/python.html">python</a> <a href="../tag/cartopy.html">cartopy</a> <a href="../tag/tiles.html">tiles</a> </p>
+<p>
+</p>
+      </div>
+      <div class="article-content span8">
+	<h1>More Cartopy Tiles Examples</h1>
+<h2>Introduction</h2>
+<p>A previous post provided examples of Cartopy graphics, and its support for raster tiles.  This post will continue the theme, and provide more examples.</p>
+<h2>Google Maps</h2>
+<p>A small example:</p>
+<div class="highlight"><pre><span></span>    fig = plt.figure(figsize=(10,10))
+
+    tiler = GoogleTiles()
+    mercator = tiler.crs
+    ax = plt.axes(projection=mercator)
+
+    ax.set_extent(( 153, 153.2, -26.6, -26.4))
+
+    zoom = 12
+    ax.add_image(tiler, zoom )
+
+    # even 1:10m are too coarse for .2 degree square
+    #ax.coastlines(&#39;10m&#39;)
+
+    home_lat, home_lon = -26.5258277,153.0912987
+    # Add a marker for home
+    plt.plot(home_lon, home_lat, marker=&#39;o&#39;, color=&#39;red&#39;, markersize=5,
+             alpha=0.7, transform=ccrs.Geodetic())
+
+    plt.show()
+</pre></div>
+
+
+<p>After creating the matplotlib <code>figure</code>, we ask Cartopy to create a GoogleTiles object,  We get the Coordinate Reference System (CRS) that the tiling service
+uses, and create a Cartopy-aware Axes object using the CRS.  We are pre-judging the system a little, in that the variable name <code>mercator</code> relies on us knowing
+Google uses a Mercator projection (but Google could change tomorrow, and the code would work).</p>
+<p>We then set the extent of our map to be my local stamping ground.   Cartopy is smart enough to know that the extent (if specified without a CRS) is in lat/lon coordinates, even if
+the Axes object it is applied to is running a Mercator projection under the hood.</p>
+<p>We the set a zoom level, and add the image that the tile server gives us to the Axes object.  I have zoomed in quite a long way, so even the high quality coastlines
+don't match up to what Google gives us, so we skip drawing them.  I don't know if Google or NaturalEarth are the more accurate.
+Then to demonstrate that this image can be used as an underlay for more graphics, I draw a red dot near where I live.  Once again, I have to be
+careful to tell the Axes object that the coordinates I am feeding in are lat/lon coordinates.</p>
+<p>The end result is below.</p>
+<p><img alt="Cartopy Google Tile Example" src="../images/googletile.png"></p>
+<h2>Stamen Terrain</h2>
+<p>For some visualizations, having the underlying terrain visible would be more important that the cultural data of the Google Map Tile.  Cartopy supports an interface to
+Stamen Terrain tiles services.  The example is very similar to the one above</p>
+<div class="highlight"><pre><span></span>    fig = plt.figure(figsize=(10,10))
+
+    tiler = StamenTerrain()
+    mercator = tiler.crs
+    ax = plt.axes(projection=mercator)
+
+    ax.set_extent(( 153, 153.2, -26.6, -26.4))
+
+    zoom = 12
+    ax.add_image(tiler, zoom )
+
+    # even 1:10m are too coarse for .2 degree square
+    #ax.coastlines(&#39;10m&#39;)
+
+    home_lat, home_lon = -26.5258277,153.0912987
+    # Add a marker for home
+    plt.plot(home_lon, home_lat, marker=&#39;o&#39;, color=&#39;red&#39;, markersize=5,
+             alpha=0.7, transform=ccrs.Geodetic())
+
+    plt.show()
+</pre></div>
+
+
+<p>The end result is below.</p>
+<p><img alt="Cartopy Stamen Tile Example" src="../images/stamen01.png"></p>
+<p>To illustrate a zoomed-back-out use of this service, in the next example, we show the whole of Australia.</p>
+<div class="highlight"><pre><span></span>    fig = plt.figure(figsize=(10,10))
+
+    tiler = StamenTerrain()
+    mercator = tiler.crs
+    ax = plt.axes(projection=mercator)
+    ax.set_extent((110, 155, -45, -5))
+
+    zoom = 6
+    ax.add_image(tiler, zoom )
+
+    ax.coastlines(&#39;10m&#39;)
+    plt.show()
+</pre></div>
+
+
+<p>Note the change in the zoom level.  This gives us the graphic below (with no additions from me, this time).</p>
+<p><img alt="Cartopy Stamen Tile Australia Example" src="../images/stamen02.png"></p>
+<h2>Imports</h2>
+<p>Just for completeness, here are the imports from the Notebook that holds all the code above (and some code to come)
+(some are used only to support print-outs that define the environment for reproducibility purposes) :</p>
+<div class="highlight"><pre><span></span>    <span class="c1"># all imports should go here</span>
+
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="kn">import</span> <span class="nn">subprocess</span>
+    <span class="kn">import</span> <span class="nn">datetime</span>
+    <span class="kn">import</span> <span class="nn">platform</span>
+
+    <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+    <span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="kn">as</span> <span class="nn">ccrs</span>
+    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">OSM</span>
+    <span class="kn">import</span> <span class="nn">cartopy.feature</span> <span class="kn">as</span> <span class="nn">cfeature</span>
+    <span class="kn">from</span> <span class="nn">cartopy.io</span> <span class="kn">import</span> <span class="n">shapereader</span>
+    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">StamenTerrain</span>
+    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">GoogleTiles</span>
+    <span class="kn">from</span> <span class="nn">owslib.wmts</span> <span class="kn">import</span> <span class="n">WebMapTileService</span>
+
+    <span class="kn">from</span> <span class="nn">matplotlib.path</span> <span class="kn">import</span> <span class="n">Path</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.patheffects</span> <span class="kn">as</span> <span class="nn">PathEffects</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="kn">as</span> <span class="nn">mpatches</span>
+
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</pre></div>
+
+
+<p>The notebook that has all the code is <a href="../notebooks/WorldChoroplethNotebook.html">here</a></p> 
+	<a class="btn btn-mini xsmall" href="../cartopytiles.html">
+          <i class="icon-comment"></i> Comment </a>
+	<hr />
+      </div>
+      
+    </div>
+    
+<div class="pagination">
+<ul>
+    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+
+    <li class="active"><a href="../tag/tiles.html">1</a></li>
+
+    <li class="next disabled"><a href="#">&rarr; Next</a></li>
+
+</ul>
+</div>
+
+ 
+  
+        </div>
+        
+        
+    </div>     </div> </div>
+
+<!--footer-->
+<div class="container">
+  <div class="well" style="background-color: #E9EFF6">
+    <div id="blog-footer">
+      <div class="row-fluid">
+	<div class="social span2" align="center" id="socialist">
+	  <ul class="nav nav-list">
+	    <li class="nav-header">
+	      Social
+	    </li>
+	    <li><a href="https://www.linkedin.com/in/donrcameron/"><i class="icon-Linkedin Page" style="color: #1f334b"></i>Linkedin Page</a></li>
+	    <li><a href="https://www.flickr.com/photos/donrcameron/"><i class="icon-flickr Page" style="color: #1f334b"></i>flickr Page</a></li>
+            <a href="mailto:donrcameron@gmail.com"><i class="icon-envelope" style="color: #1f334b" ></i> email</a>
+
+	  </ul>
+	</div>
+<div class="span8" id="colophon">
+  <h2 align="center">About</h2>
+  <p align="justify"> 
+
+This series of blog posts is provided as a resource by 
+
+net-analysis.com - PO Box 857, Coolum Beach, QLD 4573, AUSTRALIA. ABN 19469649963.
+
+Ring 0413 208 746, or visit the company website:
+
+http://www.net-analysis.com.   It documents a learning process, and hence owes a debt of gratitude to all the people who have documented their own experiences on the web: the list is too large to enumerate.
+ </p>
+</div>
+        <div class="links span2" align="center">
+          <ul class="nav nav-list">
+            <li class="nav-header"> 
+              Links
+            </li>
+            
+            <li><a href="http://getpelican.com/">Pelican</a></li>
+            <li><a href="http://python.org/">Python.org</a></li>
+          </ul>
+        </div>
+	<div class="site-nav span2" align="center">
+          <ul class="nav nav-list" id="site-links">
+            <li class="nav-header"> 
+              Site
+            </li>
+            <li><a href=".."><i class="icon-home" style="color: #1f334b">
+                </i>Home</a></li>
+            <li><a href="../archives.html"><i class="icon-list" style="color: #1f334b">
+                </i>Archives</a></li>
+	    <li><a href="../tags.html"><i class="icon-tags" style="color: #1f334b">
+                </i>Tags</a></li>
+	    
+	  </ul>
+
+        </div>
+
+      </div> <!--end of fluid row-->
+    </div> <!--end of blog-footer-->
+    <hr />
+    <p align="center"><a href="..">net-analysis.com Data Analysis Blog</a>
+      &copy; Don Cameron
+    Powered by <a href="https://github.com/getpelican/pelican">Pelican</a> and
+        <a href="https://twitter.github.com/bootstrap">Twitter Bootstrap</a>. 
+        Icons by <a href="https://fortawesome.github.com/Font-Awesome">Font Awesome</a> and 
+        <a href="https://gregoryloucas.github.com/Font-Awesome-More">Font Awesome More</a></p>
+
+  </div> <!--end of well -->
+</div> <!--end of container -->
+
+<!--/footer-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+
+
+
+</body>
+</html>

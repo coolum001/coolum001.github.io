@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="english">
+<head>
+
+    <meta charset="utf-8">
+    <title>Visualizing Google Location Data - net-analysis.com Data Analysis Blog</title>
+    <meta name="description" content="">
+    <meta name="author" content="Don Cameron">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="./theme/html5.js"></script>
+    <![endif]-->
+
+
+    <!-- Le styles -->
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap.no-icons.min.css" rel="stylesheet">
+    <link href="./theme/local.css" rel="stylesheet">
+    <link href="./theme/pygments.css" rel="stylesheet">
+    <link href="./theme/font-awesome.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Gudea:400,400italic|Alegreya+SC' rel='stylesheet' type='text/css'>
+
+</head>
+
+<body>
+<header class="blog-header">
+  <div class="container">
+    <div class="row-fluid">
+      <div class="span9">
+	<a href="." class="brand">net-analysis.com Data Analysis Blog</a>
+      </div>
+
+      <div class="span3" id="blog-nav">
+	<ul class="nav nav-pills pull-right">
+	    <li  class="active" >
+	      <a href="./category/basemap.html ">Basemap</a>
+	    <li >
+	      <a href="./category/cartopy.html ">Cartopy</a>
+	    <li >
+	      <a href="./category/geopandas.html ">GeoPandas</a>
+	    <li >
+	      <a href="./category/introduction.html ">Introduction</a>
+	    <li >
+	      <a href="./category/landsat.html ">LANDSAT</a>
+	    <li >
+	      <a href="./category/visualizations.html ">Visualizations</a>
+	</ul>
+      </div>
+    </div> <!-- End of fluid row-->
+  </div>   <!-- End of Container-->
+</header>
+    
+<div class="container">
+    <div class="content">
+    <div class="row-fluid">
+
+        <div class="span10">
+    <div class='article'>
+      <div class="row-fluid">
+           <div class="content-title span9">
+             <h1>Visualizing Google Location Data</h1>
+           </div>
+      </div>
+    <div class="row-fluid">
+      <div class="span2">
+<p>Thu 02 March 2017 </p>
+
+<p style="text-align: left;">
+Filed under <a href="./category/basemap.html">Basemap</a>
+</p>
+<p style="text-align: left;">
+ 
+    Tags <a href="./tag/python.html">python</a> <a href="./tag/basemap.html">basemap</a> <a href="./tag/google.html">google</a> <a href="./tag/pandas.html">pandas</a> </p>
+<p>
+</p>
+      </div>
+      
+      <div class="span8">
+	<h1>Visualizing Google Location Data</h1>
+<h2>Introduction</h2>
+<p>There have been a number of blog posts by others on visualizing your travels (See <a href="http://geoffboeing.com/2014/08/visualizing-summer-travels/">http://geoffboeing.com/2014/08/visualizing-summer-travels/</a>,
+and <a href="http://beneathdata.com/how-to/visualizing-my-location-history/">http://beneathdata.com/how-to/visualizing-my-location-history/</a>. I thought that I would have a go myself.</p>
+<p>If you have an Android phone (as I have), and if you don't really care about on-line privacy (as I don't),
+them almost certainly Google is (and has been) tracking where you are every minute or so.  The good news is that
+you can ask Google for this data, to refresh holiday memories.  I assume that Google use this data
+to enhance the value of my eyeballs to potential advertisers.</p>
+<p>The webpage at <a href="http://beneathdata.com/how-to/visualizing-my-location-history/">http://beneathdata.com/how-to/visualizing-my-location-history/</a> has a pretty good explanation of how to
+download the Google location data, so I won't repeat it here.</p>
+<p>I decided to use Basemap to perform the spatial visualizations;  GeoPandas was considered, but I wanted
+some of the Basemap-related capabilities, like hex-maps.</p>
+<h2>Loading the data</h2>
+<p>Once you have the download from Google complete, you can loading it into a pandas dataframe as below.</p>
+<div class="highlight"><pre><span></span>    with open(&#39;../data/LocationHistory.json&#39;, &#39;r&#39;) as fh:
+        raw = json.loads(fh.read())
+    #end with
+    ld = pd.DataFrame(raw[&#39;locations&#39;])
+</pre></div>
+
+
+<p>The <code>with</code> statement automatically closes the data file when you are done reading.</p>
+<h2>Understanding the data</h2>
+<p>The first thing I do when dealing with a strange dataframe is to head(), and tail() it:</p>
+<div class="highlight"><pre><span></span>    print(ld.head(3))
+
+       accuracy                                          activitys  altitude  \
+    0        64  [{&#39;timestampMs&#39;: &#39;1487406329516&#39;, &#39;activities&#39;...       NaN   
+    1        60  [{&#39;timestampMs&#39;: &#39;1487406148411&#39;, &#39;activities&#39;...       NaN   
+    2        60  [{&#39;timestampMs&#39;: &#39;1487406029352&#39;, &#39;activities&#39;...       NaN
+
+       heading  latitudeE7  longitudeE7    timestampMs  velocity  verticalAccuracy  
+    0      NaN  -265269385   1530865302  1487406266398       NaN               NaN  
+    1      NaN  -265269385   1530865302  1487406145368       NaN               NaN  
+    2      NaN  -265269385   1530865302  1487406024219       NaN               NaN
+
+
+    print(ld.tail(3))
+
+            accuracy activitys  altitude  heading  latitudeE7  longitudeE7  \
+    330905       100       NaN     414.0     -1.0   420494565    139296849   
+    330906       100       NaN     414.0     -1.0   420494691    139297149   
+    330907       100       NaN     414.0     -1.0   420494691    139297149
+
+              timestampMs  velocity  verticalAccuracy  
+    330905  1368308078219      -1.0               NaN  
+    330906  1368308078180      -1.0               NaN  
+    330907  1368308078159      -1.0               NaN
+</pre></div>
+
+
+<p>So, we have just over 300,000 data points, and it looks like the key data values are:</p>
+<ul>
+<li>
+<p>timespampMs</p>
+</li>
+<li>
+<p>latitudeE7 </p>
+</li>
+<li>
+<p>longitudeE7</p>
+</li>
+</ul>
+<p>All the rest can take NaN values at some stage, or so it appears.</p>
+<p>I was intrigued by the <code>'activitys'</code> column (not the least by the strange spelling).
+A bit of probing: filter out all rows with 'activitys' null; get the 'activitys' column;
+print the first element.  It looks like the entries are a list of dictionaries (where each dictionary
+has a 'activities' key, whose value is a list holding a dictionary, where 'type' appears to be
+Google's guess as what we are doing).</p>
+<div class="highlight"><pre><span></span>    a = ld[~ld[&#39;activitys&#39;].isnull()]
+    aa = a[&#39;activitys&#39;]
+    aa[0]
+
+    [{&#39;activities&#39;: [{&#39;confidence&#39;: 100, &#39;type&#39;: &#39;still&#39;}],
+      &#39;timestampMs&#39;: &#39;1487406329516&#39;},
+     {&#39;activities&#39;: [{&#39;confidence&#39;: 100, &#39;type&#39;: &#39;still&#39;}],
+      &#39;timestampMs&#39;: &#39;1487406269470&#39;},
+     {&#39;activities&#39;: [{&#39;confidence&#39;: 100, &#39;type&#39;: &#39;still&#39;}],
+      &#39;timestampMs&#39;: &#39;1487406208640&#39;}]
+</pre></div>
+
+
+<p>So, lets get the first of the activities types for each measurement into a list, and then collapse the list into a set.</p>
+<div class="highlight"><pre><span></span>    b = [ x[0][&#39;activities&#39;][0][&#39;type&#39;] for x in aa]
+    set(b)
+
+    Out[43]:
+    {&#39;exitingVehicle&#39;,
+     &#39;inVehicle&#39;,
+     &#39;onBicycle&#39;,
+     &#39;onFoot&#39;,
+     &#39;still&#39;,
+     &#39;tilting&#39;,
+     &#39;unknown&#39;}
+</pre></div>
+
+
+<p>"Tilting", what on earth is "tilting"?  Another unsolved mystery.</p>
+<h2>Refining the data</h2>
+<p>Now we get the data into a more managable form.  First we create new columns that contain latitude and longitude in degrees:</p>
+<div class="highlight"><pre><span></span>    ld[&#39;latitude&#39;] = ld[&#39;latitudeE7&#39;]/float(1e7)
+    ld[&#39;longitude&#39;] = ld[&#39;longitudeE7&#39;]/float(1e7)
+</pre></div>
+
+
+<p>and columns to hold the timestamp in seconds (since some Pythonic epoch), and then the date-time of each
+measurement.</p>
+<div class="highlight"><pre><span></span>    ld[&#39;timestamp&#39;] = ld[&#39;timestampMs&#39;].map(lambda x: float(x)/1000)
+    ld[&#39;datetime&#39;] = ld.timestamp.map(datetime.datetime.fromtimestamp)
+</pre></div>
+
+
+<p>We the look at these new columns.
+First the head.</p>
+<div class="highlight"><pre><span></span>    print(ld[[&#39;latitude&#39;, &#39;longitude&#39;, &#39;datetime&#39;]].head())
+
+        latitude   longitude                datetime
+    0 -26.526938  153.086530 2017-02-18 18:24:26.398
+    1 -26.526938  153.086530 2017-02-18 18:22:25.368
+    2 -26.526938  153.086530 2017-02-18 18:20:24.219
+    3 -26.526938  153.086530 2017-02-18 18:20:09.188
+    4 -26.526971  153.086652 2017-02-18 18:18:08.182
+</pre></div>
+
+
+<p>Then the tail.</p>
+<div class="highlight"><pre><span></span>    print(ld[[&#39;latitude&#39;, &#39;longitude&#39;, &#39;datetime&#39;]].tail())
+             latitude  longitude                datetime
+    330903  42.049202  13.929222 2013-05-12 07:36:42.094
+    330904  42.049467  13.929704 2013-05-12 07:36:42.073
+    330905  42.049456  13.929685 2013-05-12 07:34:38.219
+    330906  42.049469  13.929715 2013-05-12 07:34:38.180
+    330907  42.049469  13.929715 2013-05-12 07:34:38.159
+</pre></div>
+
+
+<p>So the data ranges from more than three years ago, to about when I did the download. Seems OK.</p>
+<h2>Map the data</h2>
+<div class="highlight"><pre><span></span>    my_map = Basemap(projection=&#39;merc&#39;, lat_0=57, lon_0=-135,
+        resolution = &#39;h&#39;, area_thresh = 0.1,
+        llcrnrlon=110.0, llcrnrlat=-45,
+        urcrnrlon=154.0, urcrnrlat=-10)
+
+    my_map.drawcoastlines()
+    my_map.drawcountries()
+    my_map.drawrivers(color=&#39;blue&#39;)
+    my_map.fillcontinents(color=&#39;tan&#39;)
+    my_map.drawmapboundary()
+
+    my_map.drawmeridians(np.arange(0, 360, 10))
+    my_map.drawparallels(np.arange(-90, 90, 10))
+
+    lats = ld[&#39;latitude&#39;].as_matrix()
+    lons = ld[&#39;longitude&#39;].as_matrix()
+
+    x,y = my_map(lons ,lats)
+
+    my_map.plot(x,y,marker=&#39;&#39;, color=&#39;red&#39;, linewidth=1)
+
+    plt.show()
+</pre></div>
+
+
+<p>The first part of the above is setting up the map, with a Mercator projection, coastlines, rivers,
+land filled in in <code>'tan'</code>, water in blue, and the meridians and parallels drawn at 10 degree intervals.
+The Basemap call sets the lat/lon limits to be South-East Australia.</p>
+<p>Then we get the lat/lons from the pandas dataframe, convert them to Mercator coordinates, and plot them in red
+(suppressing any markers), to get:</p>
+<p><img alt="Cartopy Hello World" src="./images/google01.png"></p>
+<p>We can see trips to Sydney,  Canberra, and Melbourne (sometimes driving, sometimes flying).</p>
+<p>If we zoom back out, by setting the lat/lon limits in the basemap call to different values.  We turn off rivers at the global level.</p>
+<div class="highlight"><pre><span></span>    my_map = Basemap(projection=&#39;merc&#39;, lat_0=57, lon_0=-135,
+        resolution = &#39;c&#39;, area_thresh = 0.1,
+        llcrnrlon=-20, llcrnrlat=-60,
+        urcrnrlon=180, urcrnrlat=75)
+
+    my_map.drawcountries(color=&#39;grey&#39;)
+
+    my_map.fillcontinents(color=&#39;tan&#39;)
+    my_map.drawmapboundary()
+
+    lats = ld[&#39;latitude&#39;].as_matrix()
+    lons = ld[&#39;longitude&#39;].as_matrix()
+
+    x,y = my_map(lons ,lats)
+
+    my_map.plot(x,y,marker=&#39;&#39;, color=&#39;red&#39;, linewidth=1)
+
+    plt.show()
+</pre></div>
+
+
+<p>This gives us:</p>
+<p><img alt="Cartopy Hello World" src="./images/google02.png"></p>
+<p>Loved Amsterdam!</p>
+<h2>Showing Time</h2>
+<p>Next, we will use a scatter plot, with the timestamp acting to color-code each point, to attempt to show the passage of time.</p>
+<p>First, we set up our map as before, to show south-eat Australia:</p>
+<div class="highlight"><pre><span></span>    fig, ax = plt.subplots()
+    my_map = Basemap(projection=&#39;merc&#39;, lat_0=57, lon_0=-135,
+        resolution = &#39;h&#39;, area_thresh = 0.1,
+        llcrnrlon=140.0, llcrnrlat=-40,
+        urcrnrlon=160.0, urcrnrlat=-20)
+
+    my_map.drawrivers(color=&#39;blue&#39;)
+    my_map.fillcontinents(color=&#39;tan&#39;)
+    my_map.drawmapboundary()
+
+    my_map.drawmeridians(np.arange(0, 360, 5))
+    my_map.drawparallels(np.arange(-90, 90, 5))
+</pre></div>
+
+
+<p>Then we get our lat/lon values from our dataframe.</p>
+<div class="highlight"><pre><span></span>    lats = ld[&#39;latitude&#39;].as_matrix()
+    lons = ld[&#39;longitude&#39;].as_matrix()
+</pre></div>
+
+
+<p>Then we get our dates, and get the strings that represent the start and end of the location data.
+We will use this later to label the colorbar for the map.  We then pick some key dates in the
+measurement period: I have chosen the start of each calendar year.  We have to convert these
+to timestamp units, to give us <code>year_ticks</code>.</p>
+<div class="highlight"><pre><span></span>    times = ld[&#39;timestamp&#39;].as_matrix()
+
+    mint = min(times)
+    maxt = max(times)
+
+    t0 = min(ld[&#39;datetime&#39;])
+    t1 = max(ld[&#39;datetime&#39;])
+    print(str(t0)[0:10])
+    print(str(t1)[0:10])
+
+    dates = [&#39;2014-01-01&#39;, &#39;2015-01-01&#39;, &#39;2016-01-01&#39;]
+    year_ticks = [time.mktime(datetime.datetime.strptime(s, &quot;%Y-%m-%d&quot;).timetuple()) for s in dates]
+</pre></div>
+
+
+<p>The two print statements give us:</p>
+<div class="highlight"><pre><span></span>    2013-05-12
+    2017-02-18
+</pre></div>
+
+
+<p>which is what we expected.</p>
+<p>We the convert the lat/lons to Mercator units, and plot them.</p>
+<div class="highlight"><pre><span></span>    x,y = my_map(lons ,lats)
+    a = my_map.scatter(x,y,marker=&#39;o&#39;,  s=20, c=times, cmap=&#39;rainbow&#39;, zorder=4, edgecolor=&#39;tan&#39;, alpha=0.6)
+</pre></div>
+
+
+<p>Here, <code>marker='o'</code> draws circles, <code>s=20</code> draw large-ish dots, <code>c=times</code> says, 'color each dot according to the corresponding <code>times</code> value',
+<code>cmap='rainbow'</code> sets the color map (nothing restrained about my color choices!), <code>zorder=4</code> sets the order in which the dots are drawn,
+relative to the background, etc (I am a touch paranoid about zorder, having spent debugging hours to find out
+my beautiful plots were in fact being drawn, but just hidden behind a map layer or two).  I set the dot <code>edgecolor</code> to be the same as the land background, and <code>alpha</code>
+to reduce the <code>rainbow</code> glare a little.</p>
+<p>We then create and set the map colorbar; we mark with ticks the start and end dates, and the calendar
+year starts, and set the appropriate labels for each tick mark.  Note the tickmark values don't have to
+be in ascending order.</p>
+<div class="highlight"><pre><span></span>    cbax = fig.colorbar(a, shrink=0.8, ticks=[mint, maxt]+year_ticks)
+    cbax.set_ticklabels([str(t0)[0:10],str(t1)[0:10]]+dates)
+</pre></div>
+
+
+<p>Set a title, and show it!</p>
+<div class="highlight"><pre><span></span>    ax.set_title(&quot;Places I&#39;ve been&quot;)
+    plt.show()
+</pre></div>
+
+
+<p>Now, we can mostly see the road trips; I suspect that if I added some jitter to the position of each dot, we might see a lot more,
+but you have to stop somewhere.</p>
+<p><img alt="Cartopy Hello World" src="./images/google03.png"></p>
+<h2>Showing density</h2>
+<p>A slight variant on the previous map shows where I mostly spend my time.</p>
+<p>We use the Basemap hex-bin feature.  The first part of the program just creates the Basemap
+as before zoomed into South East Queensland, and then we have:</p>
+<div class="highlight"><pre><span></span>    lats = ld[&#39;latitude&#39;].as_matrix()
+    lons = ld[&#39;longtitude&#39;].as_matrix()
+
+    x,y = my_map(lons ,lats)
+
+    my_map.hexbin(x, y,  zorder=3, alpha=0.7, gridsize=1000, mincnt=1, 
+                  cmap=&#39;terrain_r&#39;, linewidths=0, edgecolors=&#39;k&#39;, norm=colors.LogNorm(),
+              )
+    cb = my_map.colorbar(label=&#39;Times mobile phone was seen in a location&#39;)
+    cb.set_ticks([1, 10, 100, 1000, 10000, 100000, 1000000])
+    cb.set_ticklabels([&#39;1&#39;, &#39;10&#39;, &#39;100&#39;, &#39;1000&#39;, &#39;10000&#39;, &#39;100000&#39;, &#39;1000000&#39;])
+</pre></div>
+
+
+<p>Here we tell Basemap we want a hexagonal grid, and to count the converted lat/lon values that fall in each grid hex.
+We insist on a minimum count of 1 (else, the zero counts would fill the map), set <code>linewidth</code> to 0 so the grid is not drawn.
+Finally, we specify that we want to take the logarithm of the counts before visualization.</p>
+<p>Then we set the colorbar tick marks and labels to be powers of ten (a little bit of a cheat, because I know
+in advance what my range is).</p>
+<div class="highlight"><pre><span></span>    plt.show()
+</pre></div>
+
+
+<p>to get:</p>
+<p><img alt="Cartopy Hello World" src="./images/google04.png"></p>
+<p>You can see by the blue cells where I lived in Brisbane, and where I live now.  I struggled to get a good
+color map for this map, and eventually settled on a reverse terrain map.</p>
+<h2>The Imports</h2>
+<p>The imports from the Notebook holding this code is below (not all are used by the fragments shown).</p>
+<div class="highlight"><pre><span></span>    <span class="c1"># all imports should go here</span>
+
+    <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="kn">import</span> <span class="nn">subprocess</span>
+    <span class="kn">import</span> <span class="nn">datetime</span>
+    <span class="kn">import</span> <span class="nn">platform</span>
+    <span class="kn">import</span> <span class="nn">datetime</span>
+    <span class="kn">import</span> <span class="nn">time</span>
+
+    <span class="kn">import</span> <span class="nn">json</span>
+
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+    <span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
+    <span class="kn">from</span> <span class="nn">mpl_toolkits.basemap</span> <span class="kn">import</span> <span class="n">Basemap</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.colors</span> <span class="kn">as</span> <span class="nn">colors</span>
+
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</pre></div>
+	<hr />
+      </div>
+    </div>
+    <div class="span10">
+      <h3>Comments</h3>
+    
+    </div>  
+    </div>
+        </div>
+        
+        
+    </div>     </div> </div>
+
+<!--footer-->
+<div class="container">
+  <div class="well" style="background-color: #E9EFF6">
+    <div id="blog-footer">
+      <div class="row-fluid">
+	<div class="social span2" align="center" id="socialist">
+	  <ul class="nav nav-list">
+	    <li class="nav-header">
+	      Social
+	    </li>
+	    <li><a href="https://www.linkedin.com/in/donrcameron/"><i class="icon-Linkedin Page" style="color: #1f334b"></i>Linkedin Page</a></li>
+	    <li><a href="https://www.flickr.com/photos/donrcameron/"><i class="icon-flickr Page" style="color: #1f334b"></i>flickr Page</a></li>
+            <a href="mailto:donrcameron@gmail.com"><i class="icon-envelope" style="color: #1f334b" ></i> email</a>
+
+	  </ul>
+	</div>
+<div class="span8" id="colophon">
+  <h2 align="center">About</h2>
+  <p align="justify"> 
+
+This series of blog posts is provided as a resource by 
+
+net-analysis.com - PO Box 857, Coolum Beach, QLD 4573, AUSTRALIA. ABN 19469649963.
+
+Ring 0413 208 746, or visit the company website:
+
+http://www.net-analysis.com.   It documents a learning process, and hence owes a debt of gratitude to all the people who have documented their own experiences on the web: the list is too large to enumerate.
+ </p>
+</div>
+        <div class="links span2" align="center">
+          <ul class="nav nav-list">
+            <li class="nav-header"> 
+              Links
+            </li>
+            
+            <li><a href="http://getpelican.com/">Pelican</a></li>
+            <li><a href="http://python.org/">Python.org</a></li>
+          </ul>
+        </div>
+	<div class="site-nav span2" align="center">
+          <ul class="nav nav-list" id="site-links">
+            <li class="nav-header"> 
+              Site
+            </li>
+            <li><a href="."><i class="icon-home" style="color: #1f334b">
+                </i>Home</a></li>
+            <li><a href="./archives.html"><i class="icon-list" style="color: #1f334b">
+                </i>Archives</a></li>
+	    <li><a href="./tags.html"><i class="icon-tags" style="color: #1f334b">
+                </i>Tags</a></li>
+	    
+	  </ul>
+
+        </div>
+
+      </div> <!--end of fluid row-->
+    </div> <!--end of blog-footer-->
+    <hr />
+    <p align="center"><a href=".">net-analysis.com Data Analysis Blog</a>
+      &copy; Don Cameron
+    Powered by <a href="https://github.com/getpelican/pelican">Pelican</a> and
+        <a href="https://twitter.github.com/bootstrap">Twitter Bootstrap</a>. 
+        Icons by <a href="https://fortawesome.github.com/Font-Awesome">Font Awesome</a> and 
+        <a href="https://gregoryloucas.github.com/Font-Awesome-More">Font Awesome More</a></p>
+
+  </div> <!--end of well -->
+</div> <!--end of container -->
+
+<!--/footer-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="english">
+<head>
+
+    <meta charset="utf-8">
+    <title>Cartopy and Map Layout - net-analysis.com Data Analysis Blog</title>
+    <meta name="description" content="">
+    <meta name="author" content="Don Cameron">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="./theme/html5.js"></script>
+    <![endif]-->
+
+
+    <!-- Le styles -->
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap.no-icons.min.css" rel="stylesheet">
+    <link href="./theme/local.css" rel="stylesheet">
+    <link href="./theme/pygments.css" rel="stylesheet">
+    <link href="./theme/font-awesome.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Gudea:400,400italic|Alegreya+SC' rel='stylesheet' type='text/css'>
+
+</head>
+
+<body>
+<header class="blog-header">
+  <div class="container">
+    <div class="row-fluid">
+      <div class="span9">
+	<a href="." class="brand">net-analysis.com Data Analysis Blog</a>
+      </div>
+
+      <div class="span3" id="blog-nav">
+	<ul class="nav nav-pills pull-right">
+	    <li >
+	      <a href="./category/basemap.html ">Basemap</a>
+	    <li  class="active" >
+	      <a href="./category/cartopy.html ">Cartopy</a>
+	    <li >
+	      <a href="./category/geopandas.html ">GeoPandas</a>
+	    <li >
+	      <a href="./category/introduction.html ">Introduction</a>
+	    <li >
+	      <a href="./category/landsat.html ">LANDSAT</a>
+	    <li >
+	      <a href="./category/visualizations.html ">Visualizations</a>
+	</ul>
+      </div>
+    </div> <!-- End of fluid row-->
+  </div>   <!-- End of Container-->
+</header>
+    
+<div class="container">
+    <div class="content">
+    <div class="row-fluid">
+
+        <div class="span10">
+    <div class='article'>
+      <div class="row-fluid">
+           <div class="content-title span9">
+             <h1>Cartopy and Map Layout</h1>
+           </div>
+      </div>
+    <div class="row-fluid">
+      <div class="span2">
+<p>Wed 22 February 2017 </p>
+
+<p style="text-align: left;">
+Filed under <a href="./category/cartopy.html">Cartopy</a>
+</p>
+<p style="text-align: left;">
+ 
+    Tags <a href="./tag/python.html">python</a> <a href="./tag/cartopy.html">cartopy</a> <a href="./tag/layout.html">layout</a> </p>
+<p>
+</p>
+      </div>
+      
+      <div class="span8">
+	<h1>Cartopy and Map Layout</h1>
+<p>So I was browsing an excellent blog, and came across this post <a href="http://grindgis.com/blog/checklist-map-design-layout">http://grindgis.com/blog/checklist-map-design-layout</a>.
+The author discusses the various components you expect on a paper map (apart from just the spatial content),
+ and proposes a number of layouts.</p>
+<p>Now obviously, the article was intended mainly for users with a full-powered GIS.  However a full-function GIS, even the freely available
+QGIS, is pretty large beast, and the learning curve to master it, and accomodate it into a workflow would be steep (or, at least, it has been for me,
+even given the comprehensive tutorial material available).</p>
+<p>So I thought to myself, how would I implement one of the recommended layouts in Matplotlib and Cartopy.  This post is the result.</p>
+<h3>Axes are your friend(s)</h3>
+<p>Excuses in advance to Matplotlib experts who read this, as I have probably got some of the key concepts askew (but
+that's all part of the learning). 
+The main concept behind my solution is the concept that a <code>figure</code> can contain a number of <code>Axes</code> objects that co-exist.
+Each Axes object can be commanded to turn on or off the 'decorations' that surround the plotting content.</p>
+<p>So the first thing is to define a function that will clear away all the decorations, leaving us with the equivalent of a blank space on the paper.</p>
+<div class="highlight"><pre><span></span>    def blank_axes(ax):
+        &quot;&quot;&quot;
+        blank_axes:  blank the extraneous spines and tick marks for an axes
+
+        Input:
+        ax:  a matplotlib Axes object
+
+        Output: None
+        &quot;&quot;&quot;
+
+
+        ax.spines[&#39;right&#39;].set_visible(False)
+        ax.spines[&#39;top&#39;].set_visible(False)
+        ax.spines[&#39;bottom&#39;].set_visible(False)
+        ax.spines[&#39;left&#39;].set_visible(False)
+        ax.yaxis.set_ticks_position(&#39;none&#39;)
+        ax.xaxis.set_ticks_position(&#39;none&#39;)
+        ax.tick_params(labelbottom=&#39;off&#39;, labeltop=&#39;off&#39;, labelleft=&#39;off&#39;, labelright=&#39;off&#39; ,\
+                        bottom=&#39;off&#39;, top=&#39;off&#39;, left=&#39;off&#39;, right=&#39;off&#39; )
+    #end blank_axes
+</pre></div>
+
+
+<p>The term <code>spine</code> is a little misleading (you or I have only one spine, but an Axes has four: top, bottom, left, right).  On
+a spine there are tick marks, and labels for those tick marks. We clear them all away.</p>
+<h3>Draw the outer frame</h3>
+<div class="highlight"><pre><span></span>    fig = plt.figure(figsize=(10,12))
+
+    # ------------------------------- Surrounding frame ------------------------------
+    # set up frame full height, full width of figure, this must be called first
+
+    left = -0.05
+    bottom = -0.05
+    width = 1.1
+    height = 1.05
+    rect = [left,bottom,width,height]
+    ax3 = plt.axes(rect)
+
+    # turn on the spines we want, ie just the surrounding frame
+    blank_axes(ax3)
+    ax3.spines[&#39;right&#39;].set_visible(True)
+    ax3.spines[&#39;top&#39;].set_visible(True)
+    ax3.spines[&#39;bottom&#39;].set_visible(True)
+    ax3.spines[&#39;left&#39;].set_visible(True)
+
+    ax3.text(0.01,0.01,&#39;© Don Cameron, 2017: net-analysis.com. &#39;+
+             &#39;Map generated at &#39;+datetime.datetime.now().strftime(&quot;%Y-%m-%d %H:%M:%S&quot;) + &#39; from &#39; +theNotebook, fontsize=8)
+</pre></div>
+
+
+<p>This outer frame is a little big larger than the usual square of side one, so the surround box doesn't touch any interior component.
+We set the enclosing spines visible, but supress tick marks, etc.  Note that I have included a Copyright text, and some
+information to support reproducibility (the classic small print at the bottom of the document).  I get the Jupyter Notebook name by some
+JavaScript hackery I got from Stack Exchange, but
+this could be a Python Module name, or anything you like.</p>
+<h3>Draw the spatial data</h3>
+<div class="highlight"><pre><span></span>    # ---------------------------------  Main Map -------------------------------------
+    #
+    # set up main map almost full height (allow room for title), right 80% of figure
+
+    left = 0.2
+    bottom = 0
+    width = 0.8
+    height = 0.90
+    rect = [left,bottom,width,height]
+
+    ax = plt.axes(rect, projection=ccrs.PlateCarree(), )
+    ax.set_extent((150, 155, -30, -23))
+
+
+    ax.coastlines(resolution=&#39;10m&#39;, zorder=2)
+
+    #land polygons, including major islands, use cartopy default color
+    ax.add_feature(LAND_10m)
+    ax.add_feature(RIVERS_10m)
+    ax.add_feature(BORDERS2_10m, edgecolor=&#39;grey&#39;)
+    ax.stock_img()
+    # stock image is good enough for example, but OCEAN_10m could be used, but very slow
+    #       ax.add_feature(OCEAN_10m)
+
+
+
+    ax.gridlines(draw_labels=True, xlocs=[150, 152, 154, 155])
+</pre></div>
+
+
+<p>I have allocated about 80% of the width of the map to the Cartopy spatial representation.  The height is set to 90%,
+to allow a title at the top.</p>
+<p>Because I want a high quality map, I have defined features using the Natural Earth 1:10Million scale data, as follows:</p>
+<div class="highlight"><pre><span></span>    BORDERS2_10m = cartopy.feature.NaturalEarthFeature(&#39;cultural&#39;, &#39;admin_1_states_provinces&#39;,
+                                  &#39;10m&#39;, edgecolor=&#39;black&#39;, facecolor=&#39;none&#39;)
+    #&quot;&quot;&quot;country boundaries.&quot;&quot;&quot;&quot;
+</pre></div>
+
+
+<p>This gives us our state borders.  We have <code>facecolor='none'</code>, because we only want a border,  not each state shaded.</p>
+<div class="highlight"><pre><span></span>    LAND_10m = cartopy.feature.NaturalEarthFeature(&#39;physical&#39;, &#39;land&#39;, &#39;10m&#39;,
+                               edgecolor=&#39;face&#39;,
+                               facecolor=cartopy.feature.COLORS[&#39;land&#39;])
+    #&quot;&quot;&quot;land polygons, including major islands.&quot;&quot;&quot;
+</pre></div>
+
+
+<p>Note that Cartopy defines a set of colors for land, sea, etc., which I am re-using.</p>
+<div class="highlight"><pre><span></span>    RIVERS_10m = cartopy.feature.NaturalEarthFeature(&#39;physical&#39;, &#39;rivers_lake_centerlines&#39;, &#39;10m&#39;,
+                                 edgecolor=cartopy.feature.COLORS[&#39;water&#39;],
+                                 facecolor=&#39;none&#39;)
+    #&quot;&quot;&quot;single-line drainages, including lake centerlines.&quot;&quot;&quot;
+</pre></div>
+
+
+<p>Note that by default, Cartopy draws its tick labels <em>outside</em> the main map, so we have to adjust the surrounding
+Axes objects so they don't overlap them.</p>
+<h3>Scale Bar</h3>
+<p>Now come the hacky-est part of this post.  Basemap has a nifty method to draw scale bars (<code>drawmapscale()</code>), but so far as I
+know, Cartopy has no such method.  Maybe this is because Cartopy is oriented towards those who want to display
+quantitive or qualitative data in a spatial context, and they don't expect people to use their maps to measure
+distance.  However, in my view, a scale bar is part of the spatial data that should be displayed.  Just <em>how</em> big are those
+Texas county borders that we keep seeing in examples, color-coded for poverty, or some such sociological attribute?</p>
+<p>The double-sad part is that I know on no easy way to draw a scale bar in one Axes object, that will exactly match
+the distance measurements on the main map.  <em>Maybe</em> if I define a second Cartopy Axes, with lat/lon range adjusted
+for the different sizes of the Axes objects ... but that is a matter for more investigation.</p>
+<p>What all this means is that I can't follow the original blog post that prompted this post, which suggested the scale bar as a separate object, off to the side.
+I am going to have to write it on the main map.  Not too bad a compromise.</p>
+<h4>Define the scale bar parameters</h4>
+<div class="highlight"><pre><span></span>    lon0, lon1, lat0, lat1 = ax.get_extent()
+
+    # bar offset is how far from bottom left corner scale bar is (x,y) and how far up is scale bar text
+    bar_offset = [0.05, 0.05, 0.07]
+    bar_lon0 = lon0 + (lon1-lon0)*bar_offset[0]
+    bar_lat0 = lat0 + (lat1-lat0)*bar_offset[1]
+
+    text_lon0 = bar_lon0
+    text_lat0 = lat0 + (lat1-lat0)*bar_offset[2]
+    bar_tickmark = 20000 # metres
+    bar_ticks = 5
+    bar_alpha = 0.3
+
+    bar_color = [&#39;black&#39;, &#39;red&#39;]
+</pre></div>
+
+
+<p>My scale bar will be 5% up, 5% right from the lower left corner; made up of 5 sub-bars each 20 km long, alternating
+red and black, and quite transparent (in case they hide something important; alpha=0.3).  The text will be up 7%, above the bar.</p>
+<h4>Draw the Scale Bar</h4>
+<div class="highlight"><pre><span></span>    # draw a scale bar that is a set of colored line segments (bar_ticks of these), bar_tickmarks long
+    for i in range(bar_ticks):
+         #  90 degrees = direction of horizontal scale bar
+        end_lat, end_lon = displace(bar_lat0, bar_lon0, 90, bar_tickmark)
+        # capstyle must be set so line segments end square
+        #TODO make transform match ax projection
+        ax.plot([bar_lon0, end_lon], [bar_lat0, end_lat], color=bar_color[i%2], linewidth=20, 
+                transform=ccrs.PlateCarree(), solid_capstyle=&#39;butt&#39;, alpha = bar_alpha)
+        # start of next bar is end of last bar
+        bar_lon0 = end_lon
+        bar_lat0 = end_lat
+    #end for
+</pre></div>
+
+
+<p>I have a helper function <code>displace()</code> that takes:</p>
+<ul>
+<li>
+<p>a lat/lon (in degrees - no love for radians here!)</p>
+</li>
+<li>
+<p>a direction (degrees)</p>
+</li>
+<li>
+<p>a distance in metres</p>
+</li>
+</ul>
+<p>and returns the lat/lon at the end of that distance in that direction.  I draw a set of lines (NOT bars), but as a result,
+I have to set the appearence of the line segment end as 'butt', or else the line will be drawn with rounded ends that go past the
+point I want them to stop or start at.</p>
+<h4>Draw the scale bar text</h4>
+<div class="highlight"><pre><span></span>    # highlight text with white background
+    buffer = [patheffects.withStroke(linewidth=3, foreground=&quot;w&quot;)]
+    # Plot the scalebar label
+    units = &#39;km&#39;
+    #TODO make transform match ax projection
+    t0 = ax.text(text_lon0, text_lat0, str(bar_ticks*bar_tickmark/1000) + &#39; &#39; + units, transform=ccrs.PlateCarree(),
+        horizontalalignment=&#39;left&#39;, verticalalignment=&#39;bottom&#39;,
+        path_effects=buffer, zorder=2)
+</pre></div>
+
+
+<p>We put a white background behind the black scale bar text.</p>
+<h3>Locating Map</h3>
+<div class="highlight"><pre><span></span>    # ---------------------------------Locating Map ------------------------
+    #
+    # set up index map 20% height, left 16% of figure
+    left = 0
+    bottom = 0
+    width = 0.16
+    height = 0.2
+    rect = [left,bottom,width,height]
+
+
+    ax2 = plt.axes(rect, projection=ccrs.PlateCarree(), )
+    ax2.set_extent((110,160, -45, -10))
+    #  ax2.set_global()  will show the whole world as context
+
+    ax2.coastlines(resolution=&#39;110m&#39;, zorder=2)
+    ax2.add_feature(cfeature.LAND)
+    ax2.add_feature(cfeature.OCEAN)
+
+    ax2.gridlines()
+
+
+    lon0,lon1,lat0,lat1 = ax.get_extent()
+    box_x = [lon0, lon1, lon1, lon0, lon0]
+    box_y = [lat0, lat0, lat1, lat1, lat0]
+
+    plt.plot(box_x, box_y, color=&#39;red&#39;,  transform=ccrs.Geodetic())
+</pre></div>
+
+
+<p>We reserve a small area at the bottom left for a locating map.  In my example, I have drawn Australia (well, some far flung
+islands like Christmas Island may be missing).  A <code>set_global()</code> call will force the whole globe to  be shown,
+but that is zoomed too far back for my case.  I add coastlines, and shade the land and oceans with the default
+Cartopy resolution and colors.  I draw gridlines, and then draw a red box that represents the main map bounds.</p>
+<h3>The Title</h3>
+<div class="highlight"><pre><span></span>    # -------------------------------- Title -----------------------------
+    # set up map title top 4% of figure, right 80% of figure
+
+    left = 0.2
+    bottom = 0.95
+    width = 0.8
+    height = 0.04
+    rect = [left,bottom,width,height]
+    ax6 = plt.axes(rect)
+    ax6.text(0.5, 0.0,&#39;Multi-Axes Map Example&#39;, ha=&#39;center&#39;, fontsize=20)
+    blank_axes(ax6)
+</pre></div>
+
+
+<p>The title is centered above the map.  I could use some ornate font, but just went with the Cartopy defaults.
+Note that no Cartopy projection systems are used, just the 0.0-1.0 default Axes object units. We turn off all spines, etc.</p>
+<h3>The North Arrow</h3>
+<div class="highlight"><pre><span></span>    # ---------------------------------North Arrow  ----------------------------
+    #
+    left = 0
+    bottom = 0.2
+    width = 0.16
+    height = 0.2
+    rect = [left,bottom,width,height]
+    rect = [left,bottom,width,height]
+    ax4 = plt.axes(rect)
+
+    # need a font that support enough Unicode to draw up arrow. need space after Unicode to allow wide char to be drawm?
+    ax4.text(0.5, 0.0,u&#39;\u25B2 \nN &#39;, ha=&#39;center&#39;, fontsize=30, family=&#39;Arial&#39;, rotation = 0)
+    blank_axes(ax4)
+</pre></div>
+
+
+<p>The North arrow lives above the locating map.  The only gotchas of note here are:</p>
+<ul>
+<li>
+<p>You need to specify a font family that support the Unicode character used (the default font doesn't, in my case).
+I am uncertain as to where Matplotlib / Cartopy gets its fonts from, so there may be scope for a more florid North arrow.</p>
+</li>
+<li>
+<p>In my case, the Unicode needed a following space before the training newline character, to be drawn properly. Why, I don't know.</p>
+</li>
+</ul>
+<p>In my case, my map is NOT rotated, but the <code>text(   rotation=   )</code> parameter would allow for a rotated arrow, if needed.</p>
+<h3>the Legend</h3>
+<p>The legend is bit hacky as well. A simple call to the Matplotlib 'make me a legend' usually fails because under the covers,
+the necessary calls haven't been made to link a drawing object (like a line with linestyle and linecolor), to a name.  So we have to do all that.</p>
+<p>The trick is to create some drawing entities (patches and lines), get the handles to these, associate them with names,
+and <em>then</em> create a legend.  It's not all bad, it does give you the chance to control the legend in fine detail.
+Spoiler alert, GeoPandas legends can be quite painful.</p>
+<h4>Create the Axes Object</h4>
+<div class="highlight"><pre><span></span>    # ------------------------------------  Legend -------------------------------------
+
+    # legends can be quite long, so set near top of map (0.4 - bottom + 0.5 height = 0.9 - near top)
+    left = 0
+    bottom = 0.4
+    width = 0.16
+    height = 0.5
+    rect = [left,bottom,width,height]
+    rect = [left,bottom,width,height]
+    ax5 = plt.axes(rect)
+    blank_axes(ax5)
+</pre></div>
+
+
+<h4>Create Area Legend Entries</h4>
+<div class="highlight"><pre><span></span>    # create an array of color patches and associated names for drawing in a legend
+    # colors are the predefined colors for cartopy features (only for example, Cartopy names are unusual)
+    colors = sorted(cartopy.feature.COLORS.keys())
+
+    # handles is a list of patch handles
+    handles = []
+    # names is the list of corresponding labels to appear in the legend
+    names = []
+
+    # for each cartopy defined color, draw a patch, append handle to list, and append color name to names list
+    for c in colors:
+        patch = mpatches.Patch(color=cfeature.COLORS[c], label=c)
+        handles.append(patch)
+       names.append(c)
+    #end for
+</pre></div>
+
+
+<p>Note that these Patches never appear in our diagram.  Now Cartopy color names are not perfect, but it's only an example.
+If at some time Cartopy expend their color range, the code above should still work.</p>
+<h4>Create Line Legend Entries</h4>
+<div class="highlight"><pre><span></span>    # do some example lines with colors
+    river = mlines.Line2D([], [], color=cfeature.COLORS[&#39;water&#39;], marker=&#39;&#39;,
+                              markersize=15, label=&#39;river&#39;)
+    coast = mlines.Line2D([], [], color=&#39;black&#39;, marker=&#39;&#39;,
+                              markersize=15, label=&#39;coast&#39;)
+    bdy  = mlines.Line2D([], [], color=&#39;grey&#39;, marker=&#39;&#39;,
+                      markersize=15, label=&#39;state boundary&#39;)
+    handles.append(river)
+    handles.append(coast)
+    handles.append(bdy)
+    names.append(&#39;river&#39;)
+    names.append(&#39;coast&#39;)
+    names.append(&#39;state boundary&#39;)
+</pre></div>
+
+
+<p>Note that here we have turned off all markers, and have invented our own labels to appear in the legend.</p>
+<h4>Create the Legend, and Display All!</h4>
+<div class="highlight"><pre><span></span>    # create legend
+    ax5.legend(handles, names)
+    ax5.set_title(&#39;Legend&#39;,loc=&#39;left&#39;)
+
+    plt.show()
+</pre></div>
+
+
+<p>It looks like by default, the <code>legend()</code> call turns the spines back on, but that is OK.  We specify a legend title.</p>
+<h2>The Results</h2>
+<p>The end result of all this?  See below.</p>
+<p><img alt="Map Layout Results" src="./images/maplayout.png"></p>
+<p>In order to make sense of the different Axes objects, here they are again, with no content, and with the enclosing spines drawn.
+Some of these (like the main map) will expand as they are filled with content.</p>
+<p><img alt="Map Layout Results" src="./images/maplayout2.png"></p>
+<h2>The Imports</h2>
+<p>Shown below are the imports for the Notebook from which this example was taken.
+Not all are used in the example fragments shown above.</p>
+<div class="highlight"><pre><span></span>    <span class="c1"># all imports should go here</span>
+
+    <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="kn">import</span> <span class="nn">subprocess</span>
+    <span class="kn">import</span> <span class="nn">datetime</span>
+    <span class="kn">import</span> <span class="nn">platform</span>
+    <span class="kn">import</span> <span class="nn">datetime</span>
+    <span class="kn">import</span> <span class="nn">math</span>
+
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+    <span class="c1">#import seaborn as sb</span>
+
+    <span class="kn">import</span> <span class="nn">cartopy</span>
+    <span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="kn">as</span> <span class="nn">ccrs</span>
+    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">OSM</span>
+    <span class="kn">import</span> <span class="nn">cartopy.feature</span> <span class="kn">as</span> <span class="nn">cfeature</span>
+    <span class="kn">from</span> <span class="nn">cartopy.io</span> <span class="kn">import</span> <span class="n">shapereader</span>
+    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">StamenTerrain</span>
+    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">GoogleTiles</span>
+    <span class="kn">from</span> <span class="nn">owslib.wmts</span> <span class="kn">import</span> <span class="n">WebMapTileService</span>
+
+    <span class="kn">from</span> <span class="nn">matplotlib.path</span> <span class="kn">import</span> <span class="n">Path</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.patheffects</span> <span class="kn">as</span> <span class="nn">PathEffects</span>
+    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">patheffects</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="kn">as</span> <span class="nn">mpatches</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.lines</span> <span class="kn">as</span> <span class="nn">mlines</span>
+
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</pre></div>
+	<hr />
+      </div>
+    </div>
+    <div class="span10">
+      <h3>Comments</h3>
+    
+    </div>  
+    </div>
+        </div>
+        
+        
+    </div>     </div> </div>
+
+<!--footer-->
+<div class="container">
+  <div class="well" style="background-color: #E9EFF6">
+    <div id="blog-footer">
+      <div class="row-fluid">
+	<div class="social span2" align="center" id="socialist">
+	  <ul class="nav nav-list">
+	    <li class="nav-header">
+	      Social
+	    </li>
+	    <li><a href="https://www.linkedin.com/in/donrcameron/"><i class="icon-Linkedin Page" style="color: #1f334b"></i>Linkedin Page</a></li>
+	    <li><a href="https://www.flickr.com/photos/donrcameron/"><i class="icon-flickr Page" style="color: #1f334b"></i>flickr Page</a></li>
+            <a href="mailto:donrcameron@gmail.com"><i class="icon-envelope" style="color: #1f334b" ></i> email</a>
+
+	  </ul>
+	</div>
+<div class="span8" id="colophon">
+  <h2 align="center">About</h2>
+  <p align="justify"> 
+
+This series of blog posts is provided as a resource by 
+
+net-analysis.com - PO Box 857, Coolum Beach, QLD 4573, AUSTRALIA. ABN 19469649963.
+
+Ring 0413 208 746, or visit the company website:
+
+http://www.net-analysis.com.   It documents a learning process, and hence owes a debt of gratitude to all the people who have documented their own experiences on the web: the list is too large to enumerate.
+ </p>
+</div>
+        <div class="links span2" align="center">
+          <ul class="nav nav-list">
+            <li class="nav-header"> 
+              Links
+            </li>
+            
+            <li><a href="http://getpelican.com/">Pelican</a></li>
+            <li><a href="http://python.org/">Python.org</a></li>
+          </ul>
+        </div>
+	<div class="site-nav span2" align="center">
+          <ul class="nav nav-list" id="site-links">
+            <li class="nav-header"> 
+              Site
+            </li>
+            <li><a href="."><i class="icon-home" style="color: #1f334b">
+                </i>Home</a></li>
+            <li><a href="./archives.html"><i class="icon-list" style="color: #1f334b">
+                </i>Archives</a></li>
+	    <li><a href="./tags.html"><i class="icon-tags" style="color: #1f334b">
+                </i>Tags</a></li>
+	    
+	  </ul>
+
+        </div>
+
+      </div> <!--end of fluid row-->
+    </div> <!--end of blog-footer-->
+    <hr />
+    <p align="center"><a href=".">net-analysis.com Data Analysis Blog</a>
+      &copy; Don Cameron
+    Powered by <a href="https://github.com/getpelican/pelican">Pelican</a> and
+        <a href="https://twitter.github.com/bootstrap">Twitter Bootstrap</a>. 
+        Icons by <a href="https://fortawesome.github.com/Font-Awesome">Font Awesome</a> and 
+        <a href="https://gregoryloucas.github.com/Font-Awesome-More">Font Awesome More</a></p>
+
+  </div> <!--end of well -->
+</div> <!--end of container -->
+
+<!--/footer-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+
+
+
+</body>
+</html>

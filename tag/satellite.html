@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="english">
+<head>
+
+    <meta charset="utf-8">
+    <title>net-analysis.com Data Analysis Blog <small>satellite</small></title>
+    <meta name="description" content="">
+    <meta name="author" content="Don Cameron">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="../theme/html5.js"></script>
+    <![endif]-->
+
+
+    <!-- Le styles -->
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap.no-icons.min.css" rel="stylesheet">
+    <link href="../theme/local.css" rel="stylesheet">
+    <link href="../theme/pygments.css" rel="stylesheet">
+    <link href="../theme/font-awesome.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Gudea:400,400italic|Alegreya+SC' rel='stylesheet' type='text/css'>
+
+</head>
+
+<body>
+<header class="blog-header">
+  <div class="container">
+    <div class="row-fluid">
+      <div class="span9">
+	<a href=".." class="brand">net-analysis.com Data Analysis Blog</a>
+      </div>
+
+      <div class="span3" id="blog-nav">
+	<ul class="nav nav-pills pull-right">
+	    <li >
+	      <a href="../category/basemap.html ">Basemap</a>
+	    <li >
+	      <a href="../category/cartopy.html ">Cartopy</a>
+	    <li >
+	      <a href="../category/geopandas.html ">GeoPandas</a>
+	    <li >
+	      <a href="../category/introduction.html ">Introduction</a>
+	    <li >
+	      <a href="../category/landsat.html ">LANDSAT</a>
+	    <li >
+	      <a href="../category/visualizations.html ">Visualizations</a>
+	</ul>
+      </div>
+    </div> <!-- End of fluid row-->
+  </div>   <!-- End of Container-->
+</header>
+    
+<div class="container">
+    <div class="content">
+    <div class="row-fluid">
+
+        <div class="span10">
+        
+
+        
+
+    <div class='row-fluid''>
+        <div class="article-title span9">
+            <a href="../landsat2.html"><h1>LANDSAT Color Image Processing</h1></a>
+        </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span2">
+<p>Wed 05 April 2017 </p>
+
+<p style="text-align: left;">
+Filed under <a href="../category/landsat.html">LANDSAT</a>
+</p>
+<p style="text-align: left;">
+ 
+    Tags <a href="../tag/python.html">python</a> <a href="../tag/cartopy.html">cartopy</a> <a href="../tag/landsat.html">landsat</a> <a href="../tag/satellite.html">satellite</a> </p>
+<p>
+</p>
+      </div>
+      <div class="article-content span8">
+	<h1>LANDSAT Color Image Mapping</h1>
+<h2>Introduction</h2>
+<p>So, continuing on from the last post, the next step is to construct color images, and map them.</p>
+<p>LANDSAT has three bands, that when combined, can be used to create a color image.
+For more information on LANDSAT bands, look at <a href="https://www.mapbox.com/blog/putting-landsat-8-bands-to-work/">https://www.mapbox.com/blog/putting-landsat-8-bands-to-work/</a>.</p>
+<p>Sadly the default color images that result
+don't have much of the 'wow!' factor, and they are usually very dark.  There is a lot of material on
+how to add 'wow!' to LANDSAT images:  for example see <a href="https://www.mapbox.com/blog/processing-landsat-8/">https://www.mapbox.com/blog/processing-landsat-8/</a>.
+This usually involves handcraft Red/ Green/ Blue histogram changes, to bring out more details.</p>
+<p>I will use the SciKit image processing tools to add 'wow!' to my map.</p>
+<h2>LANDSAT Color Bands</h2>
+<p>First we read in the three bands that will make up our color image.</p>
+<div class="highlight"><pre><span></span>    #  enable gdal exceptions (instead of the silent failure which is gdal default)
+    gdal.UseExceptions()
+
+    # Bands 2, 3, and 4 are visible blue, green, and red.
+
+    fname_red = &#39;../data/LC80890792016366LGN00_B4.tif&#39;
+    fname_blu = &#39;../data/LC80890792016366LGN00_B2.tif&#39;
+    fname_grn = &#39;../data/LC80890792016366LGN00_B3.tif&#39;
+
+    ds_red = gdal.Open(fname_red)
+    ds_blu = gdal.Open(fname_blu)
+    ds_grn = gdal.Open(fname_grn)
+
+    data_red = ds_red.ReadAsArray()
+    data_grn = ds_grn.ReadAsArray()
+    data_blu = ds_blu.ReadAsArray()
+</pre></div>
+
+
+<p>Then we create a <code>numpy</code> array to hold all three color planes (I should really check that
+all three planes have the same size, but in this case I trust NASA)</p>
+<div class="highlight"><pre><span></span>    rgb_size = 3
+
+    data_rgb = np.zeros((ds_red.RasterYSize, ds_red.RasterXSize, rgb_size ))
+</pre></div>
+
+
+<h2>Scaling for image processing</h2>
+<p>The SciKit image processing utilities seem to insist that pixel values be scaled between -1 to + 1.
+We scale our pixel value accordingly.</p>
+<div class="highlight"><pre><span></span>    r = np.max(data_red)
+    g = np.max(data_grn)
+    b = np.max(data_blu)
+
+
+    data_rgb[:,:,0] = data_red/max(r, b, g)
+    data_rgb[:,:,1] = data_grn/max(r, b, g)
+    data_rgb[:,:,2] = data_blu/max(r, b, g)
+
+    data_one = np.ones((ds_red.RasterYSize, ds_red.RasterXSize, 3))
+
+    # clip all pixel value to 1.0
+    data_rgb = np.minimum(data_rgb, data_one)
+</pre></div>
+
+
+<h2>Mapping the raw color image</h2>
+<p>So at this stage we have our color image contained in the variable <code>data_rgb</code>.  We execute the same logic as in the previous post
+in this series;  create projections for the image, map, and overlayed data, create an Axes object
+with the same extent as the image (so all the image is displayed), add the image to the map, add overlayed data (coastlines, location of home),
+and add gridlines, titles, etc. </p>
+<div class="highlight"><pre><span></span>    #  size in lon/lat of zoomed in  map area for subsequent plots
+    x0 = 153.03
+    x1 = 153.12
+    y0 = -26.605
+    y1 = -26.515
+
+    # set up projection constants
+
+    zone = 56
+    projection = ccrs.UTM(zone, southern_hemisphere=False)
+
+    img_CRS = projection
+
+    plot_CRS = ccrs.PlateCarree()
+    geodetic_CRS = ccrs.Geodetic()
+
+
+    # transform limits of plot to zoomed in map projection units
+    x0, y0 = plot_CRS.transform_point(x0, y0, geodetic_CRS)
+    x1, y1 = plot_CRS.transform_point(x1, y1, geodetic_CRS)
+
+    # create figure and axes
+    plt.figure(figsize=(12,8), dpi=100)
+    ax = plt.axes([0,0,1,1], projection=plot_CRS)
+
+    extent_tif = (gt[0], gt[0] + ds.RasterXSize * gt[1],
+              gt[3] + ds.RasterYSize * gt[5], gt[3])
+
+    # get tif limits in map coordinates
+    tx0, ty0 = plot_CRS.transform_point(extent_tif[0], extent_tif[2], img_CRS)
+    tx1, ty1 = plot_CRS.transform_point(extent_tif[1], extent_tif[3], img_CRS)
+
+    # show whole image
+    extent_map = (tx0, tx1, ty0, ty1)
+
+
+    ax.set_extent(extent_map, plot_CRS)
+
+    img = ax.imshow(data_rgb, extent=extent_tif,transform = img_CRS, 
+                    origin=&#39;upper&#39;,)
+
+    ax.coastlines(resolution=&#39;10m&#39;,zorder=4, color=&#39;navy&#39;)
+    gl = ax.gridlines( draw_labels=True)
+
+    # suppress gridline labels at top to allow space for title
+    gl.xlabels_top = False
+
+    # example overlay of lat/lon data
+    ax.plot(153.09, -26.53, marker=&#39;o&#39;, markersize=10, color=&#39;red&#39;, transform=ccrs.Geodetic())
+
+    ax.set_title(&#39;LANDSAT Band 432 (True Color),\nLANDSAT_SCENE_ID = LC80890792016366LGN00&#39;)
+
+    plt.show()
+</pre></div>
+
+
+<p>This gives us the following map:</p>
+<p><img alt="Raw Color LANDSAT map" src="../images/lsat03.png"></p>
+<p>The image appears very dark, because NASA scales images to accomodate very bright saltpans, snow, etc.</p>
+<h2>Adjusting the image</h2>
+<p>I used the SciKit Image Exposure tools to investigate the best way to add 'wow!'.  First I tried adjusting the Gamma
+(effectively performing nonlinear scaling to make dark pixels brighter), but I was not overly impressed.
+High values of scaling seemed to wash out the image.  In all, I tried</p>
+<ul>
+<li>
+<p>Gamma Adjustment</p>
+</li>
+<li>
+<p>Sigmoidal Adjustment</p>
+</li>
+<li>
+<p>Logarithmic Adjustment</p>
+</li>
+</ul>
+<p>Finally I settled on individual color plane histogram adjustment.</p>
+<div class="highlight"><pre><span></span>    eq_red = skimage.exposure.equalize_hist(data_red)
+    eq_blu = skimage.exposure.equalize_hist(data_blu)
+    eq_grn = skimage.exposure.equalize_hist(data_grn)
+
+    r = np.max(eq_red)
+    g = np.max(eq_grn)
+    b = np.max(eq_blu)
+
+    eqh = np.zeros((ds_red.RasterYSize, ds_red.RasterXSize, rgb_size ))
+
+    eqh[:,:,0] = eq_red/max(r,g,b)
+    eqh[:,:,1] = eq_grn/max(r,g,b)
+    eqh[:,:,2] = eq_blu/max(r,g,b)
+</pre></div>
+
+
+<p>followed by the same code as before, with the image display call being:</p>
+<div class="highlight"><pre><span></span>    img = ax.imshow(eqh, extent=extent_tif, transform = img_CRS, 
+                    origin=&#39;upper&#39;,)
+</pre></div>
+
+
+<p>This gives us:</p>
+<p><img alt="Final Color LANDSAT map" src="../images/lsat09.png"></p>
+<h2>Conclusion</h2>
+<p>I have new-found respect for the science and art of processing LANDSAT images in order to convey information
+to humans (as opposed, say, to automated vegetation habitat classification).</p>
+<p>Just for completeness, here are the imports for all the code above (and some code to come)
+(some are used only to support print-outs that define the environment for reproducibility purposes) :</p>
+<div class="highlight"><pre><span></span>    <span class="c1"># all imports should go here</span>
+
+    <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+
+    <span class="c1"># most of these following are used to support repeatability of the notebook</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="kn">import</span> <span class="nn">subprocess</span>
+    <span class="kn">import</span> <span class="nn">datetime</span>
+    <span class="kn">import</span> <span class="nn">platform</span>
+    <span class="kn">import</span> <span class="nn">datetime</span>
+    <span class="kn">import</span> <span class="nn">math</span>
+
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+    <span class="c1"># support for TIFF input</span>
+    <span class="kn">import</span> <span class="nn">gdal</span>
+    <span class="kn">import</span> <span class="nn">osr</span>
+
+    <span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="kn">as</span> <span class="nn">ccrs</span>
+    <span class="kn">import</span> <span class="nn">cartopy</span>
+
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+    <span class="c1"># used for color image processing</span>
+    <span class="kn">import</span> <span class="nn">skimage.exposure</span>
+    <span class="kn">import</span> <span class="nn">skimage.io</span> <span class="kn">as</span> <span class="nn">sio</span>
+</pre></div>
+
+
+<p>The notebook that has all the code is coming soon.</p> 
+	<a class="btn btn-mini xsmall" href="../landsat2.html">
+          <i class="icon-comment"></i> Comment </a>
+	<hr />
+      </div>
+      
+    </div>
+    
+
+ 
+        
+
+
+
+    <div class='row-fluid'>
+      <div class='article-title span9'> 
+        <a href="../landsat.html"><h1>LANDSAT Image Processing</h1></a>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span2">
+<p>Tue 04 April 2017 </p>
+
+<p style="text-align: left;">
+Filed under <a href="../category/landsat.html">LANDSAT</a>
+</p>
+<p style="text-align: left;">
+ 
+    Tags <a href="../tag/python.html">python</a> <a href="../tag/cartopy.html">cartopy</a> <a href="../tag/landsat.html">landsat</a> <a href="../tag/satellite.html">satellite</a> </p>
+<p>
+</p>
+      </div>
+      <div class="summary span8">
+	<p>LANDSAT image processing and display</p> 
+	<a class="btn btn-mini xsmall" href="../landsat.html">
+          <i class="icon-plus-sign"></i> Read More </a>
+	<hr />
+      </div>
+      
+    </div>
+      
+
+ 
+        
+
+
+
+    <div class='row-fluid'>
+      <div class='article-title span9'> 
+        <a href="../cartopyimages.html"><h1>Cartopy and Satellite Imaging</h1></a>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span2">
+<p>Wed 22 February 2017 </p>
+
+<p style="text-align: left;">
+Filed under <a href="../category/cartopy.html">Cartopy</a>
+</p>
+<p style="text-align: left;">
+ 
+    Tags <a href="../tag/python.html">python</a> <a href="../tag/cartopy.html">cartopy</a> <a href="../tag/satellite.html">satellite</a> <a href="../tag/modis.html">modis</a> </p>
+<p>
+</p>
+      </div>
+      <div class="summary span8">
+	<p>Using Cartopy to display bushfire burns</p> 
+	<a class="btn btn-mini xsmall" href="../cartopyimages.html">
+          <i class="icon-plus-sign"></i> Read More </a>
+	<hr />
+      </div>
+      
+    </div>
+      
+<div class="pagination">
+<ul>
+    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+
+    <li class="active"><a href="../tag/satellite.html">1</a></li>
+
+    <li class="next disabled"><a href="#">&rarr; Next</a></li>
+
+</ul>
+</div>
+
+ 
+  
+        </div>
+        
+        
+    </div>     </div> </div>
+
+<!--footer-->
+<div class="container">
+  <div class="well" style="background-color: #E9EFF6">
+    <div id="blog-footer">
+      <div class="row-fluid">
+	<div class="social span2" align="center" id="socialist">
+	  <ul class="nav nav-list">
+	    <li class="nav-header">
+	      Social
+	    </li>
+	    <li><a href="https://www.linkedin.com/in/donrcameron/"><i class="icon-Linkedin Page" style="color: #1f334b"></i>Linkedin Page</a></li>
+	    <li><a href="https://www.flickr.com/photos/donrcameron/"><i class="icon-flickr Page" style="color: #1f334b"></i>flickr Page</a></li>
+            <a href="mailto:donrcameron@gmail.com"><i class="icon-envelope" style="color: #1f334b" ></i> email</a>
+
+	  </ul>
+	</div>
+<div class="span8" id="colophon">
+  <h2 align="center">About</h2>
+  <p align="justify"> 
+
+This series of blog posts is provided as a resource by 
+
+net-analysis.com - PO Box 857, Coolum Beach, QLD 4573, AUSTRALIA. ABN 19469649963.
+
+Ring 0413 208 746, or visit the company website:
+
+http://www.net-analysis.com.   It documents a learning process, and hence owes a debt of gratitude to all the people who have documented their own experiences on the web: the list is too large to enumerate.
+ </p>
+</div>
+        <div class="links span2" align="center">
+          <ul class="nav nav-list">
+            <li class="nav-header"> 
+              Links
+            </li>
+            
+            <li><a href="http://getpelican.com/">Pelican</a></li>
+            <li><a href="http://python.org/">Python.org</a></li>
+          </ul>
+        </div>
+	<div class="site-nav span2" align="center">
+          <ul class="nav nav-list" id="site-links">
+            <li class="nav-header"> 
+              Site
+            </li>
+            <li><a href=".."><i class="icon-home" style="color: #1f334b">
+                </i>Home</a></li>
+            <li><a href="../archives.html"><i class="icon-list" style="color: #1f334b">
+                </i>Archives</a></li>
+	    <li><a href="../tags.html"><i class="icon-tags" style="color: #1f334b">
+                </i>Tags</a></li>
+	    
+	  </ul>
+
+        </div>
+
+      </div> <!--end of fluid row-->
+    </div> <!--end of blog-footer-->
+    <hr />
+    <p align="center"><a href="..">net-analysis.com Data Analysis Blog</a>
+      &copy; Don Cameron
+    Powered by <a href="https://github.com/getpelican/pelican">Pelican</a> and
+        <a href="https://twitter.github.com/bootstrap">Twitter Bootstrap</a>. 
+        Icons by <a href="https://fortawesome.github.com/Font-Awesome">Font Awesome</a> and 
+        <a href="https://gregoryloucas.github.com/Font-Awesome-More">Font Awesome More</a></p>
+
+  </div> <!--end of well -->
+</div> <!--end of container -->
+
+<!--/footer-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="english">
+<head>
+
+    <meta charset="utf-8">
+    <title>net-analysis.com Data Analysis Blog <small>geopandas</small></title>
+    <meta name="description" content="">
+    <meta name="author" content="Don Cameron">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="../theme/html5.js"></script>
+    <![endif]-->
+
+
+    <!-- Le styles -->
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap.no-icons.min.css" rel="stylesheet">
+    <link href="../theme/local.css" rel="stylesheet">
+    <link href="../theme/pygments.css" rel="stylesheet">
+    <link href="../theme/font-awesome.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Gudea:400,400italic|Alegreya+SC' rel='stylesheet' type='text/css'>
+
+</head>
+
+<body>
+<header class="blog-header">
+  <div class="container">
+    <div class="row-fluid">
+      <div class="span9">
+	<a href=".." class="brand">net-analysis.com Data Analysis Blog</a>
+      </div>
+
+      <div class="span3" id="blog-nav">
+	<ul class="nav nav-pills pull-right">
+	    <li >
+	      <a href="../category/basemap.html ">Basemap</a>
+	    <li >
+	      <a href="../category/cartopy.html ">Cartopy</a>
+	    <li >
+	      <a href="../category/geopandas.html ">GeoPandas</a>
+	    <li >
+	      <a href="../category/introduction.html ">Introduction</a>
+	    <li >
+	      <a href="../category/landsat.html ">LANDSAT</a>
+	    <li >
+	      <a href="../category/visualizations.html ">Visualizations</a>
+	</ul>
+      </div>
+    </div> <!-- End of fluid row-->
+  </div>   <!-- End of Container-->
+</header>
+    
+<div class="container">
+    <div class="content">
+    <div class="row-fluid">
+
+        <div class="span10">
+        
+
+        
+
+    <div class='row-fluid''>
+        <div class="article-title span9">
+            <a href="../maprotation.html"><h1>Introduction to GeoPandas</h1></a>
+        </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span2">
+<p>Sun 26 February 2017 </p>
+
+<p style="text-align: left;">
+Filed under <a href="../category/geopandas.html">GeoPandas</a>
+</p>
+<p style="text-align: left;">
+ 
+    Tags <a href="../tag/geopandas.html">geopandas</a> <a href="../tag/python.html">python</a> <a href="../tag/shapefile.html">shapefile</a> <a href="../tag/stripmap.html">stripmap</a> </p>
+<p>
+</p>
+      </div>
+      <div class="article-content span8">
+	<h1>Introduction to GeoPandas</h1>
+<h2>Introduction</h2>
+<p>This is a post about using GeoPandas to perform some fun operations (that may have serious uses).  GeoPandas (read about it 
+<a href="http://geopandas.org/">here</a> ) is an extension to the awesome Pandas system.  GeoPandas extends the Pandas Series and DataFrame
+concepts, to define GeoSeries and GeoDataFrame objects  (each entity has a column named 'geometry', which hold Shapely items).</p>
+<p>So you get all the power of Pandas (especially the filtering and selection operations) <em>and</em> the Shapely geometric operations.
+Sometimes it is a little tricky to know which one to use.  The examples below allow scope for same harmless chauvinism to illustrate
+the two systems.</p>
+<p>The main driver for my interest in GeoPandas was the apparent inability of Basemap to be able  to draw rotated maps.  The east coast
+of Queensland is almost a straight line running about 30 degrees west of North, and I wanted to be to map it, just showing the coast line.
+These sorts of maps are sometimes call 'strip maps'.</p>
+<p>There is a projection in Basemap (Oblique Mercator) which would be ideal, except that:</p>
+<ul>
+<li>
+<p>by default it rotates all maps to the North (defeating the whole purpose of my use of it)</p>
+</li>
+<li>
+<p>turning off the rotation to North results in some weird mirror-image maps</p>
+</li>
+</ul>
+<p>I eventually gave up, and started to explore GeoPandas.</p>
+<h2>The GeoPandas "Hello World"</h2>
+<p>After all the imports have been sorted, the minimal GeoPandas program looks like</p>
+<div class="highlight"><pre><span></span>    world = gpd.read_file(gpd.datasets.get_path(&#39;naturalearth_lowres&#39;))
+    world.plot()
+</pre></div>
+
+
+<p>The first line reads a file that come packaged with the GeoPandas install, holding the shapes of the countries of the world.  The second line
+instructs GeoPandas to plot it  (under the hood there are calls to matplotlib).</p>
+<p>This give a map like:</p>
+<p><img alt="GeoPandas Hello World Map" src="../images/geopandas01.png"></p>
+<p>Not bad for two lines of code.  A bit closer inspection shows that the limits of the Y axis don't stop at
+90 North and 90 South.  It is also a little unclear (at least to me), exactly what attribute hidden in the shapefile
+has been used for the color-coding.</p>
+<h2>Using matplotlib and Pandas services</h2>
+<p>The next example is a little deeper.</p>
+<div class="highlight"><pre><span></span>    fig, ax = plt.subplots()
+
+    # set aspect to equal. This is done automatically
+    # when using *geopandas* plot on it&#39;s own, but not when
+    # working with pyplot directly.
+    ax.set_aspect(&#39;equal&#39;)
+
+    water = &#39;lightskyblue&#39;
+    earth = &#39;tan&#39;
+
+    ax.set_axis_bgcolor(water)
+
+    ax.set_xlim([100, 160])
+    ax.set_ylim([-50, 10])
+
+    # remove Oz
+    world[world[&#39;name&#39;]!=&#39;Australia&#39;].plot(ax=ax, edgecolor=&#39;grey&#39;, facecolor=earth, linewidth=1, alpha=1)
+</pre></div>
+
+
+<p>So here we interact with the matplotlib system, to set limits on the plot, background color (i.e. water), and aspect ratios.
+We also use Pandas to filter out all rows in the <code>world</code> GeoDataFrame where the <code>name</code> attribute is 'Australia'.  The end
+result looks like:</p>
+<p><img alt="GeoPandas World Map No Australia" src="../images/geopandas02.png"></p>
+<h2>Rotating Maps</h2>
+<p>So now we want to flip the world, to put Australia near the top  (after all, having North at the top is merely a social construct).</p>
+<div class="highlight"><pre><span></span>    fig, ax = plt.subplots()
+
+    world = gpd.read_file(gpd.datasets.get_path(&#39;naturalearth_lowres&#39;))
+
+    # set aspect to equal. This is done automatically
+    # when using *geopandas* plot on it&#39;s own, but not when
+    # working with pyplot directly.
+    ax.set_aspect(&#39;equal&#39;)
+
+    # make the default color water
+    water = &#39;lightskyblue&#39;
+    earth = &#39;cornsilk&#39;
+    ax.set_axis_bgcolor(water)
+
+    # create a GeoSeries from the GeoDataFrame
+    world2 = world[world[&#39;name&#39;]!=&#39;Antarctica&#39;]
+    wgs = gpd.GeoSeries([g for  g in world2[&#39;geometry&#39;]])
+
+    # rotate world
+    wgs2 = wgs.rotate(180, origin = (0,0), use_radians=False)
+
+    wgs2.plot(ax=ax, edgecolor=&#39;grey&#39;, facecolor=earth, linewidth=1, alpha=1)
+</pre></div>
+
+
+<p>Here, after all the usual matplotlib calls, we create a GeoSeries object from the <code>world</code> GeoDataFrame (with Antarctica removed to make the map look tidier).
+Then we rotate the GeoSeries by 180, around the (0,0) center.  Finally we call the <code>plot()</code> method of the GeoSeries.</p>
+<p><img alt="GeoPandas World Map No Australia" src="../images/geopandas03.png"></p>
+<p>Note that in this case, we don't want the countries color-coded.  The GeoSeries doesn't have all the attributes that the shapefile 
+(and the GeoDataFrame) contains, but that's OK, because we don't need them.</p>
+<p>However, if we wanted to highlight Australia, we could use the GeoPandas lines of code:</p>
+<div class="highlight"><pre><span></span>    # create a GeoSeries from the GeoDataFrame
+    wgs = gpd.GeoSeries([g for  g in world[&#39;geometry&#39;]])
+
+    # rotate the world
+    wgs2 = wgs.rotate(180, origin = (0,0), use_radians=False)
+
+    world[&#39;geometry&#39;] = wgs2
+
+    world[(world[&#39;name&#39;]!=&#39;Antarctica&#39;)&amp;(world[&#39;name&#39;]!=&#39;Australia&#39;)].\
+                 plot(ax=ax, edgecolor=&#39;grey&#39;, facecolor=earth, linewidth=1, alpha=1)
+
+    world[world[&#39;name&#39;]==&#39;Australia&#39;].\
+                 plot(ax=ax, edgecolor=&#39;grey&#39;, facecolor=&#39;red&#39;, linewidth=1, alpha=1)=1)
+</pre></div>
+
+
+<p><img alt="GeoPandas World Map No Australia" src="../images/geopandas04.png"></p>
+<p>Here, we create a GeoSeries as before, rotate it as before, but this time we store it back into the GeoDataFrame.  We them use Pandas
+filtering to plot the rest of the world in a light color, and then Australia in a more vivid hue.  There is a subtle point in here;
+the indexes of the GeoSeries stored back into the GeoDataFrame, and the indexes of the GeoDataFrame must match for the 
+<code>world['geometry'] = wgs2</code> assignment to work.  If you have a view into a GeoDataFrame, you may have to do a <code>copy(deep=True)</code>, and then a <code>reset_index()</code>
+on the GeoDataFrame before you assign the GeoSeries back in.  Examples are shown below.</p>
+<h2>Sliding Maps</h2>
+<p>As an extension of the map above, we now slide parts around to center Australia.</p>
+<p>In the snippet below, we read the world shapes, perform some Pandas filtering, and create a new GeoDataFrame (<code>world2</code>) with a reset index.</p>
+<div class="highlight"><pre><span></span>    world = gpd.read_file(gpd.datasets.get_path(&#39;naturalearth_lowres&#39;))
+    world2 = world[(world.name != &quot;Antarctica&quot;) &amp; (world.name != &quot;Fr. S. Antarctic Lands&quot;)].copy(deep=True)
+    world2.reset_index(inplace=True)
+</pre></div>
+
+
+<p>Then we create a GeoSeries from the GeoDataFrame, and rotate it by 180 degrees, and store it back in the <code>world2</code> object.</p>
+<div class="highlight"><pre><span></span>    # ------------- flip world
+
+    # create a GeoSeries from the GeoDataFrame
+    wgs = gpd.GeoSeries([g for  g in world2[&#39;geometry&#39;]])
+
+    # rotate 
+    wgs2 = wgs.rotate(180, origin = (0,0), use_radians=False)
+    # update the world geometry
+    world2[&#39;geometry&#39;] = wgs2
+</pre></div>
+
+
+<p>We create two clipping boxes, to allow the globe to be divided into two parts, that we will shift around.  For each, we create a Polygon,
+then a GeoSeries, then a GeoDataFrame.</p>
+<div class="highlight"><pre><span></span>    # clip the world data to the clipper box
+    polys1 = gpd.GeoSeries([Polygon([(-180,-90), (30,-90), (30,90), (-180,90)])])
+    clipper1 = gpd.GeoDataFrame({&#39;geometry&#39;: polys1, &#39;df1&#39;:[1]})
+    polys2 = gpd.GeoSeries([Polygon([(30,-90), (180,-90), (180,90), (30,90)])])
+    clipper2 = gpd.GeoDataFrame({&#39;geometry&#39;: polys2, &#39;df1&#39;:[1]})
+</pre></div>
+
+
+<p>The GeoPandas <code>overlay</code> method is very powerful.  Here we create two new GeoDataFrames for the two pieces of the world,
+extract the two corresponding GeoSeries, shift each one to effectively rotate the globe, and then store them back into the GeoDataFrames.</p>
+<div class="highlight"><pre><span></span>    # clip part 1 and part 2
+    pt1_df = gpd.overlay(clipper1, world2, how=&#39;intersection&#39;)
+    pt2_df = gpd.overlay(clipper2, world2, how=&#39;intersection&#39;)
+
+
+    # create a GeoSeries from each GeoDataFrame
+    wgs1 = gpd.GeoSeries([g for  g in pt1_df[&#39;geometry&#39;]])
+    wgs2 = gpd.GeoSeries([g for  g in pt2_df[&#39;geometry&#39;]])
+
+    # left hand side wraps around to rhs
+    gs1 = wgs1.translate(xoff=150)
+    # move rhs leftwards
+    gs2 = wgs2.translate(xoff=-210)
+
+    pt1_df[&#39;geometry&#39;] = gs1 
+    pt2_df[&#39;geometry&#39;] = gs2
+</pre></div>
+
+
+<p>Now we use the Pandas ability to 'stack' DataFrames with the <code>concat()</code> method.  Then, we do one plot in a subdued color, and another with a selection
+(<code>name = 'Australia'</code>) in red.</p>
+<div class="highlight"><pre><span></span>    both = pd.concat([pt1_df, pt2_df])
+    both.plot(ax=ax,  edgecolor=&#39;grey&#39;, facecolor=earth, linewidth=1, alpha=1)
+    both[both[&#39;name&#39;]==&#39;Australia&#39;].plot(ax=ax,  edgecolor=&#39;grey&#39;, facecolor=&#39;red&#39;, linewidth=1, alpha=1)
+
+    plt.show()
+</pre></div>
+
+
+<p><img alt="GeoPandas World Map No Australia" src="../images/geopandas05.png"></p>
+<h2>Strip Maps</h2>
+<p>So, let us put all this together, and make a strip map of the Queensland east coast.  We choose to plot some
+additional data on top of the strip map (as an example of how it can be used as an underlay).  In this case we choose the cities
+database that comes from Natural Earth.  We could do some filtering, but we just plot each and very city (well, populated place)
+that we have in our clipping box.  It makes a nice example, of how Point data (as opposed to Polygon data) sometimes needs
+different treatment.</p>
+<p>First up, we have our usual matplotlib boilerplate.  Because we will be creating a non-standard projection (CRS) of our own,
+putting on the ticklabels would be misleading - so turn them off.  If we were feeling energetic, we could manually plot
+the lines of latitude and longitude, but in this case it would be chart-junk.</p>
+<div class="highlight"><pre><span></span>    fig, ax = plt.subplots(figsize=(4, 21))
+
+    #  turn off lat lon tick labels
+    #  have a rotated axis doesn&#39;t make much sense
+    ax.yaxis.set_ticks_position(&#39;none&#39;)
+    ax.xaxis.set_ticks_position(&#39;none&#39;)
+    ax.tick_params(labelbottom=&#39;off&#39;, labeltop=&#39;off&#39;, labelleft=&#39;off&#39;, labelright=&#39;off&#39; ,\
+                    bottom=&#39;off&#39;, top=&#39;off&#39;, left=&#39;off&#39;, right=&#39;off&#39; )
+
+
+    # define default colors
+    water = &#39;lightskyblue&#39;
+    earth = &#39;cornsilk&#39;
+</pre></div>
+
+
+<p>Because we are zoomed in to a 4 degree by 21 degree patch, the coarse coastline is a little too coarse. Thus we read
+the more detailed 1:50Million dataset downloaded from Natural Earth.</p>
+<div class="highlight"><pre><span></span>    # read coarse coastline data
+    #world = gpd.read_file(gpd.datasets.get_path(&#39;naturalearth_lowres&#39;))
+
+    # activate below for more detailed coastline
+    world = gpd.read_file(&#39;../data/shapefiles/ne_50m_land.shp&#39;)
+</pre></div>
+
+
+<p>Next we define a clipping box in latitude / longitude space, 4 degrees wide, 21 degrees high, with the lower left corner anchored
+at latitude 29 South, longitude 151 East. We then rotate the clipping box by 30 degrees (anti-clockwise). Finally we set the limits of the plot,
+based upon our clipping box.</p>
+<div class="highlight"><pre><span></span>    # angle of QLD Pacific cost line
+    angle_d = 30
+    angle = angle_d*(math.pi/180)
+
+    # define bounding box for filtering operations
+    lon0 = 151
+    lat0 = -29
+
+    lon_width = 4
+    lat_height = 21
+
+
+    # rotate the bounding box to match the coastline slope
+    x0 = lon0
+    y0 = lat0
+
+    x1 = lon0 + math.cos(angle)*lon_width
+    y1 = lat0 + math.sin(angle)*lon_width
+
+    x2 = x1 - math.sin(angle)*lat_height
+    y2 = y1 + math.cos(angle)*lat_height
+
+    x3 = x2 - math.cos(angle)*lon_width
+    y3 = y2 - math.sin(angle)*lon_width
+
+    # set the Axes plot limits to the bounding box
+    ax.set_xlim([lon0, lon0+lon_width])
+    ax.set_ylim([lat0, lat0+lat_height])
+</pre></div>
+
+
+<p>We now define a Polygon, and the a GeoSeries, and then a GeoDataFrame, based on the clipping box. All this so we
+can use the <code>overlay( ... how='intersection' )</code> method, to get the coastline that appears in our clipping box.</p>
+<p>We then rotate the GeoSeries for clipping box so that the box is vertical, and rotate the clipped coastline GeoSeries to match.  We
+then update the GeoDataFrames with the rotated geometric data, and plot both.  The clipping box is given the <code>water</code> color
+as a <code>facecolor</code>.  This avoids having to download the Oceans database, and clipping that (which can be quite slow). </p>
+<div class="highlight"><pre><span></span>    # ------------------- plot coastlines ------------
+
+    # clip the world data to the clipper box
+
+    # box_poly will be used to clip points via shapely
+    # polys1 will be used to crtae a GeoDataFrame clipper1 for polygon clipping
+    box_poly = Polygon([(x0, y0), (x1, y1), (x2, y2), (x3, y3)])
+    polys1 = gpd.GeoSeries([Polygon([(x0, y0), (x1, y1), (x2, y2), (x3, y3)])])
+    clipper1 = gpd.GeoDataFrame({&#39;geometry&#39;: polys1, &#39;df1&#39;:[1]})
+
+    # clip cooastline
+    coast_df = gpd.overlay(clipper1, world, how=&#39;intersection&#39;)
+
+    # rotate coast
+    coast_gs = gpd.GeoSeries([g for  g in coast_df[&#39;geometry&#39;]])
+    coast_gs2 = coast_gs.rotate(-angle_d, origin = (x0,y0), use_radians=False)
+
+    # rotate clipping box
+    clipper1_gs = gpd.GeoSeries([g for  g in clipper1[&#39;geometry&#39;]])
+    clipper1_gs2 = clipper1_gs.rotate(-angle_d, origin = (x0,y0), use_radians=False)
+
+    # store back into GeoDataFrames
+    coast_df[&#39;geometry&#39;] = pd.Series([g for g in coast_gs2])
+    clipper1[&#39;geometry&#39;] = pd.Series([g for g in clipper1_gs2])
+
+
+    # plot the two data frames, filling clipping box with water
+    clipper1.plot(ax=ax, facecolor=water)
+    coast_df.plot(ax=ax, edgecolor=&#39;grey&#39;, facecolor=earth, linewidth=1, alpha=1)
+</pre></div>
+
+
+<p>Now we read cities (well, populated places) data.  The <code>overlay</code> method only seems to work for Polygon shapes,
+so we create a logical mask, that selects all cities that are contained in our clipping box.  We then make a deep copy
+of this data into a new GeoDataFrame, and reset the index.</p>
+<p>We the rotate the GeoSeries for the cities GeoDataFrame to match our coastline rotation, and store it back into the GeoDataFrame.
+Then, for each city, we plot a marker, and then we get its <code>x,y</code> coordinates and name, and draw text.</p>
+<p>Finally, we draw a North arrow, near the lower left corner (about the only place it is accurate, given the home-brew projection
+we have defined)</p>
+<div class="highlight"><pre><span></span>    # ------------------- plot cities ------------
+    cities = gpd.read_file(&#39;../data/shapefiles/ne_10m_populated_places_simple.shp&#39;)
+
+    # clip cities; use Shapely, as GeoPandas &#39;overlay() only works for polygons
+    mask = [box_poly.contains(g) for g in cities[&#39;geometry&#39;]]
+    my_cities = cities[mask].copy(deep=True)
+    # necessary so can assign GeoSeries back to GeoDataFrame later
+    my_cities.reset_index(inplace=True)
+
+    # create GeoSeries from cities locations out of GeoDataFrame
+    c_gs = gpd.GeoSeries([g for g in my_cities[&#39;geometry&#39;] ])
+
+    # rotate the GeoSeries
+    c_gs2 = c_gs.rotate(-angle_d, origin = (x0,y0), use_radians=False)
+
+    # update the &#39;geometry&#39; column of the original GeoPandas data frame
+    my_cities[&#39;geometry&#39;] = pd.Series([g for g in c_gs2])
+
+    # plot the GeoSeries
+    my_cities.plot(ax=ax, marker=&#39;o&#39;, color=&#39;red&#39;, )
+
+    for xy, n in zip(my_cities[&#39;geometry&#39;], my_cities[&#39;name&#39;]):
+        ax.text(xy.x, xy.y, s=n, fontsize=8)
+    #end for
+
+    # show northy arrow
+    # need a font that support enough Unicode to draw up arrow. need space after Unicode to allow wide char to be drawm?
+    ax.text(x0+0.5, y0+0.5,u&#39;\u25B2 \nN &#39;, ha=&#39;center&#39;, fontsize=30, family=&#39;Arial&#39;, rotation = -angle_d)
+
+    plt.show()
+</pre></div>
+
+
+<p><img alt="GeoPandas World Map No Australia" src="../images/geopandas06.png"></p>
+<h2>Imports</h2>
+<p>Just for completeness, here are the imports from the Notebook that contains the code above
+(some are used only to support print-outs that define the environment for reproducibility purposes) </p>
+<div class="highlight"><pre><span></span>    <span class="c1"># all imports should go here</span>
+
+    <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="kn">import</span> <span class="nn">subprocess</span>
+    <span class="kn">import</span> <span class="nn">datetime</span>
+    <span class="kn">import</span> <span class="nn">platform</span>
+    <span class="kn">import</span> <span class="nn">datetime</span>
+
+    <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="kn">as</span> <span class="nn">mpl</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+    <span class="kn">from</span> <span class="nn">mpl_toolkits.basemap</span> <span class="kn">import</span> <span class="n">Basemap</span>
+
+    <span class="kn">import</span> <span class="nn">geopandas</span> <span class="kn">as</span> <span class="nn">gpd</span>
+    <span class="kn">import</span> <span class="nn">shapely</span>
+    <span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Polygon</span>
+
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+    <span class="kn">from</span> <span class="nn">matplotlib.collections</span> <span class="kn">import</span> <span class="n">PatchCollection</span>
+    <span class="kn">from</span> <span class="nn">descartes</span> <span class="kn">import</span> <span class="n">PolygonPatch</span>
+
+    <span class="kn">import</span> <span class="nn">math</span>
+</pre></div>
+
+
+<p>The link to the Notebook that has all the code is coming soon.</p> 
+	<a class="btn btn-mini xsmall" href="../maprotation.html">
+          <i class="icon-comment"></i> Comment </a>
+	<hr />
+      </div>
+      
+    </div>
+    
+<div class="pagination">
+<ul>
+    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+
+    <li class="active"><a href="../tag/geopandas.html">1</a></li>
+
+    <li class="next disabled"><a href="#">&rarr; Next</a></li>
+
+</ul>
+</div>
+
+ 
+  
+        </div>
+        
+        
+    </div>     </div> </div>
+
+<!--footer-->
+<div class="container">
+  <div class="well" style="background-color: #E9EFF6">
+    <div id="blog-footer">
+      <div class="row-fluid">
+	<div class="social span2" align="center" id="socialist">
+	  <ul class="nav nav-list">
+	    <li class="nav-header">
+	      Social
+	    </li>
+	    <li><a href="https://www.linkedin.com/in/donrcameron/"><i class="icon-Linkedin Page" style="color: #1f334b"></i>Linkedin Page</a></li>
+	    <li><a href="https://www.flickr.com/photos/donrcameron/"><i class="icon-flickr Page" style="color: #1f334b"></i>flickr Page</a></li>
+            <a href="mailto:donrcameron@gmail.com"><i class="icon-envelope" style="color: #1f334b" ></i> email</a>
+
+	  </ul>
+	</div>
+<div class="span8" id="colophon">
+  <h2 align="center">About</h2>
+  <p align="justify"> 
+
+This series of blog posts is provided as a resource by 
+
+net-analysis.com - PO Box 857, Coolum Beach, QLD 4573, AUSTRALIA. ABN 19469649963.
+
+Ring 0413 208 746, or visit the company website:
+
+http://www.net-analysis.com.   It documents a learning process, and hence owes a debt of gratitude to all the people who have documented their own experiences on the web: the list is too large to enumerate.
+ </p>
+</div>
+        <div class="links span2" align="center">
+          <ul class="nav nav-list">
+            <li class="nav-header"> 
+              Links
+            </li>
+            
+            <li><a href="http://getpelican.com/">Pelican</a></li>
+            <li><a href="http://python.org/">Python.org</a></li>
+          </ul>
+        </div>
+	<div class="site-nav span2" align="center">
+          <ul class="nav nav-list" id="site-links">
+            <li class="nav-header"> 
+              Site
+            </li>
+            <li><a href=".."><i class="icon-home" style="color: #1f334b">
+                </i>Home</a></li>
+            <li><a href="../archives.html"><i class="icon-list" style="color: #1f334b">
+                </i>Archives</a></li>
+	    <li><a href="../tags.html"><i class="icon-tags" style="color: #1f334b">
+                </i>Tags</a></li>
+	    
+	  </ul>
+
+        </div>
+
+      </div> <!--end of fluid row-->
+    </div> <!--end of blog-footer-->
+    <hr />
+    <p align="center"><a href="..">net-analysis.com Data Analysis Blog</a>
+      &copy; Don Cameron
+    Powered by <a href="https://github.com/getpelican/pelican">Pelican</a> and
+        <a href="https://twitter.github.com/bootstrap">Twitter Bootstrap</a>. 
+        Icons by <a href="https://fortawesome.github.com/Font-Awesome">Font Awesome</a> and 
+        <a href="https://gregoryloucas.github.com/Font-Awesome-More">Font Awesome More</a></p>
+
+  </div> <!--end of well -->
+</div> <!--end of container -->
+
+<!--/footer-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+
+
+
+</body>
+</html>

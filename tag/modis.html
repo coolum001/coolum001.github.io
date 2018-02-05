@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="english">
+<head>
+
+    <meta charset="utf-8">
+    <title>net-analysis.com Data Analysis Blog <small>modis</small></title>
+    <meta name="description" content="">
+    <meta name="author" content="Don Cameron">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="../theme/html5.js"></script>
+    <![endif]-->
+
+
+    <!-- Le styles -->
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap.no-icons.min.css" rel="stylesheet">
+    <link href="../theme/local.css" rel="stylesheet">
+    <link href="../theme/pygments.css" rel="stylesheet">
+    <link href="../theme/font-awesome.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Gudea:400,400italic|Alegreya+SC' rel='stylesheet' type='text/css'>
+
+</head>
+
+<body>
+<header class="blog-header">
+  <div class="container">
+    <div class="row-fluid">
+      <div class="span9">
+	<a href=".." class="brand">net-analysis.com Data Analysis Blog</a>
+      </div>
+
+      <div class="span3" id="blog-nav">
+	<ul class="nav nav-pills pull-right">
+	    <li >
+	      <a href="../category/basemap.html ">Basemap</a>
+	    <li >
+	      <a href="../category/cartopy.html ">Cartopy</a>
+	    <li >
+	      <a href="../category/geopandas.html ">GeoPandas</a>
+	    <li >
+	      <a href="../category/introduction.html ">Introduction</a>
+	    <li >
+	      <a href="../category/landsat.html ">LANDSAT</a>
+	    <li >
+	      <a href="../category/visualizations.html ">Visualizations</a>
+	</ul>
+      </div>
+    </div> <!-- End of fluid row-->
+  </div>   <!-- End of Container-->
+</header>
+    
+<div class="container">
+    <div class="content">
+    <div class="row-fluid">
+
+        <div class="span10">
+        
+
+        
+
+    <div class='row-fluid''>
+        <div class="article-title span9">
+            <a href="../cartopyimages.html"><h1>Cartopy and Satellite Imaging</h1></a>
+        </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span2">
+<p>Wed 22 February 2017 </p>
+
+<p style="text-align: left;">
+Filed under <a href="../category/cartopy.html">Cartopy</a>
+</p>
+<p style="text-align: left;">
+ 
+    Tags <a href="../tag/python.html">python</a> <a href="../tag/cartopy.html">cartopy</a> <a href="../tag/satellite.html">satellite</a> <a href="../tag/modis.html">modis</a> </p>
+<p>
+</p>
+      </div>
+      <div class="article-content span8">
+	<h1>Cartopy and Satellite Images</h1>
+<p>So recently we had a bushfire near our village.  Not a really big deal for us, but it threatened an industrial estate,
+and homes in a suburb a bit up the coast.  It took the fire services a few days to put it completely out.  From
+our street it looked like this:</p>
+<p><img alt="Bushfire" src="../images/bushfire.jpg"></p>
+<p>So adhering to the motto, 'Satellite pics, or it didn't happen', I investigated to see if our burn could be seen from space.</p>
+<h2>Cartopy and NASA</h2>
+<p>Now, as I said before, one of the strengths of Cartopy is the easy integration of image data.  Cartopy support access 
+to Web Map Tile Servers;  these are servers that take a URL request, and give youa map tile for you to use.  Usually, the area, date and time,
+and content (including zoom level) are encoded in the URL in some way.</p>
+<p>The service we will use is provided by NASA  (a big shoutout to the American taxpayer),
+and serves data captured by MODIS (or Moderate Resolution Imaging Spectroradiometer).
+The <em>Moderate Resolution</em> means that the pixel size is about 200 metres on the ground (at best), but this service does have the
+advantage of being almost real time.  Read about it <a href="https://modis.gsfc.nasa.gov/about/">here</a>.</p>
+<h2>The Code</h2>
+<h3>Imports</h3>
+<p>First, my set of standard Cartopy imports (not all of which will be used in the code fragments below).</p>
+<div class="highlight"><pre><span></span>    <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+    <span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="kn">as</span> <span class="nn">ccrs</span>
+    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">OSM</span>
+    <span class="kn">import</span> <span class="nn">cartopy.feature</span> <span class="kn">as</span> <span class="nn">cfeature</span>
+    <span class="kn">from</span> <span class="nn">cartopy.io</span> <span class="kn">import</span> <span class="n">shapereader</span>
+    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">StamenTerrain</span>
+    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">GoogleTiles</span>
+    <span class="kn">from</span> <span class="nn">owslib.wmts</span> <span class="kn">import</span> <span class="n">WebMapTileService</span>
+
+    <span class="kn">from</span> <span class="nn">matplotlib.path</span> <span class="kn">import</span> <span class="n">Path</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.patheffects</span> <span class="kn">as</span> <span class="nn">PathEffects</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="kn">as</span> <span class="nn">mpatches</span>
+
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</pre></div>
+
+
+<h3>Defining the WMTS we want</h3>
+<p>The code looks like:</p>
+<div class="highlight"><pre><span></span>    # URL of NASA GIBS
+    URL = &#39;http://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi&#39;
+    wmts = WebMapTileService(URL)
+
+    # Layers for MODIS true color and snow RGB
+    layers = [&#39;MODIS_Terra_SurfaceReflectance_Bands143&#39;,
+              &#39;MODIS_Terra_CorrectedReflectance_Bands367&#39;]
+
+    date_str = &#39;2017-02-12&#39;
+</pre></div>
+
+
+<p>The details are </p>
+<ul>
+<li>
+<p>We create a Web Map Tile Service instance, giving it the URL of the NASA server.  The <code>epsg4326</code>  is code number
+for the projection of the data served back to us, and it's our old friend, Plate Carree
+(a.k.a. Geographic, Equidistant Cylindrical, Equirectangular).  </p>
+</li>
+<li>
+<p>MODIS data comes in two layers, and layers[0]
+will be the one we want (close to false color); layer[1] is more for professional remote sensing, and not just gawking at the scenery
+as we will be doing.</p>
+</li>
+<li>
+<p>Finally, we set up a date string;  in this case I was asking for an image just after the fire.  Note the <code>best</code> in the URL?
+NASA knows that an image 100% of clouds only is probably not very interesting, and in this case, we are asking
+for the 'best' image.  I assume NASA algorithms have been pretty fine-tuned by now.  As I understand it, this does mean that the date is an
+indicative date, and we might not get an image exactly on the date requested.</p>
+</li>
+</ul>
+<h3>Defining Projections Used</h3>
+<div class="highlight"><pre><span></span>    # Plot setup
+    plot_CRS = ccrs.Mercator()
+    geodetic_CRS = ccrs.Geodetic()
+</pre></div>
+
+
+<p>We will be plotting in <code>Mercator</code>, but our bounding boxes, etc, will be specified in lat/lon,
+so for convenience we need to create a projection for these (<code>Geodetic</code>).  We create two Cordinate Reference Systems
+for later use.</p>
+<h3>Set up bounding box</h3>
+<div class="highlight"><pre><span></span>    lat0 = -27
+    lat1 = -26.4
+    lon0 = 152.9
+    lon1 = 153.5
+
+    x0, y0 = plot_CRS.transform_point(lon0, lat0, geodetic_CRS)
+    x1, y1 = plot_CRS.transform_point(lon1, lat1, geodetic_CRS)
+    ysize = 8
+    xsize = 2 * ysize * (x1 - x0) / (y1 - y0)
+    fig = plt.figure(figsize=(xsize, ysize), dpi=100)
+</pre></div>
+
+
+<p>The <code>lat0</code>, <code>lon0</code>, etc are the lat/lons of the bounding box I want;  I have to convert these using the CRS objects created
+earlier.  Finally, the transformed Mercator coordinates are used to set the aspect ratio of the figure we want.</p>
+<h3>Add the satellite image</h3>
+<div class="highlight"><pre><span></span>    ax = plt.axes([0, 0, 1, 1], projection=plot_CRS)
+    ax.set_xlim((x0, x1))
+    ax.set_ylim((y0, y1))
+    ax.add_wmts(wmts, layers[0], wmts_kwargs={&#39;time&#39;: date_str})
+</pre></div>
+
+
+<p>We create an Axes object (notionally a square of side 1), but by specifying a projection, we drape the mantle of
+Cartopy across it.  We set the X (longitude) and Y (latitude) limits, using the Mercator projection values.
+Finally, we request a Map Tile (or Map Tiles - Cartopy handles all that) from the NASA server.  Cartopy munges the requested date, and layer, into the real URL that will be
+used to get the services.</p>
+<h3>Its all about me (or my lat/lon)</h3>
+<div class="highlight"><pre><span></span>    home_lat, home_lon = -26.5258277,153.0912987
+    # Add a marker for home
+    plt.plot(home_lon, home_lat, marker=&#39;o&#39;, color=&#39;red&#39;, markersize=5,
+         alpha=0.7, transform=ccrs.Geodetic())
+
+    txt = plt.text(lon0+0.05, lat0+0.05, wmts[layers[0]].title, fontsize=18,
+              color=&#39;wheat&#39;, transform=geodetic_CRS)    
+    txt.set_path_effects([PathEffects.withStroke(linewidth=5,
+                                     foreground=&#39;black&#39;)])
+</pre></div>
+
+
+<p>We specify a home lat/lon (with lots of spurious precision, thanks to Google Earth), plot a red circle, being
+careful to tell Cartopy that these are lat/lon, not Mercator units. </p>
+<p>Then, we write text showing what NASA call the layer they have given us.  We move 3 minutes of arc up and to the right
+of the bottom left corner of the map, write text (again, being careful to tell the underlying Axes object, that the
+start point is lat/lon, not Mercator). Finally, create a black background for the pale text so it will show out,
+regardless of the image color.</p>
+<h3>Show it!</h3>
+<div class="highlight"><pre><span></span>    ax.coastlines(&#39;10m&#39;)
+
+
+    plt.show()
+</pre></div>
+
+
+<p>Throw in some coastlines (that are pretty hard to see against the black ocean), and plot the result.</p>
+<p>And if you look hard, there is indeed a brown mark to the north-west of my home!</p>
+<p><img alt="Bushfire Image from Space" src="../images/modislayer0.png"></p>
+<h2>Conclusion</h2>
+<p>More Cartopy goodness coming soon, including examples of different map tile servers.</p> 
+	<a class="btn btn-mini xsmall" href="../cartopyimages.html">
+          <i class="icon-comment"></i> Comment </a>
+	<hr />
+      </div>
+      
+    </div>
+    
+<div class="pagination">
+<ul>
+    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+
+    <li class="active"><a href="../tag/modis.html">1</a></li>
+
+    <li class="next disabled"><a href="#">&rarr; Next</a></li>
+
+</ul>
+</div>
+
+ 
+  
+        </div>
+        
+        
+    </div>     </div> </div>
+
+<!--footer-->
+<div class="container">
+  <div class="well" style="background-color: #E9EFF6">
+    <div id="blog-footer">
+      <div class="row-fluid">
+	<div class="social span2" align="center" id="socialist">
+	  <ul class="nav nav-list">
+	    <li class="nav-header">
+	      Social
+	    </li>
+	    <li><a href="https://www.linkedin.com/in/donrcameron/"><i class="icon-Linkedin Page" style="color: #1f334b"></i>Linkedin Page</a></li>
+	    <li><a href="https://www.flickr.com/photos/donrcameron/"><i class="icon-flickr Page" style="color: #1f334b"></i>flickr Page</a></li>
+            <a href="mailto:donrcameron@gmail.com"><i class="icon-envelope" style="color: #1f334b" ></i> email</a>
+
+	  </ul>
+	</div>
+<div class="span8" id="colophon">
+  <h2 align="center">About</h2>
+  <p align="justify"> 
+
+This series of blog posts is provided as a resource by 
+
+net-analysis.com - PO Box 857, Coolum Beach, QLD 4573, AUSTRALIA. ABN 19469649963.
+
+Ring 0413 208 746, or visit the company website:
+
+http://www.net-analysis.com.   It documents a learning process, and hence owes a debt of gratitude to all the people who have documented their own experiences on the web: the list is too large to enumerate.
+ </p>
+</div>
+        <div class="links span2" align="center">
+          <ul class="nav nav-list">
+            <li class="nav-header"> 
+              Links
+            </li>
+            
+            <li><a href="http://getpelican.com/">Pelican</a></li>
+            <li><a href="http://python.org/">Python.org</a></li>
+          </ul>
+        </div>
+	<div class="site-nav span2" align="center">
+          <ul class="nav nav-list" id="site-links">
+            <li class="nav-header"> 
+              Site
+            </li>
+            <li><a href=".."><i class="icon-home" style="color: #1f334b">
+                </i>Home</a></li>
+            <li><a href="../archives.html"><i class="icon-list" style="color: #1f334b">
+                </i>Archives</a></li>
+	    <li><a href="../tags.html"><i class="icon-tags" style="color: #1f334b">
+                </i>Tags</a></li>
+	    
+	  </ul>
+
+        </div>
+
+      </div> <!--end of fluid row-->
+    </div> <!--end of blog-footer-->
+    <hr />
+    <p align="center"><a href="..">net-analysis.com Data Analysis Blog</a>
+      &copy; Don Cameron
+    Powered by <a href="https://github.com/getpelican/pelican">Pelican</a> and
+        <a href="https://twitter.github.com/bootstrap">Twitter Bootstrap</a>. 
+        Icons by <a href="https://fortawesome.github.com/Font-Awesome">Font Awesome</a> and 
+        <a href="https://gregoryloucas.github.com/Font-Awesome-More">Font Awesome More</a></p>
+
+  </div> <!--end of well -->
+</div> <!--end of container -->
+
+<!--/footer-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+
+
+
+</body>
+</html>
