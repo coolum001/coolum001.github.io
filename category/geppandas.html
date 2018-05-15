@@ -3,7 +3,7 @@
 <head>
 
     <meta charset="utf-8">
-    <title>net-analysis.com Data Analysis Blog <small>GeoPandas</small></title>
+    <title>net-analysis.com Data Analysis Blog <small>GepPandas</small></title>
     <meta name="description" content="">
     <meta name="author" content="Don Cameron">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,8 +36,10 @@
 	      <a href="../category/basemap.html ">Basemap</a>
 	    <li >
 	      <a href="../category/cartopy.html ">Cartopy</a>
-	    <li  class="active" >
+	    <li >
 	      <a href="../category/geopandas.html ">GeoPandas</a>
+	    <li  class="active" >
+	      <a href="../category/geppandas.html ">GepPandas</a>
 	    <li >
 	      <a href="../category/introduction.html ">Introduction</a>
 	    <li >
@@ -69,7 +71,7 @@
 <p>Mon 14 May 2018 </p>
 
 <p style="text-align: left;">
-Filed under <a href="../category/geopandas.html">GeoPandas</a>
+Filed under <a href="../category/geppandas.html">GepPandas</a>
 </p>
 <p style="text-align: left;">
  
@@ -245,7 +247,7 @@ captured in the post Code boundary database.</p>
 </table>
 <h2>Dataframe Exploration</h2>
 <p>So we have the PostCodes we want, and the Median taxable income earned by the taxpayers who live in that PostCode.
-Note that the income could have earned by activities in a PostCode different from where the taxpayer lives, but I have chosen to ignore this.</p>
+Note that the income could have earned by activities in a PsotCode different from where the taxpayer lives, but I have chosen to ignore this.</p>
 <p>So lets do a bit more data exploration, finding the count of unique PostCode names in each dataframe (<code>atodf</code> holding tax data, and <code>goodpc</code>  holding PostCode boundary data).</p>
 <div class="highlight"><pre><span></span>    len(atodf[&#39;Postcode2&#39;].unique())
 
@@ -298,7 +300,7 @@ Note that the income could have earned by activities in a PostCode different fro
 </pre></div>
 
 
-<p>And the PostCodes the Bureau of Stats knows, that don't appear in the Tax Office spreadsheet:</p>
+<p>And the PostCodes the Bureau of Stats knows that don't appear in the Tax Office spreadsheet:</p>
 <div class="highlight"><pre><span></span>    print(&#39; in abs, but not ato&#39;, diff2)
 
 
@@ -309,7 +311,7 @@ Note that the income could have earned by activities in a PostCode different fro
 
 <p>In fact, there are 322 PostCodes in the latter set.</p>
 <h2>Explanation</h2>
-<p>In fact, poking into the websites of both Government agencies, reasons emerge for the differences.  First of all, some of the PostCodes known to the ATO could have been created after 2011 (the date of the ABS data).</p>
+<p>In fact, poking into the websites of both Government agencies, reasons emerge for the differences.</p>
 <p>The ATO spreadsheet excludes PostCodes with so few people, that data privacy issues preclude including that data.  As we will see, this means that some PostCodes for remote areas (<em>very</em> sparsely settled) will have no income data.</p>
 <p>Further, exploring the PostCode documentation reveals that the Post Office can create PostCodes to support more efficient sorting of mail (e.g. in response to a "mail this card to this address for a free gift" style advertising campaign).  No-one thinks that they actually live in these PostCodes, so these PostCodes will also have no income data.</p>
 <h2>Dataframe Merging</h2>
@@ -438,44 +440,11 @@ and then overwrite this with our PostCode shaded by income quantile.  We just sh
       
     </div>
     
-
- 
-        
-
-
-
-    <div class='row-fluid'>
-      <div class='article-title span9'> 
-        <a href="../maprotation.html"><h1>Introduction to GeoPandas</h1></a>
-      </div>
-    </div>
-    <div class="row-fluid">
-      <div class="span2">
-<p>Sun 26 February 2017 </p>
-
-<p style="text-align: left;">
-Filed under <a href="../category/geopandas.html">GeoPandas</a>
-</p>
-<p style="text-align: left;">
- 
-    Tags <a href="../tag/geopandas.html">geopandas</a> <a href="../tag/python.html">python</a> <a href="../tag/shapefile.html">shapefile</a> <a href="../tag/stripmap.html">stripmap</a> </p>
-<p>
-</p>
-      </div>
-      <div class="summary span8">
-	<p>Map Rotations with GeoPandas</p> 
-	<a class="btn btn-mini xsmall" href="../maprotation.html">
-          <i class="icon-plus-sign"></i> Read More </a>
-	<hr />
-      </div>
-      
-    </div>
-      
 <div class="pagination">
 <ul>
     <li class="prev disabled"><a href="#">&larr; Previous</a></li>
 
-    <li class="active"><a href="../category/geopandas.html">1</a></li>
+    <li class="active"><a href="../category/geppandas.html">1</a></li>
 
     <li class="next disabled"><a href="#">&rarr; Next</a></li>
 
