@@ -3,21 +3,21 @@
 <head>
 
     <meta charset="utf-8">
-    <title>net-analysis.com Data Analysis Blog <small>python</small></title>
+    <title>Road Trip North - net-analysis.com Data Analysis Blog</title>
     <meta name="description" content="">
     <meta name="author" content="Don Cameron">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
-    <script src="../theme/html5.js"></script>
+    <script src="./theme/html5.js"></script>
     <![endif]-->
 
 
     <!-- Le styles -->
     <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap.no-icons.min.css" rel="stylesheet">
-    <link href="../theme/local.css" rel="stylesheet">
-    <link href="../theme/pygments.css" rel="stylesheet">
-    <link href="../theme/font-awesome.css" rel="stylesheet">
+    <link href="./theme/local.css" rel="stylesheet">
+    <link href="./theme/pygments.css" rel="stylesheet">
+    <link href="./theme/font-awesome.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Gudea:400,400italic|Alegreya+SC' rel='stylesheet' type='text/css'>
 
 </head>
@@ -27,23 +27,23 @@
   <div class="container">
     <div class="row-fluid">
       <div class="span9">
-	<a href=".." class="brand">net-analysis.com Data Analysis Blog</a>
+	<a href="." class="brand">net-analysis.com Data Analysis Blog</a>
       </div>
 
       <div class="span3" id="blog-nav">
 	<ul class="nav nav-pills pull-right">
 	    <li >
-	      <a href="../category/basemap.html ">Basemap</a>
+	      <a href="./category/basemap.html ">Basemap</a>
 	    <li >
-	      <a href="../category/cartopy.html ">Cartopy</a>
+	      <a href="./category/cartopy.html ">Cartopy</a>
+	    <li  class="active" >
+	      <a href="./category/geopandas.html ">GeoPandas</a>
 	    <li >
-	      <a href="../category/geopandas.html ">GeoPandas</a>
+	      <a href="./category/introduction.html ">Introduction</a>
 	    <li >
-	      <a href="../category/introduction.html ">Introduction</a>
+	      <a href="./category/landsat.html ">LANDSAT</a>
 	    <li >
-	      <a href="../category/landsat.html ">LANDSAT</a>
-	    <li >
-	      <a href="../category/visualizations.html ">Visualizations</a>
+	      <a href="./category/visualizations.html ">Visualizations</a>
 	</ul>
       </div>
     </div> <!-- End of fluid row-->
@@ -55,29 +55,27 @@
     <div class="row-fluid">
 
         <div class="span10">
-        
-
-        
-
-    <div class='row-fluid''>
-        <div class="article-title span9">
-            <a href="../roadtrip.html"><h1>Road Trip North</h1></a>
-        </div>
-    </div>
+    <div class='article'>
+      <div class="row-fluid">
+           <div class="content-title span9">
+             <h1>Road Trip North</h1>
+           </div>
+      </div>
     <div class="row-fluid">
       <div class="span2">
 <p>Tue 03 July 2018 </p>
 
 <p style="text-align: left;">
-Filed under <a href="../category/geopandas.html">GeoPandas</a>
+Filed under <a href="./category/geopandas.html">GeoPandas</a>
 </p>
 <p style="text-align: left;">
  
-    Tags <a href="../tag/python.html">python</a> <a href="../tag/geopandas.html">geopandas</a> <a href="../tag/altair.html">altair</a> </p>
+    Tags <a href="./tag/python.html">python</a> <a href="./tag/geopandas.html">geopandas</a> <a href="./tag/altair.html">altair</a> </p>
 <p>
 </p>
       </div>
-      <div class="article-content span8">
+      
+      <div class="span8">
 	<h1>Wireless Coverage in North Queensland</h1>
 <h2>Introduction</h2>
 <p>I recently did a road trip from south Queensland to the top of Queensland, all the way to the tip of Cape York, 
@@ -214,7 +212,7 @@ which is Plate Carree (also called Equirectangular).</p>
 
 
 <p>This gives us:</p>
-<p><img alt="QLDMap" src="../images/qld.png"></p>
+<p><img alt="QLDMap" src="./images/qld.png"></p>
 <h2>Plot the Road Trip</h2>
 <p>Now, plot the road trip, with a point for each location, where I was in a vehicle, color coded by day of trip.</p>
 <div class="highlight"><pre><span></span>            gld.plot(ax=ax, 
@@ -233,9 +231,9 @@ which is Plate Carree (also called Equirectangular).</p>
 
 <p>As you can see, the coverage is quite good in South East Queensland, but gets very spotty once you get north.
 The Thursday Island markers record the bus tour of the island, and you can see the side trip to Weipa.</p>
-<p><img alt="CoverageMap" src="../images/coveragemap.png"></p>
+<p><img alt="CoverageMap" src="./images/coveragemap.png"></p>
 <p>If we zoom into the Cape, we get:</p>
-<p><img alt="NorthQldMap" src="../images/nthqld.png"></p>
+<p><img alt="NorthQldMap" src="./images/nthqld.png"></p>
 <h2>Drawing Lines with GeoPandas</h2>
 <p>GeoPandas knows about geometry, so to draw a line show the road trip with GeoPanda, we can't just say 
 'draw a line between these points'.  What we can do is convert the Shapely Points into <strong>LineString</strong>
@@ -258,7 +256,7 @@ in only those days in the return trip.</p>
 </pre></div>
 
 
-<p><img alt="HomewardMap" src="../images/homeward.png"></p>
+<p><img alt="HomewardMap" src="./images/homeward.png"></p>
 <h2>Conclusion</h2>
 <p>For completeness, here are the imports for this Jupyter Notebook 
 (not all are used in the code fragments above, as some as for producing output to support reproducability).</p>
@@ -282,129 +280,15 @@ in only those days in the return trip.</p>
             <span class="kn">import</span>  <span class="nn">cartopy</span>
             <span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="kn">as</span> <span class="nn">ccrs</span>
             <span class="kn">import</span> <span class="nn">cartopy.feature</span> <span class="kn">as</span> <span class="nn">cfeature</span>
-</pre></div> 
-	<a class="btn btn-mini xsmall" href="../roadtrip.html">
-          <i class="icon-comment"></i> Comment </a>
+</pre></div>
 	<hr />
       </div>
-      
     </div>
+    <div class="span10">
+      <h3>Comments</h3>
     
-
- 
-        
-
-
-
-    <div class='row-fluid'>
-      <div class='article-title span9'> 
-        <a href="../incomemap.html"><h1>GeoPandas and the Wealth of Nations</h1></a>
-      </div>
+    </div>  
     </div>
-    <div class="row-fluid">
-      <div class="span2">
-<p>Mon 14 May 2018 </p>
-
-<p style="text-align: left;">
-Filed under <a href="../category/geopandas.html">GeoPandas</a>
-</p>
-<p style="text-align: left;">
- 
-    Tags <a href="../tag/python.html">python</a> <a href="../tag/geopandas.html">geopandas</a> <a href="../tag/choropleth.html">choropleth</a> <a href="../tag/shapefile.html">shapefile</a> </p>
-<p>
-</p>
-      </div>
-      <div class="summary span8">
-	<p>Using GeoPandas plot PostCode incomes</p> 
-	<a class="btn btn-mini xsmall" href="../incomemap.html">
-          <i class="icon-plus-sign"></i> Read More </a>
-	<hr />
-      </div>
-      
-    </div>
-      
-
- 
-        
-
-
-
-    <div class='row-fluid'>
-      <div class='article-title span9'> 
-        <a href="../landsat2.html"><h1>LANDSAT Color Image Processing</h1></a>
-      </div>
-    </div>
-    <div class="row-fluid">
-      <div class="span2">
-<p>Wed 05 April 2017 </p>
-
-<p style="text-align: left;">
-Filed under <a href="../category/landsat.html">LANDSAT</a>
-</p>
-<p style="text-align: left;">
- 
-    Tags <a href="../tag/python.html">python</a> <a href="../tag/cartopy.html">cartopy</a> <a href="../tag/landsat.html">landsat</a> <a href="../tag/satellite.html">satellite</a> </p>
-<p>
-</p>
-      </div>
-      <div class="summary span8">
-	<p>LANDSAT color image processing and display</p> 
-	<a class="btn btn-mini xsmall" href="../landsat2.html">
-          <i class="icon-plus-sign"></i> Read More </a>
-	<hr />
-      </div>
-      
-    </div>
-      
-
- 
-        
-
-
-
-    <div class='row-fluid'>
-      <div class='article-title span9'> 
-        <a href="../landsat.html"><h1>LANDSAT Image Processing</h1></a>
-      </div>
-    </div>
-    <div class="row-fluid">
-      <div class="span2">
-<p>Tue 04 April 2017 </p>
-
-<p style="text-align: left;">
-Filed under <a href="../category/landsat.html">LANDSAT</a>
-</p>
-<p style="text-align: left;">
- 
-    Tags <a href="../tag/python.html">python</a> <a href="../tag/cartopy.html">cartopy</a> <a href="../tag/landsat.html">landsat</a> <a href="../tag/satellite.html">satellite</a> </p>
-<p>
-</p>
-      </div>
-      <div class="summary span8">
-	<p>LANDSAT image processing and display</p> 
-	<a class="btn btn-mini xsmall" href="../landsat.html">
-          <i class="icon-plus-sign"></i> Read More </a>
-	<hr />
-      </div>
-      
-    </div>
-      
-<div class="pagination">
-<ul>
-    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
-
-    <li class="active"><a href="../tag/python.html">1</a></li>
-    <li class=""><a href="../tag/python2.html">2</a></li>
-    <li class=""><a href="../tag/python3.html">3</a></li>
-    <li class=""><a href="../tag/python4.html">4</a></li>
-
-    <li class="next"><a href="../tag/python2.html">Next &rarr;</a></li>
-
-</ul>
-</div>
-
- 
-  
         </div>
         
         
@@ -454,11 +338,11 @@ http://www.net-analysis.com.   It documents a learning process, and hence owes a
             <li class="nav-header"> 
               Site
             </li>
-            <li><a href=".."><i class="icon-home" style="color: #1f334b">
+            <li><a href="."><i class="icon-home" style="color: #1f334b">
                 </i>Home</a></li>
-            <li><a href="../archives.html"><i class="icon-list" style="color: #1f334b">
+            <li><a href="./archives.html"><i class="icon-list" style="color: #1f334b">
                 </i>Archives</a></li>
-	    <li><a href="../tags.html"><i class="icon-tags" style="color: #1f334b">
+	    <li><a href="./tags.html"><i class="icon-tags" style="color: #1f334b">
                 </i>Tags</a></li>
 	    
 	  </ul>
@@ -468,7 +352,7 @@ http://www.net-analysis.com.   It documents a learning process, and hence owes a
       </div> <!--end of fluid row-->
     </div> <!--end of blog-footer-->
     <hr />
-    <p align="center"><a href="..">net-analysis.com Data Analysis Blog</a>
+    <p align="center"><a href=".">net-analysis.com Data Analysis Blog</a>
       &copy; Don Cameron
     Powered by <a href="https://github.com/getpelican/pelican">Pelican</a> and
         <a href="https://twitter.github.com/bootstrap">Twitter Bootstrap</a>. 

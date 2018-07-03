@@ -61,8 +61,245 @@
 
     <div class='row-fluid''>
         <div class="article-title span9">
-            <a href="../incomemap.html"><h1>GeoPandas and the Wealth of Nations</h1></a>
+            <a href="../roadtrip.html"><h1>Road Trip North</h1></a>
         </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span2">
+<p>Tue 03 July 2018 </p>
+
+<p style="text-align: left;">
+Filed under <a href="../category/geopandas.html">GeoPandas</a>
+</p>
+<p style="text-align: left;">
+ 
+    Tags <a href="../tag/python.html">python</a> <a href="../tag/geopandas.html">geopandas</a> <a href="../tag/altair.html">altair</a> </p>
+<p>
+</p>
+      </div>
+      <div class="article-content span8">
+	<h1>Wireless Coverage in North Queensland</h1>
+<h2>Introduction</h2>
+<p>I recently did a road trip from south Queensland to the top of Queensland, all the way to the tip of Cape York, 
+with side trips to Weipa and Thursday Island.  One of the facts of life in travelling by road
+in Australia, is that you quickly run out of 4G / 3G wireless coverage.</p>
+<p>I thought I would visualize what the coverage I got on the trip.  Now, if I had been smart about this,
+I could have written a little Android app for my Android phone, that tested for 3G coverage, and logged the
+result, along with the GPS location every 10 minutes or so.  However, I only thought of this little
+project once I got back.</p>
+<p>However, Google to the rescue!  Because I have basically given up on privacy (at least where Google is concerned),
+and because I carry an Android phone, Google has been tracking my location, and guessing what I doing, for years now.
+So, if I am at a location, and Google <strong>doesn't</strong> record it, it's probably because the Wireless coverage wasn't
+available.</p>
+<p>One of the guesses Google makes is whether I am in a vehicle; good enough for me.</p>
+<h2>Processing Google's Location Data</h2>
+<p>Google allows you to retrieve the data it has been collecting about you (just google "google takeout").
+You requests the data type (in this case, location data), and it will mail you a link to a Zip file
+holding the data.</p>
+<p>Processing the data looks like the code below (one caveat: this was done in the context of a Jupyter Notebook,
+so there are lots of incremental steps that could be collapsed.  I also perform a <code>copy()</code> at each
+processing stage as I have been annoyed by the "can't process a slice" error message, 
+and the datasets here are relatively small.)</p>
+<p>First, load the data from the Google file, into a Pandas DataFrame.</p>
+<div class="highlight"><pre><span></span>            loc_data = 
+            &#39;D:\\GoogleLocnData\\Takeout\\Location History\\Location History.json&#39;
+
+            with open(loc_data, &#39;r&#39;) as fh:
+                raw = json.loads(fh.read())
+            #end with
+            ld = pd.DataFrame(raw[&#39;locations&#39;])
+</pre></div>
+
+
+<p>Exclude all records that are missing data.</p>
+<div class="highlight"><pre><span></span>            ld = ld[ld[&#39;activity&#39;].notnull()].copy()
+</pre></div>
+
+
+<p>The Google ActivityType is a List, the first item of which is a Dict; the 'activity' key of this Dict
+gives you a List, the first item of which is a Dict, in which the key 'type' gives us Google's
+guess as to what we are doing.  I only look at the first item in each record.</p>
+<div class="highlight"><pre><span></span>            ld[&#39;ActivityType&#39;] = [ x[0][&#39;activity&#39;][0][&#39;type&#39;] for x in ld[&#39;activity&#39;] ]
+</pre></div>
+
+
+<p>Convert the high precision latitude and longitude integer values to floats.</p>
+<div class="highlight"><pre><span></span>            ld[&#39;latitude&#39;] = ld[&#39;latitudeE7&#39;]/float(1e7)
+            ld[&#39;longtitude&#39;] = ld[&#39;longitudeE7&#39;]/float(1e7)
+</pre></div>
+
+
+<p>Convert millisecond timestamps to date-time values.</p>
+<div class="highlight"><pre><span></span>            ld[&#39;timestampMsFl&#39;] = ld[&#39;timestampMs&#39;].astype(float)
+
+            ld[&#39;timestamp&#39;] = ld[&#39;timestampMsFl&#39;]/1000.0
+
+            ld[&#39;datetime&#39;] = ld[&#39;timestamp&#39;].map(datetime.datetime.fromtimestamp)
+</pre></div>
+
+
+<p>Filter in just those records that cover the road trip.</p>
+<div class="highlight"><pre><span></span>            ld = ld[ld[&#39;timestamp&#39;]&gt;datetime.datetime(2018, 5, 31).timestamp()].copy()
+
+            ld = ld[ld[&#39;timestamp&#39;]&lt;datetime.datetime(2018, 6, 19).timestamp()].copy()
+</pre></div>
+
+
+<p>Filter in just those records for travelling in a vehicle.</p>
+<div class="highlight"><pre><span></span>            ld = ld[ld[&#39;ActivityType&#39;]==&#39;IN_VEHICLE&#39;].copy()
+</pre></div>
+
+
+<p>Create a DayNo column that records the days since the trip started.</p>
+<div class="highlight"><pre><span></span>            ld[&#39;DayNo&#39;] = [x.dayofyear for x in ld[&#39;datetime&#39;] ]
+
+            ld[&#39;DayNo&#39;] = ld[&#39;DayNo&#39;] - 150
+</pre></div>
+
+
+<h2>Conversion to GeoPandas</h2>
+<p>GeoDataFrame need a 'geometry' column, so create one from a Shapely call.</p>
+<div class="highlight"><pre><span></span>            geometry = [Point(xy) for xy in zip(ld[&#39;longtitude&#39;], ld[&#39;latitude&#39;])]
+</pre></div>
+
+
+<p>Now we can create a GeoPandas dataframe; we have to specify the coordinate system we are using,
+which is Plate Carree (also called Equirectangular).</p>
+<div class="highlight"><pre><span></span>            crs = {&#39;init&#39;: &#39;epsg:4326&#39;}
+            gld = gpd.GeoDataFrame(ld, crs=crs, geometry=geometry)
+</pre></div>
+
+
+<h2>Background Map</h2>
+<p>Now, we need a nice looking Cartopy map.</p>
+<div class="highlight"><pre><span></span>            fig = plt.figure(figsize=(10,10))
+</pre></div>
+
+
+<p>Set the map projection, and the area of the world we want displayed.</p>
+<div class="highlight"><pre><span></span>            ax = plt.axes(projection=ccrs.PlateCarree())
+            ax.set_extent((140, 155, -30, -10))
+</pre></div>
+
+
+<p>Add the land and water fills.</p>
+<div class="highlight"><pre><span></span>            ax.add_feature(cartopy.feature.LAND)
+            ax.add_feature(cartopy.feature.OCEAN)
+</pre></div>
+
+
+<p>Add state boundaries and rivers.</p>
+<div class="highlight"><pre><span></span>            # Create a feature for States/Admin 1 regions at 1:10m from Natural Earth
+            states_provinces = cfeature.NaturalEarthFeature(
+                category=&#39;cultural&#39;,
+                name=&#39;admin_1_states_provinces_lines&#39;,
+                scale=&#39;10m&#39;,
+                facecolor=&#39;none&#39;)
+
+            rivers = cfeature.NaturalEarthFeature(
+               category=&#39;physical&#39;,
+               name=&#39;rivers_lake_centerlines&#39;,
+               scale=&#39;10m&#39;,
+               facecolor=&#39;none&#39;)
+
+            ax.add_feature(states_provinces, edgecolor=&#39;gray&#39;)
+            ax.add_feature(rivers, edgecolor=&#39;blue&#39;)
+</pre></div>
+
+
+<p>Add coastlines and gridlines.</p>
+<div class="highlight"><pre><span></span>            ax.coastlines(resolution=&#39;10m&#39;,)
+            ax.gridlines(draw_labels=True, xlocs=[140, 145, 150, 155])
+</pre></div>
+
+
+<p>This gives us:</p>
+<p><img alt="QLDMap" src="../images/qld.png"></p>
+<h2>Plot the Road Trip</h2>
+<p>Now, plot the road trip, with a point for each location, where I was in a vehicle, color coded by day of trip.</p>
+<div class="highlight"><pre><span></span>            gld.plot(ax=ax, 
+                     marker=&#39;o&#39;, 
+                    column=&#39;DayNo&#39;, 
+                    cmap=&#39;rainbow&#39;, 
+                    markersize=20, 
+                    zorder=5, 
+                    legend=True,
+                    categorical=True,
+            )
+
+            ax.set_title(label=&#39;Cape York Road Trip: Wireless Coverage&#39;, loc=&#39;center&#39;, pad=20, )
+</pre></div>
+
+
+<p>As you can see, the coverage is quite good in South East Queensland, but gets very spotty once you get north.
+The Thursday Island markers record the bus tour of the island, and you can see the side trip to Weipa.</p>
+<p><img alt="CoverageMap" src="../images/coveragemap.png"></p>
+<p>If we zoom into the Cape, we get:</p>
+<p><img alt="NorthQldMap" src="../images/nthqld.png"></p>
+<h2>Drawing Lines with GeoPandas</h2>
+<p>GeoPandas knows about geometry, so to draw a line show the road trip with GeoPanda, we can't just say 
+'draw a line between these points'.  What we can do is convert the Shapely Points into <strong>LineString</strong>
+objects, that GeoPandas does know how to draw.  We use the features of Pandas to group the Points for each day
+of the trip, and make a new GeoDataFrame with this new geometry.  We create a 'DayNum' column so we can filter
+in only those days in the return trip.</p>
+<div class="highlight"><pre><span></span>            # Aggregate each days points into a line
+            gld2 = gld.groupby([&#39;DayNo&#39;])[&#39;geometry&#39;].apply(lambda x: LineString(x.tolist()))
+            gld2 = gpd.GeoDataFrame(gld2, geometry=&#39;geometry&#39;)
+            gld2[&#39;DayNum&#39;] = gld2.index
+
+            gld2[gld2[&#39;DayNum&#39;]&gt;9].plot(ax=ax,
+                      column=&#39;DayNum&#39;,
+                      cmap=&#39;rainbow&#39;,
+                      legend=True,
+                      categorical=True,
+                      linewidth=5,
+                     )
+            ax.set_title(label=&#39;Cape York Road Trip: Homeward Bound&#39;, loc=&#39;left&#39;)
+</pre></div>
+
+
+<p><img alt="HomewardMap" src="../images/homeward.png"></p>
+<h2>Conclusion</h2>
+<p>For completeness, here are the imports for this Jupyter Notebook 
+(not all are used in the code fragments above, as some as for producing output to support reproducability).</p>
+<div class="highlight"><pre><span></span>            <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+            <span class="kn">import</span> <span class="nn">sys</span>
+            <span class="kn">import</span> <span class="nn">os</span>
+            <span class="kn">import</span> <span class="nn">subprocess</span>
+            <span class="kn">import</span> <span class="nn">datetime</span>
+            <span class="kn">import</span> <span class="nn">platform</span>
+            <span class="kn">import</span> <span class="nn">datetime</span>
+
+            <span class="kn">import</span> <span class="nn">json</span>
+
+            <span class="kn">import</span> <span class="nn">geopandas</span> <span class="kn">as</span> <span class="nn">gpd</span>
+            <span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Point</span><span class="p">,</span> <span class="n">LineString</span>
+
+            <span class="kn">import</span> <span class="nn">matplotlib</span>
+            <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+            <span class="c1">#import seaborn as sb</span>
+
+            <span class="kn">import</span>  <span class="nn">cartopy</span>
+            <span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="kn">as</span> <span class="nn">ccrs</span>
+            <span class="kn">import</span> <span class="nn">cartopy.feature</span> <span class="kn">as</span> <span class="nn">cfeature</span>
+</pre></div> 
+	<a class="btn btn-mini xsmall" href="../roadtrip.html">
+          <i class="icon-comment"></i> Comment </a>
+	<hr />
+      </div>
+      
+    </div>
+    
+
+ 
+        
+
+
+
+    <div class='row-fluid'>
+      <div class='article-title span9'> 
+        <a href="../incomemap.html"><h1>GeoPandas and the Wealth of Nations</h1></a>
+      </div>
     </div>
     <div class="row-fluid">
       <div class="span2">
@@ -77,367 +314,15 @@ Filed under <a href="../category/geopandas.html">GeoPandas</a>
 <p>
 </p>
       </div>
-      <div class="article-content span8">
-	<h1>Income Distribution in Queensland</h1>
-<h2>Introduction</h2>
-<p>As a finger exercise in learning GeoPandas, I thought I would explore the 
-geospatial distribution of income in Queensland.  I learned a few lessons in the process,
-but the difficulty of getting consistent data was one of the most important take-aways.</p>
-<h2>Post Codes</h2>
-<p>The Australian Bureau of Statistics publishes shapefiles of a range of boundaries (State, Local Government), and included in these
-are the PostCode boundaries (think ZIP Codes).  At the time I built this notebook, the latest I could find was
-2011 boundaries.  Maybe PostCode boundaries don't change all that often.</p>
-<p>Search for <em>Australian Statistical Geography Standard (ASGS): Volume 3 - Non ABS Structures</em> , you might 
-a more up-to-date version.</p>
-<p>So skipping the imports (that I will show at the end), to load the PostCode boundaries:</p>
-<div class="highlight"><pre><span></span>    <span class="kn">import</span> <span class="nn">geopandas</span> <span class="kn">as</span> <span class="nn">gpd</span>
-
-    <span class="n">postcode_df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span>
-    <span class="p">(</span><span class="s1">&#39;../data/shapefiles/POA_2011_AUST.shp&#39;</span><span class="p">)</span>
-</pre></div>
-
-
-<p>To show a thumbnail of the Queensland PostCodes, we filter to keep all PostCodes where the first character of the 
-PostCode name starts with a digit '4'.</p>
-<div class="highlight"><pre><span></span>    postcode_df[postcode_df[&#39;POA_NAME&#39;].str[0]==&#39;4&#39;].plot()
-</pre></div>
-
-
-<p>to give a figure:</p>
-<p><img alt="QLDPostCode" src="../images/incomemap01.png"></p>
-<h2>PostCodes Data Quality</h2>
-<p>We might assume that because the ABS has published these PostCode boundaries, that there wouldn't be any problems with
-data quality, but there are still some gotcha-s.  The first is that the ABS seems to have some standard categories they use
-for ill-defined data.  We can find these by filtering to show
-all entries in the GeoPandas dataframe with no geometry attributes.  We define a new GeoPandas dataframe called <code>badpc</code></p>
-<div class="highlight"><pre><span></span>    badpc = postcode_df[postcode_df[&#39;geometry&#39;].isnull()]
-</pre></div>
-
-
-<p>which gives us:</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>POA_CODE</th>
-<th>POA_NAME</th>
-<th>SQKM</th>
-<th>geometry</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>2513</td>
-<td>9191</td>
-<td>Unclassified (Aust.)</td>
-<td>0.0</td>
-<td>None</td>
-</tr>
-<tr>
-<td>2514</td>
-<td>9494</td>
-<td>No usual address (Aust.)</td>
-<td>NaN</td>
-<td>None</td>
-</tr>
-<tr>
-<td>2515</td>
-<td>9797</td>
-<td>Migratory - Offshore - Shipping (Aust.)</td>
-<td>NaN</td>
-<td>None</td>
-</tr>
-</tbody>
-</table>
-<p>In order to make life easier, we define a new GeoPandas dataframe,
-being those rows that <em>do</em> have a geometry defined.  We make a deep copy, because the data is not huge, and some subsequent Pandas operations don't work on a filtered view of the original dataframe.</p>
-<div class="highlight"><pre><span></span>    goodpc =
-     postcode_df[postcode_df[&#39;geometry&#39;].notnull()].copy(deep=True)
-</pre></div>
-
-
-<p>Next we load up some coastline data, from shapefile downloaded from <code>www.naturalearthdata.com/downloads/</code></p>
-<div class="highlight"><pre><span></span>    world =
-     gpd.read_file(&#39;../data/shapefiles/ne_10m_admin_0_countries.shp&#39;)
-</pre></div>
-
-
-<h2>Plotting the PostCodes</h2>
-<p>The following code fragment will show the Post Codes of South East Queensland.  Note the use of the <code>zorder</code> parameter to make sure the graphic we create is not overwritten by a subsequent <code>plot()</code> call.</p>
-<div class="highlight"><pre><span></span>    fig, ax = plt.subplots(figsize=(14,10) )
-
-    # set aspect to equal. This is done automatically
-    # when using *geopandas* plot on it&#39;s own, but not when
-    # working with pyplot directly.
-    ax.set_aspect(&#39;equal&#39;)
-
-    # define our default colors
-    water = &#39;lightskyblue&#39;
-    earth = &#39;tan&#39;
-
-
-    # set limits of plot to SE QLD
-    ax.set_xlim([150, 155])
-    ax.set_ylim([-30, -24])
-
-    # make water the default color
-    ax.set_facecolor(water)
-
-    # just get the GeoSeries of the world - maybe faster to plot?
-    world_gs = world[&#39;geometry&#39;]
-
-    # use geopandas to filter out all but postcodes starting with 4
-    qld_pc = postcode_df[postcode_df[&#39;POA_NAME&#39;].str[0]==&#39;4&#39;]
-
-    # plot the areas NOT covered by postcodes (ie Not QLD)
-    world_gs.plot(ax = ax, linewidth=1,  facecolor=earth, alpha=1 )
-
-    # plot the postcodes of Qld, each a different color
-    qld_pc.plot(ax = ax, linewidth=1, zorder=4, alpha=0.8,
-     cmap=&#39;rainbow&#39;, edgecolor=&#39;gray&#39;)
-
-    # plot the coastlines
-    world_gs.plot(ax = ax, linewidth=1,  facecolor=&#39;none&#39;,
-     alpha=1, zorder=5 )
-</pre></div>
-
-
-<p>The result looks like:</p>
-<p><img alt="SEQLDPostCode" src="../images/incomemap02.png"></p>
-<p>If you very closely, you can see a few scattered islands that are too small to be in the world coastline database, but are 
-captured in the post Code boundary database.</p>
-<p>So far so good, now onto income data!</p>
-<h2>Income Data</h2>
-<p>The Australian Government provides tax summary data through <code>www.data.gov.au</code>.  In their schema, the data we want is at:</p>
-<p><code>Organisations / Australian Taxation Office / Taxation Statistics 2013-14 / Individuals - Table 8</code></p>
-<p>This will provide access to a large Excel spreadsheet called 
-<code>taxstats2014individual08taxableincomebypostcode.xlsx</code>, that contains a worksheet named <code>Table 8</code>.  Having downloaded this we can then start processing this with GeoPandas.  Note the date discrepency between 2011 for PostCodes, and 2014 for the tax data; we will come back to this later.</p>
-<p>We create a dataframe of ATO data by:</p>
-<div class="highlight"><pre><span></span>    atodf =
-    pd.read_excel(&#39;../data/
-    taxstats2014individual08taxableincomebypostcode.xlsx&#39;, 
-    sheet_name=&#39;Table 8&#39;,\
-                skiprows=2)
-</pre></div>
-
-
-<p>ATO in this context is short for Australian Taxation Office.</p>
-<p>The standard data-exploration command <code>atodf.head()</code> yields output that looks (in part) like:</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>State/ Territory</th>
-<th>Postcode2</th>
-<th>Individuals 2003–04 no.</th>
-<th>Median3 taxable income 2003–04 $</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>ACT</td>
-<td>2600</td>
-<td>5692</td>
-<td>42327</td>
-</tr>
-</tbody>
-</table>
-<h2>Dataframe Exploration</h2>
-<p>So we have the PostCodes we want, and the Median taxable income earned by the taxpayers who live in that PostCode.
-Note that the income could have earned by activities in a PostCode different from where the taxpayer lives, but I have chosen to ignore this.</p>
-<p>So lets do a bit more data exploration, finding the count of unique PostCode names in each dataframe (<code>atodf</code> holding tax data, and <code>goodpc</code>  holding PostCode boundary data).</p>
-<div class="highlight"><pre><span></span>    len(atodf[&#39;Postcode2&#39;].unique())
-
-    Out[21]:
-    2203
-
-
-    len(goodpc[&#39;POA_CODE&#39;].unique())
-
-    Out[22]:
-    2513
-</pre></div>
-
-
-<p>And here's a problem;  why are the number of unique PostCodes so different between each dataframe? Lets look at the first row in each dataframe, tax data first:</p>
-<div class="highlight"><pre><span></span>    In [23]:
-    atodf[&#39;Postcode2&#39;][0]
-
-    Out[23]:
-    2600
-</pre></div>
-
-
-<p>and then PostCode data:</p>
-<div class="highlight"><pre><span></span>    goodpc[&#39;POA_CODE&#39;][0]
-
-    Out[24]:
-    &#39;0800&#39;
-</pre></div>
-
-
-<p>First we fix the fact that the <code>goodpc</code> dataframe has the PostCode as a string, and the <code>atodf</code> dataframe uses integers. I decided to standardize on integers, by:</p>
-<div class="highlight"><pre><span></span>    goodpc[&#39;POA_CODE&#39;] = goodpc[&#39;POA_CODE&#39;].astype(int)
-</pre></div>
-
-
-<p>So now, we find the differences in PostCodes, by:</p>
-<div class="highlight"><pre><span></span>            set1 = set(atodf[&#39;Postcode2&#39;].unique())
-            set2 = set(goodpc[&#39;POA_CODE&#39;].unique())
-
-            diff1 =  set1.difference(set2)
-            diff2 = set2.difference(set1)
-</pre></div>
-
-
-<p>Now, to show the PostCodes that the Tax Office knows about, but the Bureau of Stats doesn't:</p>
-<div class="highlight"><pre><span></span>    print(&#39; In ato, but not abs&#39;, diff1)
-
-    In ato, but not abs {801, 804, 871, 811, 2379, 814, 881, 3665, 851, 821, 861, 831}
-</pre></div>
-
-
-<p>And the PostCodes the Bureau of Stats knows, that don't appear in the Tax Office spreadsheet:</p>
-<div class="highlight"><pre><span></span>    print(&#39; in abs, but not ato&#39;, diff2)
-
-
-
-    in abs, but not ato {3586, 2563, 2052, 3588, 3589, 3591, ....
-</pre></div>
-
-
-<p>In fact, there are 322 PostCodes in the latter set.</p>
-<h2>Explanation</h2>
-<p>In fact, poking into the websites of both Government agencies, reasons emerge for the differences.  First of all, some of the PostCodes known to the ATO could have been created after 2011 (the date of the ABS data).</p>
-<p>The ATO spreadsheet excludes PostCodes with so few people, that data privacy issues preclude including that data.  As we will see, this means that some PostCodes for remote areas (<em>very</em> sparsely settled) will have no income data.</p>
-<p>Further, exploring the PostCode documentation reveals that the Post Office can create PostCodes to support more efficient sorting of mail (e.g. in response to a "mail this card to this address for a free gift" style advertising campaign).  No-one thinks that they actually live in these PostCodes, so these PostCodes will also have no income data.</p>
-<h2>Dataframe Merging</h2>
-<p>Because we want to draw a map, we want to keep income data for only those PostCode we have a boundary for, by:</p>
-<div class="highlight"><pre><span></span>    mask = atodf[&#39;Postcode2&#39;].isin(list(diff1))
-    goodato_df = atodf[~mask].copy(deep=True)
-</pre></div>
-
-
-<p>In the above, we create a mask that is <code>True</code> for PostCodes for which we don't have a boundary, and then we copy the dataframe rows for all the other PostCodes (for which we <em>do</em> have a boundary).</p>
-<p>We now rename the PostCode column so the names are the same in each dataframe, by:</p>
-<div class="highlight"><pre><span></span>    goodato_df.rename(columns={&#39;Postcode2&#39;:&#39;POA_CODE&#39;}, inplace=True)
-</pre></div>
-
-
-<p>We can now merge the columns of the two dataframes side by side, by:</p>
-<div class="highlight"><pre><span></span>    result = pd.merge(goodato_df, goodpc, how=&#39;left&#39;, on=[&#39;POA_CODE&#39;])
-</pre></div>
-
-
-<p>A closer inspection shows us that the column titles have <code>newlines</code> embedded (a left-over glitch from the original Excel spreadsheet).</p>
-<div class="highlight"><pre><span></span>    result.columns.values
-
-
-    Out[40]:
-    array([&#39;State/\nTerritory&#39;, &#39;POA_CODE&#39;, &#39;Individuals 2003–04\nno.&#39;,
-    &#39;Median3 taxable income 2003–04\n$&#39;,
-    &#39;Mean3 taxable income 2003–04\n$&#39;, &#39;Individuals 2013–14\nno.&#39;,
-    &#39;Median3 taxable income 2013–14\n$&#39;,
-    &#39;Mean3 taxable income 2013–14\n$&#39;, &#39;Median growth\n%&#39;,
-    &#39;Mean growth\n%&#39;, &#39;POA_NAME&#39;, &#39;SQKM&#39;, &#39;geometry&#39;], dtype=object)
-</pre></div>
-
-
-<p>So we remove these, by:</p>
-<div class="highlight"><pre><span></span>    new_cols = [s.replace(&#39;\n&#39;,&#39;&#39;) for s in result.columns.values]
-    result.columns = new_cols
-    result.columns.values
-
-    Out[44]:
-    array([&#39;State/Territory&#39;, &#39;POA_CODE&#39;, &#39;Individuals 2003–04no.&#39;,
-    &#39;Median3 taxable income 2003–04$&#39;, &#39;Mean3 taxable income 2003–04$&#39;,
-    &#39;Individuals 2013–14no.&#39;, &#39;Median3 taxable income 2013–14$&#39;,
-    &#39;Mean3 taxable income 2013–14$&#39;, &#39;Median growth%&#39;, &#39;Mean growth%&#39;,
-    &#39;POA_NAME&#39;, &#39;SQKM&#39;, &#39;geometry&#39;], dtype=object)
-</pre></div>
-
-
-<p>Finally, we have to convert our <code>results</code> dataframe to a GeoPandas dataframe, by:</p>
-<div class="highlight"><pre><span></span>    r2 = gpd.GeoDataFrame(result)
-</pre></div>
-
-
-<h2>Drawing the Map</h2>
-<p>The following code fragment will produce the map below:</p>
-<div class="highlight"><pre><span></span>    fig, ax = plt.subplots(figsize=(14,10) )
-
-    # set aspect to equal. This is done automatically
-    # when using *geopandas* plot on it&#39;s own, but not when
-    # working with pyplot directly.
-    ax.set_aspect(&#39;equal&#39;)
-
-    # define our default colors
-    water = &#39;lightskyblue&#39;
-    earth = &#39;tan&#39;
-
-
-    # set limits of plot to  QLD
-    ax.set_xlim([135, 155])
-    ax.set_ylim([-30, -10])
-
-    # make water the default color
-    ax.set_facecolor(water)
-
-    # just get the GeoSeries of the world - maybe faster to plot?
-    world_gs = world[world[&#39;ADMIN&#39;]==&#39;Australia&#39;][&#39;geometry&#39;]
-
-    # use geopandas to filter out all but postcodes starting with 4
-    qld_pc = r2[r2[&#39;POA_NAME&#39;].str[0]==&#39;4&#39;]
-
-    world_gs.plot(ax = ax, linewidth=1,  facecolor=&#39;black&#39;, alpha=1 )
-    qld_pc.plot(ax = ax, linewidth=0, zorder=4, alpha=0.8, cmap=&#39;summer&#39;, column=&#39;Median3 taxable income 2013–14$&#39;, \
-            scheme=&#39;quantiles&#39;, k= 5, legend=True)
-
-    leg = ax.get_legend()
-    leg.set_bbox_to_anchor((0.8, 0.8, 0.2, 0.2))
-    leg.set_title(&#39;Median taxable income ranges (black=missing data)&#39;, )
-
-    ax.set_title(&#39;QLD Postcodes and Median Taxable Income&#39;)
-</pre></div>
-
-
-<p>In this code, we use the facility for GeopPandas to prepare a map with a <code>scheme</code> of quantiles.  We set the world land background to black (representing missing data), 
-and then overwrite this with our PostCode shaded by income quantile.  We just show the Queensland PostCodes.  We ask for a legend, and manually position it in the Coral Sea (inside the area of the map).</p>
-<p>This gives us:</p>
-<p><img alt="QLDPostCodeIncome" src="../images/incomemap03.png"></p>
-<p>It appears that high income is associated (outside Brisbane, the capital city in the South East) with areas with a mining industry.</p>
-<h2>Conclusion</h2>
-<p>For completeness, here are the imports for this Jupyter Notebook (not all are used in the code fragments above, as some as for producing output to support reproducability).</p>
-<div class="highlight"><pre><span></span>    <span class="c1"># all imports should go here</span>
-
-    <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-    <span class="kn">import</span> <span class="nn">sys</span>
-    <span class="kn">import</span> <span class="nn">os</span>
-    <span class="kn">import</span> <span class="nn">subprocess</span>
-    <span class="kn">import</span> <span class="nn">datetime</span>
-    <span class="kn">import</span> <span class="nn">platform</span>
-    <span class="kn">import</span> <span class="nn">datetime</span>
-
-    <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="kn">as</span> <span class="nn">mpl</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-    <span class="kn">from</span> <span class="nn">mpl_toolkits.basemap</span> <span class="kn">import</span> <span class="n">Basemap</span>
-
-    <span class="kn">import</span> <span class="nn">geopandas</span> <span class="kn">as</span> <span class="nn">gpd</span>
-    <span class="kn">import</span> <span class="nn">shapely</span>
-    <span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Polygon</span>
-
-    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-    <span class="kn">from</span> <span class="nn">matplotlib.collections</span> <span class="kn">import</span> <span class="n">PatchCollection</span>
-    <span class="kn">from</span> <span class="nn">descartes</span> <span class="kn">import</span> <span class="n">PolygonPatch</span>
-</pre></div> 
+      <div class="summary span8">
+	<p>Using GeoPandas plot PostCode incomes</p> 
 	<a class="btn btn-mini xsmall" href="../incomemap.html">
-          <i class="icon-comment"></i> Comment </a>
+          <i class="icon-plus-sign"></i> Read More </a>
 	<hr />
       </div>
       
     </div>
-    
+      
 
  
         
