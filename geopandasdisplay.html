@@ -3,21 +3,21 @@
 <head>
 
     <meta charset="utf-8">
-    <title>net-analysis.com Data Analysis Blog <small>GeoPandas</small></title>
+    <title>Using GeoPandas to Display Data in Spatial Context - net-analysis.com Data Analysis Blog</title>
     <meta name="description" content="">
     <meta name="author" content="Don Cameron">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
-    <script src="../theme/html5.js"></script>
+    <script src="./theme/html5.js"></script>
     <![endif]-->
 
 
     <!-- Le styles -->
     <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap.no-icons.min.css" rel="stylesheet">
-    <link href="../theme/local.css" rel="stylesheet">
-    <link href="../theme/pygments.css" rel="stylesheet">
-    <link href="../theme/font-awesome.css" rel="stylesheet">
+    <link href="./theme/local.css" rel="stylesheet">
+    <link href="./theme/pygments.css" rel="stylesheet">
+    <link href="./theme/font-awesome.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Gudea:400,400italic|Alegreya+SC' rel='stylesheet' type='text/css'>
 
 </head>
@@ -27,23 +27,23 @@
   <div class="container">
     <div class="row-fluid">
       <div class="span9">
-	<a href=".." class="brand">net-analysis.com Data Analysis Blog</a>
+	<a href="." class="brand">net-analysis.com Data Analysis Blog</a>
       </div>
 
       <div class="span3" id="blog-nav">
 	<ul class="nav nav-pills pull-right">
 	    <li >
-	      <a href="../category/basemap.html ">Basemap</a>
+	      <a href="./category/basemap.html ">Basemap</a>
 	    <li >
-	      <a href="../category/cartopy.html ">Cartopy</a>
+	      <a href="./category/cartopy.html ">Cartopy</a>
 	    <li  class="active" >
-	      <a href="../category/geopandas.html ">GeoPandas</a>
+	      <a href="./category/geopandas.html ">GeoPandas</a>
 	    <li >
-	      <a href="../category/introduction.html ">Introduction</a>
+	      <a href="./category/introduction.html ">Introduction</a>
 	    <li >
-	      <a href="../category/landsat.html ">LANDSAT</a>
+	      <a href="./category/landsat.html ">LANDSAT</a>
 	    <li >
-	      <a href="../category/visualizations.html ">Visualizations</a>
+	      <a href="./category/visualizations.html ">Visualizations</a>
 	</ul>
       </div>
     </div> <!-- End of fluid row-->
@@ -55,29 +55,27 @@
     <div class="row-fluid">
 
         <div class="span10">
-        
-
-        
-
-    <div class='row-fluid''>
-        <div class="article-title span9">
-            <a href="../geopandasdisplay.html"><h1>Using GeoPandas to Display Data in Spatial Context</h1></a>
-        </div>
-    </div>
+    <div class='article'>
+      <div class="row-fluid">
+           <div class="content-title span9">
+             <h1>Using GeoPandas to Display Data in Spatial Context</h1>
+           </div>
+      </div>
     <div class="row-fluid">
       <div class="span2">
 <p>Sun 22 July 2018 </p>
 
 <p style="text-align: left;">
-Filed under <a href="../category/geopandas.html">GeoPandas</a>
+Filed under <a href="./category/geopandas.html">GeoPandas</a>
 </p>
 <p style="text-align: left;">
  
-    Tags <a href="../tag/geopandas.html">geopandas</a> <a href="../tag/python.html">python</a> <a href="../tag/colorbar.html">colorbar</a> <a href="../tag/projections.html">projections</a> <a href="../tag/cartopy.html">cartopy</a> </p>
+    Tags <a href="./tag/geopandas.html">geopandas</a> <a href="./tag/python.html">python</a> <a href="./tag/colorbar.html">colorbar</a> <a href="./tag/projections.html">projections</a> <a href="./tag/cartopy.html">cartopy</a> </p>
 <p>
 </p>
       </div>
-      <div class="article-content span8">
+      
+      <div class="span8">
 	<h1>GeoPanda and Data Display</h1>
 <h2>Introduction</h2>
 <p>This is a short note to provide some examples of creating maps, with associated display of data.  </p>
@@ -102,7 +100,7 @@ plt.show()
 </pre></div>
 
 
-<p><img alt="Cartopy Mercator Map" src="../images/geopandasdata01.png"></p>
+<p><img alt="Cartopy Mercator Map" src="./images/geopandasdata01.png"></p>
 <h2>GeoPandas Example</h2>
 <h3>using PlateCarree</h3>
 <p>As an example, we are going to use the Geopandas <code>naturalearth_lowres</code> dataset, place a marker at the centre of each country, and draw a bounding box around Australia.</p>
@@ -126,7 +124,7 @@ plt.show()
 
 
 <p>This gives us:</p>
-<p><img alt="Spatial Markers Map" src="../images/geopandasdata02.png"></p>
+<p><img alt="Spatial Markers Map" src="./images/geopandasdata02.png"></p>
 <p>Note that the printout of the dataset Coordinate Reference System (CRS) gives us <code>{'init': 'epsg:4326'}</code>;  i.e., it is our old friend PlateCarree (the projection we have chosen for the whole map.</p>
 <h3>Using Mollweide</h3>
 <p>If we wish to use a different projection for the map, we must use the Geopands <code>to_crs()</code> method, to convert the geometery attributes to the new projection coordinates.</p>
@@ -155,7 +153,7 @@ plt.show()
 
 
 <p>This gives us:</p>
-<p><img alt="Spatial Markers Mollweide Map" src="../images/geopandasdata03.png"></p>
+<p><img alt="Spatial Markers Mollweide Map" src="./images/geopandasdata03.png"></p>
 <p>We can see that the centroids of the countries have been translated to the correct places, but sadly, the bounding box for Australia is wrong!  This is because the <code>box_oz_mol.plot()</code> method we used, asks for straight lines in the Mollweide projection (which is not what we want).</p>
 <p>We can fix this by get the latitude, longitude pairs for the corners of the box, and asking Cartopy to draw great circle by use of the <code>transform=ccrs.Geodetic()</code> parameter to the <code>plot()</code> call.</p>
 <p>The code looks like:</p>
@@ -194,7 +192,7 @@ plt.show()
 
 
 <p>This gives us the following map, where indeed the green bounding box just touches Australia.</p>
-<p><img alt="Correct Lines on Mollweide Map" src="../images/geopandasdata04.png"></p>
+<p><img alt="Correct Lines on Mollweide Map" src="./images/geopandasdata04.png"></p>
 <h2>Markers with Meaning</h2>
 <h3>Default Projection</h3>
 <p>Now we move on to making the markers carry more information than just their location.<br>
@@ -233,7 +231,7 @@ plt.show()
 
 
 <p>This gives us:</p>
-<p><img alt="Data Markers on PlateCarree" src="../images/geopandasdata05.png"></p>
+<p><img alt="Data Markers on PlateCarree" src="./images/geopandasdata05.png"></p>
 <h3>Mollweide Projection</h3>
 <p>If we want to display the same data, but on the Mollweide Projection, then the code looks very similar.  We read the dataset, and convert the geometery to coordinates in the desired projection by <code>world_mol = world.to_crs(mol.proj4_init)</code>.</p>
 <p>We then use GeoPandas to plot the map outlines by <code>world_mol.plot(ax=ax)</code>.</p>
@@ -255,7 +253,7 @@ for (idx, country), cd in zip(world.iterrows(), world.centroid):
 </pre></div>
 
 
-<p><img alt="Data Markers on Mollweide" src="../images/geopandasdata06.png"></p>
+<p><img alt="Data Markers on Mollweide" src="./images/geopandasdata06.png"></p>
 <h2>GeoPandas Continuous Shading and Discrete Markers</h2>
 <p>GeoPandas comes with capability to display data in spatial context, by the color of the polygons it plots.  We can combine this with our markers, as below:</p>
 <p>First, we define our figure, and get a Cartopy-aware Axes object.</p>
@@ -326,7 +324,7 @@ plt.show()
 
 
 <p>This gives us:</p>
-<p><img alt="Combined Data Visualization" src="../images/geopandasdata07.png"></p>
+<p><img alt="Combined Data Visualization" src="./images/geopandasdata07.png"></p>
 <h2>Imports</h2>
 <p>Just for completeness, here are the imports from the Notebook that contains the code above
 (some are used only to support print-outs that define the environment for reproducibility purposes) </p>
@@ -351,126 +349,15 @@ plt.show()
 </pre></div>
 
 
-<p>The link to the Notebook that has all the code is coming soon.</p> 
-	<a class="btn btn-mini xsmall" href="../geopandasdisplay.html">
-          <i class="icon-comment"></i> Comment </a>
+<p>The link to the Notebook that has all the code is coming soon.</p>
 	<hr />
       </div>
-      
     </div>
+    <div class="span10">
+      <h3>Comments</h3>
     
-
- 
-        
-
-
-
-    <div class='row-fluid'>
-      <div class='article-title span9'> 
-        <a href="../roadtrip.html"><h1>Road Trip North</h1></a>
-      </div>
+    </div>  
     </div>
-    <div class="row-fluid">
-      <div class="span2">
-<p>Tue 03 July 2018 </p>
-
-<p style="text-align: left;">
-Filed under <a href="../category/geopandas.html">GeoPandas</a>
-</p>
-<p style="text-align: left;">
- 
-    Tags <a href="../tag/python.html">python</a> <a href="../tag/geopandas.html">geopandas</a> <a href="../tag/altair.html">altair</a> </p>
-<p>
-</p>
-      </div>
-      <div class="summary span8">
-	<p>Visualization of Wireless Coverage in North Queensland</p> 
-	<a class="btn btn-mini xsmall" href="../roadtrip.html">
-          <i class="icon-plus-sign"></i> Read More </a>
-	<hr />
-      </div>
-      
-    </div>
-      
-
- 
-        
-
-
-
-    <div class='row-fluid'>
-      <div class='article-title span9'> 
-        <a href="../incomemap.html"><h1>GeoPandas and the Wealth of Nations</h1></a>
-      </div>
-    </div>
-    <div class="row-fluid">
-      <div class="span2">
-<p>Mon 14 May 2018 </p>
-
-<p style="text-align: left;">
-Filed under <a href="../category/geopandas.html">GeoPandas</a>
-</p>
-<p style="text-align: left;">
- 
-    Tags <a href="../tag/python.html">python</a> <a href="../tag/geopandas.html">geopandas</a> <a href="../tag/choropleth.html">choropleth</a> <a href="../tag/shapefile.html">shapefile</a> </p>
-<p>
-</p>
-      </div>
-      <div class="summary span8">
-	<p>Using GeoPandas plot PostCode incomes</p> 
-	<a class="btn btn-mini xsmall" href="../incomemap.html">
-          <i class="icon-plus-sign"></i> Read More </a>
-	<hr />
-      </div>
-      
-    </div>
-      
-
- 
-        
-
-
-
-    <div class='row-fluid'>
-      <div class='article-title span9'> 
-        <a href="../maprotation.html"><h1>Introduction to GeoPandas</h1></a>
-      </div>
-    </div>
-    <div class="row-fluid">
-      <div class="span2">
-<p>Sun 26 February 2017 </p>
-
-<p style="text-align: left;">
-Filed under <a href="../category/geopandas.html">GeoPandas</a>
-</p>
-<p style="text-align: left;">
- 
-    Tags <a href="../tag/geopandas.html">geopandas</a> <a href="../tag/python.html">python</a> <a href="../tag/shapefile.html">shapefile</a> <a href="../tag/stripmap.html">stripmap</a> </p>
-<p>
-</p>
-      </div>
-      <div class="summary span8">
-	<p>Map Rotations with GeoPandas</p> 
-	<a class="btn btn-mini xsmall" href="../maprotation.html">
-          <i class="icon-plus-sign"></i> Read More </a>
-	<hr />
-      </div>
-      
-    </div>
-      
-<div class="pagination">
-<ul>
-    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
-
-    <li class="active"><a href="../category/geopandas.html">1</a></li>
-
-    <li class="next disabled"><a href="#">&rarr; Next</a></li>
-
-</ul>
-</div>
-
- 
-  
         </div>
         
         
@@ -520,11 +407,11 @@ http://www.net-analysis.com.   It documents a learning process, and hence owes a
             <li class="nav-header"> 
               Site
             </li>
-            <li><a href=".."><i class="icon-home" style="color: #1f334b">
+            <li><a href="."><i class="icon-home" style="color: #1f334b">
                 </i>Home</a></li>
-            <li><a href="../archives.html"><i class="icon-list" style="color: #1f334b">
+            <li><a href="./archives.html"><i class="icon-list" style="color: #1f334b">
                 </i>Archives</a></li>
-	    <li><a href="../tags.html"><i class="icon-tags" style="color: #1f334b">
+	    <li><a href="./tags.html"><i class="icon-tags" style="color: #1f334b">
                 </i>Tags</a></li>
 	    
 	  </ul>
@@ -534,7 +421,7 @@ http://www.net-analysis.com.   It documents a learning process, and hence owes a
       </div> <!--end of fluid row-->
     </div> <!--end of blog-footer-->
     <hr />
-    <p align="center"><a href="..">net-analysis.com Data Analysis Blog</a>
+    <p align="center"><a href=".">net-analysis.com Data Analysis Blog</a>
       &copy; Don Cameron
     Powered by <a href="https://github.com/getpelican/pelican">Pelican</a> and
         <a href="https://twitter.github.com/bootstrap">Twitter Bootstrap</a>. 
