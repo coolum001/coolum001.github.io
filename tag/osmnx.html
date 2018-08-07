@@ -43,7 +43,7 @@
 	    <li >
 	      <a href="../category/landsat.html ">LANDSAT</a>
 	    <li >
-	      <a href="../category/osmnx-geopandas-cartopy.html ">OSMNX, GeoPandas, Cartopy</a>
+	      <a href="../category/osmnx.html ">OSMNX</a>
 	    <li >
 	      <a href="../category/visualizations.html ">Visualizations</a>
 	</ul>
@@ -63,7 +63,7 @@
 
     <div class='row-fluid''>
         <div class="article-title span9">
-            <a href="../policing.html"><h1>OSMNX and Policing Response Times</h1></a>
+            <a href="../communities.html"><h1>OSMNX and Identifying Communities</h1></a>
         </div>
     </div>
     <div class="row-fluid">
@@ -71,26 +71,27 @@
 <p>Thu 02 August 2018 </p>
 
 <p style="text-align: left;">
-Filed under <a href="../category/osmnx-geopandas-cartopy.html">OSMNX, GeoPandas, Cartopy</a>
+Filed under <a href="../category/osmnx.html">OSMNX</a>
 </p>
 <p style="text-align: left;">
  
-    Tags <a href="../tag/python.html">python</a> <a href="../tag/geopandas.html">geopandas</a> <a href="../tag/cartopy.html">cartopy</a> <a href="../tag/osmnx.html">osmnx</a> </p>
+    Tags <a href="../tag/python.html">python</a> <a href="../tag/geopandas.html">geopandas</a> <a href="../tag/cartopy.html">cartopy</a> <a href="../tag/osmnx.html">osmnx</a> <a href="../tag/networkx.html">networkx</a> </p>
 <p>
 </p>
       </div>
       <div class="article-content span8">
-	<h1>Police Response  Times via the Road Network</h1>
+	<h1>Visualization of communities via the Road Network</h1>
 <h2>Introduction</h2>
-<p>So, I thought that I would try to crank up the OSMNX package again, after using it last year to create art works showing the road networks of small local towns.  This interest was sparked via a flurry of tweets and stories on how grid-like various city road networks were.</p>
-<p>This time, I thought I would do something a little more serious than art works.  Prompted by the fact that the Queensland Government publishes a lot of Shapefiles showing locations of various utilities, I decided the look at how fast the police could respond to the rather linear road network local to our area.</p>
+<p>Having extracted the local road network from  Open Street Maps (via OSMNX - see earlier blog posts), I thought it might be interesting to checkout what properties 
+of the road network we could automatically extract.  One such property is that of 'community'.</p>
 <h2>Data Sources</h2>
-<p>The location of the polife station locations is https://data.qld.gov.au/dataset/qps-police-stations</p>
+<p>To provide continuity with the previous maps, I included the local police stations.<br>
+The source of the police station locations is https://data.qld.gov.au/dataset/qps-police-stations</p>
 <h2>Mapping Design</h2>
-<p>Because I wanted to underlay some geographic context to the visualization of the road network, I decided to go with Cartopy as the basic mapping software.</p>
+<p>Because I wanted to underlay some geographic context to the visualization of the road network, I decided to go with Cartopy as the basic mapping software, as its support for inclusion of map tiles is excellent.</p>
 <p>In order to provide some context, I decided to use Cartopy to underlay the Stamen image tiles, showing just terrain.  The URL is http://tile.stamen.com/terrain-background</p>
 <p>This also proves a nice (and accurate) coastline, without which the map would be a little confusing.</p>
-<p>I chose OSMNX for road information, as it is unsurpassed in this area.</p>
+<p>As before, I chose OSMNX for road information, as it is unsurpassed in this area.</p>
 <h2>Implementation</h2>
 <h3>Background Map Tiles</h3>
 <p>The Stamen terrain-only background map tiles are not supported out-of-box by Cartopy, but it is pretty easy to get access to them.</p>
@@ -107,270 +108,99 @@ Filed under <a href="../category/osmnx-geopandas-cartopy.html">OSMNX, GeoPandas,
 </pre></div>
 
 
-<h3>Getting to Road Data</h3>
-<p>First, we define area we wish to analyse, by providing a range of longitude and latitude values.</p>
-<div class="highlight"><pre><span></span>home = ( 153, 153.2, -26.6, -26.4)
-</pre></div>
+<h3>Defining the map</h3>
+<p>First we create a figure holding a map, that uses the PlateCarree coordinate refrence system (CRS).  Next, we set the extent of our map (to be just my local area).</p>
+<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20, 20) )
+ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree() )
 
-
-<p>We then get the road data inside this bounding box.  Note the <code>truncate_by_edge=True</code> parameter.  If you have a section of road that ends in a node <strong>outside</strong> the bounding box, then by default, that chunk of road will not be included.  This leads to what appear to be missing roads when visually assessing the graphic.  Note also that OSMNX coordinates go (latitude, longitude).</p>
-<div class="highlight"><pre><span></span>graph = ox.graph_from_bbox(home[3], home[2], home[1], home[0], 
-    network_type=&#39;drive&#39;, 
-    truncate_by_edge=True, )
-</pre></div>
-
-
-<h3>Set up Response Time Analysis</h3>
-<p>We then set up:</p>
-<ul>
-<li>
-<p>the response times we are interested in (i.e. the time estimated for a police car to drive from a station, to a node in the road network)</p>
-</li>
-<li>
-<p>the average speed of a police car</p>
-</li>
-</ul>
-<p>as follows:</p>
-<div class="highlight"><pre><span></span>trip_times = [1, 5, 10, 15, 20,] #in minutes
-
-travel_speed = 80 # speed in km/hour
-meters_per_min = travel_speed*1000/60
-</pre></div>
-
-
-<h3>Moving to GeoPandas space</h3>
-<p>We now add an attribute <code>"time"</code> for each of the edges in our road network.  This attribute captures how long it will take to drive the length of that edge, as the assumed speed of a police car.</p>
-<div class="highlight"><pre><span></span># create travel time attribute for edges
-for u,v, k, data in graph.edges(data=True, keys=True):
-    data[&#39;time&#39;] = data[&#39;length&#39;] / meters_per_min
-#end for
-</pre></div>
-
-
-<p>We now create GeoPandas DataFrames for the node and edge data we got from OSMNX (note the order of the DataFrames returned) .</p>
-<div class="highlight"><pre><span></span># convert to GDFs
-n_df, e_df = ox.save_load.graph_to_gdfs(graph, nodes=True, edges=True)
-</pre></div>
-
-
-<p>We now define an attribute <code>access_time_bnd</code>;  this is the access time bound (i.e. the maximum time it will take to police car to turn up: might be less, but can't be greater).</p>
-<p>We then set this attribute initially to a very large value.</p>
-<div class="highlight"><pre><span></span>LARGE = 1_000_000
-e_df[&#39;access_time_bnd&#39;] = LARGE
-n_df[&#39;access_time_bnd&#39;] = LARGE
-</pre></div>
-
-
-<p>Finally, we convert the geographic information in the GeoPandas DataFrames into Universal Transverse Mercator (UTM) coordinate reference system (CRS).</p>
-<div class="highlight"><pre><span></span># switch to UTM (so euclidean measurement works)
-n_df = ox.projection.project_gdf(n_df)
-e_df = ox.projection.project_gdf(e_df)
-</pre></div>
-
-
-<h3>Making the Map</h3>
-<p>We now use Cartopy to create a map.  The CRS to be used we get from the edge GeoPandas DataFrame (<code>e_df</code>).  Note that OSMNX returns UTM coordinates referenced from the equator (i.e. southern hemisphere <code>y</code> coordinates are -ve), so we have to lie to Cartopy, and tell it we are in the northern hemsphere.  Finally, we specify the aspect ratio of x and y axis to be the same (no non-map-like stretching of one axis or the other).</p>
-<div class="highlight"><pre><span></span># set up Cartopy aware figure and Axes
-fig = plt.figure(figsize=(20, 20) )
-utm_crs = ccrs.UTM(e_df.crs[&#39;zone&#39;],
-     southern_hemisphere=False)
-ax = fig.add_subplot(1, 1, 1, projection= utm_crs) 
-ax.set_aspect(&#39;equal&#39;)
-</pre></div>
-
-
-<p>We then specify the extent of the map (same as our road network bounding box).  Note we can use lat/lon values, as long as we tell Cartopy that the coordinates are in the PlateCarree CRS.</p>
-<div class="highlight"><pre><span></span>home = ( 153, 153.2, -26.6, -26.4) #home = ( 152.5, 153.5, -27, -26)
+home = ( 153, 153.2, -26.6, -26.4) #home = ( 152.5, 153.5, -27, -26)
 ax.set_extent(home, crs=ccrs.PlateCarree() )
 </pre></div>
 
 
-<p>Finally, we add a background to the map.</p>
-<div class="highlight"><pre><span></span># add spatial context
-ax.add_image(imagery, 12, alpha=0.75)
+<h3>Loading the road network</h3>
+<p>Next we load the road network, and convert the nodes (intersections) and edges (road segments) of our graph into GeoPandas GeoDataFrames.</p>
+<div class="highlight"><pre><span></span>graph = ox.graph_from_bbox(home[3], home[2], home[1], home[0], network_type=&#39;drive&#39;, truncate_by_edge=True) 
+n_df, e_df = ox.save_load.graph_to_gdfs(graph, nodes=True, edges=True)
 </pre></div>
 
 
-<h3>Police Station Data</h3>
-<p>We now define a Polygon object that corresponds to our map extent (as a list of polygon xy corner points), read the police station data, and select out just those stations that fall in our extent (I happen to know the police station locations are in  longitude / latitude coordinates).  This is probably not a very rigorous analysis, as police station located just beyound the bounds of the map would invalidate our analysis, but this is just an example. </p>
-<div class="highlight"><pre><span></span># home = ( 153, 153.2, -26.6, -26.4)
-map_poly = Polygon([(home[0], home[2]), (home[1], home[2]), (home[1], home[3]), (home[0], home[3])])
-
-station_file=&#39;D:\\Cartography\\QPS_STATIONS.shp&#39;
-police_df = gpd.read_file(station_file)
-stations_pts = [x for x in police_df[&#39;geometry&#39;] if x.within(map_poly)]
+<h3>Plotting the roads</h3>
+<p>Next we add the background image, and plot the road network.  We set <code>zorder</code> to 2, so that all the roads are visible, even when we add out community shading.</p>
+<div class="highlight"><pre><span></span>ax.add_image(imagery, 12, alpha=0.5)
+e_df.plot(ax=ax, edgecolor=&#39;black&#39;, linewidth=1, facecolor=&#39;none&#39;, zorder=2, alpha=0.8, )
 </pre></div>
 
 
-<p>We now get the road network nodes closest to these police stations, using OSMNX.</p>
-<div class="highlight"><pre><span></span>pol_nodes = [ox.utils.get_nearest_node(graph, (station.xy[1][0], station.xy[0][0])) for station in stations_pts]
-</pre></div>
-
-
-<p>We find there two stations:</p>
-<div class="highlight"><pre><span></span>local = police_df[police_df[&#39;geometry&#39;].within(map_poly)]
-local.head()
-</pre></div>
-
-
-<p>gives us:</p>
-<table>
-<thead>
-<tr>
-<th>.</th>
-<th>NAME</th>
-<th>geometry</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>73</td>
-<td>COOLUM STATION</td>
-<td>POINT (153.077204 -26.540297)</td>
-</tr>
-<tr>
-<td>235</td>
-<td>NOOSA HEADS STATION</td>
-<td>POINT (153.0915830002693 -26.40783400000532)</td>
-</tr>
-</tbody>
-</table>
-<h3>Response Time Calculation</h3>
-<p>The general approach is, for a given police station, and for the largest of the travel times we are interested in, we get via <code>networkx</code> the <code>ego_graph</code>: a subgraph of our road network, showing all nodes that can be reached in that time or less.  We assign each node in this subgraph an <code>access_time_bnd</code> value equal to this travel time <em>if it is smaller than the current value for that node</em>, and then repeat for the next smallest travel time, and so on.</p>
-<p>We then repeat this process for the next police station.  At the end, inaccessable nodes will have our initial <code>LARGE</code> value, and the upper bound for the access time from the closest station will be set for all accessible nodes.</p>
-<div class="highlight"><pre><span></span># get access times
-for pol_node in pol_nodes:
-    for trip_time in sorted(trip_times, reverse=True):
-        subgraph = nx.ego_graph(graph, pol_node, radius=trip_time, distance=&#39;time&#39;)
-        for node in subgraph.nodes():
-            current = n_df.at[node, &#39;access_time_bnd&#39;]
-            n_df.at[node, &#39;access_time_bnd&#39;] = min(trip_time, current)
-        #end for
+<h3>Extract the communities</h3>
+<p>Next, we add an attribute <code>community</code> to our GeoDataFrame that represents nodes, and set it to 0 for all nodes.</p>
+<p>Then we use an algorithm provided by <code>networkx</code>.  I tried most of the <code>networkx</code> community algorithms: some took to long to complete,  some failed on the types of network (graphs) returned by OSMNX, but <code>async_fluidc</code>:</p>
+<ul>
+<li>
+<p>gave results that accorded with my intuition</p>
+</li>
+<li>
+<p>was reasonably snappy</p>
+</li>
+</ul>
+<p>Note that the networks returned via <code>OSMNX</code> must be converted to undirected network before processing.  I chose to extract 8 communities;  this was an arbitary guess, but as it turns out, not a bad one given the size of the area in my map.</p>
+<p>The <code>async_fluidc</code> call returns sets of nodes; each node in the set belong to the same community.  We loop over these sets, and assign an integer to each node, being the community index (starting at 1 for non-programmer friendlyness)</p>
+<div class="highlight"><pre><span></span>n_df[&#39;community&#39;] = 0
+zz = community.asyn_fluidc(graph.to_undirected(), 8 )
+for i, x in enumerate(zz):
+    for n in x:
+        n_df.at[n, &#39;community&#39;] = i+1
     #end for
 #end for
 </pre></div>
 
 
-<h3>Visualizing the Results</h3>
-<p>Getting a visualization of the response times is tricky.  The values we have in the <code>n_df["access_time_bnd"]</code> attribute look to GeoPandas like continuous floating point values.  However we know that the value can only take values in the <code>trip_times</code> list.  I have chosen to let GeoPandas treat them a continuous values, and assign them a color from my Color Map, but to draw my own colorbar to show that the values are in fact quantized.</p>
-<p>First we set up our Color Map, setting the color to use for values outside our desired range as <code>white</code> and <code>black</code> for low and high out-of-range respectively.</p>
-<div class="highlight"><pre><span></span># set up color map to show black for unreachable nodes (LARGE trip times)
-my_cmap = mcm.get_cmap(name=&#39;plasma_r&#39;)
-my_cmap.set_under(&#39;white&#39;)
-my_cmap.set_over(&#39;black&#39;)
+<h3>Plotting the communities</h3>
+<p>We show the communities by usng GeoPandas to draw the nodes, with a marker colored according to the <code>community</code>.  I decided to use the <code>Set3</code> colormap.</p>
+<div class="highlight"><pre><span></span>n_df.plot(ax=ax, marker=&#39;o&#39;, markersize=200, column=&#39;community&#39;, cmap=&#39;Set3&#39;, zorder=1, legend=True, categorical=True)
 </pre></div>
 
 
-<p>Then we plot the road network edges in black, and color each road network node according to the attribute <code>access_time_bnd</code> (except for large values greater than <code>vmax</code>, where the color map will be ignored, and the <code>my_cmap.set_over('black')</code> color will be assigned).  The roads are drawn over the colored nodes (set by <code>zorder</code> parameter).</p>
-<div class="highlight"><pre><span></span># plot road network
-e_df.plot(ax=ax, edgecolor=&#39;black&#39;, linewidth=1, facecolor=&#39;none&#39;, zorder=2, alpha=0.8, )
-n_df.plot(ax=ax, 
-        column=&#39;access_time_bnd&#39;, 
-        cmap=my_cmap,
-        markersize=200, 
-        zorder=1, 
-        vmax=trip_times[-1]+1,
-        )
-</pre></div>
-
-
-<p>We show the police stations by using GeoPandas to convert their geometry to UTM, and plotting blue squares.</p>
-<div class="highlight"><pre><span></span># project to UTM
-police_df = police_df.to_crs(utm_crs.proj4_init)
-# plot stations
-police_df.plot(ax=ax, marker=&#39;s&#39;, 
-    color=&#39;darkblue&#39;, zorder=5, legend=True)
-</pre></div>
-
-
-<p>We plot my home location (this time using Cartyopy to do the CRS transformation from lat/ lon values)</p>
+<h3>map embellishments</h3>
+<p>I add a marker for my home.</p>
 <div class="highlight"><pre><span></span># plot marker with lon / lat
 home_lat, home_lon = -26.527,153.08679
-ax.plot(home_lon, home_lat, marker=&#39;o&#39;,
-         transform=ccrs.PlateCarree(), 
-         markersize=5, alpha=1, color=&#39;red&#39;, zorder=5 )
+ax.plot(home_lon, home_lat, marker=&#39;o&#39;, transform=ccrs.PlateCarree(), markersize=5, alpha=1, color=&#39;red&#39;, zorder=5 )
 </pre></div>
 
 
-<h3>Annotating the Map</h3>
-<p>First, we set a big title, and add a grid.</p>
-<div class="highlight"><pre><span></span># set title and grid
-label_utm_grid2(ax)
-plt.title(&#39;Police Access Time Analysis (via OSM)&#39;, {&#39;fontsize&#39;:30}, pad=40)
+<p>I add markers for local police stations.</p>
+<div class="highlight"><pre><span></span>station_file=&#39;D:\\Cartography\\QPS_STATIONS.shp&#39;
+police_df = gpd.read_file(station_file)
+police_df.plot(ax=ax, marker=&#39;s&#39;, color=&#39;darkblue&#39;, zorder=5, legend=True)
 </pre></div>
 
 
-<p>Now, we create a colorbar for the road node colors. Normally, GeoPandas will do this automatically if we say <code>legend=True</code>, but as explained above, we want a colorbar that reflects the quantized nature of our data, <strong>not</strong> a continuous bar.</p>
-<p>First we specify a <code>Normalizer</code> that doesn't smoothly map attribute values into colors but has jumps in the mapping at specified boundaries.</p>
-<div class="highlight"><pre><span></span>#bounds = [1, 5, 10, 15, 20,]
-bounds = [0, 1, 5, 10, 15, 20]
-my_norm = mpc.BoundaryNorm(boundaries=bounds, ncolors=256)
+<p>I add a grid.</p>
+<div class="highlight"><pre><span></span>gl = ax.gridlines(draw_labels=True)
+gl.xlabels_top = gl.ylabels_right = False
+gl.xformatter = LONGITUDE_FORMATTER
+gl.yformatter = LATITUDE_FORMATTER
 </pre></div>
 
 
-<p>Now, we create a color bar with our chosen color map, and normalizing function, shrink it to size, move it a bit to the right, and add a label to explain the attribute.  Finally we add a title to the Axes object holding the colorbar (the second Axes object in our figure).</p>
-<div class="highlight"><pre><span></span>sm = plt.cm.ScalarMappable(cmap=my_cmap, norm=my_norm)
-sm._A = []
-cb = plt.colorbar(sm, shrink=0.5, pad=.1, extend=&#39;max&#39;)
-cb.set_label(&#39;Response Time Upper Bound (mins)&#39;)
-
-fig.axes[1].set_title(&#39;Response Time Legend&#39;)
-</pre></div>
-
-
-<p>For each of the symbols that were added outside of GeoPandas, we create patches with labels with the same color, and then create a legend.  Then we set the title of this legend, and show the result.</p>
-<div class="highlight"><pre><span></span># for symbol, draw a patch, append handle to list, and append symbol name to names list
-names = []
-handles = []
-patch = mpatches.Patch(color=&#39;darkblue&#39;, label=&#39;Police Station&#39;)
-handles.append(patch)
-names.append(&#39;Police Station&#39;)
-patch = mpatches.Patch(color=&#39;red&#39;, label=&#39;Home&#39;)
-handles.append(patch)
-names.append(&#39;Home&#39;)
-
-# create legend
-leg = ax.legend(handles, names)
-leg.set_title(&#39;Locations Legend&#39;,prop={&#39;size&#39;:14})
-
+<p>I add a title, and show the result.</p>
+<div class="highlight"><pre><span></span>plt.title(&#39;OSM Roads and Community Detection&#39;, {&#39;fontsize&#39;:30}, pad=40)
 
 plt.show()
 </pre></div>
 
 
-<h3>Resulting Graphic</h3>
-<p><img alt="ResponseMap" src="../images/police01.png"></p>
-<p>You can see the close-in nodes in yellow for both stations, and the color gradient as you get further away.  There is one node colored black at the top of the map (almost certainly a node that appear inaccessible, because of truncation by the bounding box), and one node with a response time greater than 15 minutes in the hinterland.</p>
-<p>This analysis is clearly superficial, and the next step might be to use the Open Street Map road data to get a more accurate estimate of top speed on each piece of road (edge).  However, for a few lines of code, it does provide a visual impression of the spatial limitations of service capabilities.</p>
-<h3>Helper Routines</h3>
-<p>This function labels UTM grids:</p>
-<div class="highlight"><pre><span></span>def label_utm_grid2(ax):
-    &#39;&#39;&#39; Warning: should only use with small area UTM maps &#39;&#39;&#39;
-
-    for val,label in zip(ax.get_xticks(), ax.get_xticklabels()):
-        label.set_text(str(val))
-        label.set_position((val,0))
-
-    for val,label in zip(ax.get_yticks(), ax.get_yticklabels()):   
-        label.set_text(str(val))
-        label.set_position((0,val))
-
-    plt.tick_params(bottom=True,top=True,
-            left=True,right=True,
-            labelbottom=True,labeltop=False,
-            labelleft=True,labelright=False)
-
-    ax.xaxis.set_visible(True)
-    ax.yaxis.set_visible(True)
-    plt.grid(True)
-</pre></div>
-
-
+<h2>Resulting graphic</h2>
+<p><img alt="CommunityMap" src="../images/community.png"></p>
+<p>A larger version is <a href="images/community.png">here</a></p>
+<p>This accords pretty well with my perception of the local communities.  The number of communities I chose to extract (8) is maybe a little large, as community 6 (light grey) is probably not real.  The differences between the coastal communities (1 - teal, 2 - pink, 8 - dark yellow), and the hinterland community (4 - orange) are very real in real life.</p>
 <h2>Conclusion</h2>
 <p>For completeness, here are the imports for this Jupyter Notebook 
 (not all are used in the code fragments above, as some are for producing output to support reproducability).</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">osmnx</span> <span class="kn">as</span> <span class="nn">ox</span>
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="kn">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">networkx.algorithms</span> <span class="kn">import</span> <span class="n">community</span>
 
 <span class="kn">import</span> <span class="nn">geopandas</span> <span class="kn">as</span> <span class="nn">gpd</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
@@ -387,14 +217,49 @@ plt.show()
 
 <span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Polygon</span>
 <span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">LineString</span>
+
+<span class="kn">import</span> <span class="nn">itertools</span>
 </pre></div> 
-	<a class="btn btn-mini xsmall" href="../policing.html">
+	<a class="btn btn-mini xsmall" href="../communities.html">
           <i class="icon-comment"></i> Comment </a>
 	<hr />
       </div>
       
     </div>
     
+
+ 
+        
+
+
+
+    <div class='row-fluid'>
+      <div class='article-title span9'> 
+        <a href="../policing.html"><h1>OSMNX and Policing Response Times</h1></a>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span2">
+<p>Thu 02 August 2018 </p>
+
+<p style="text-align: left;">
+Filed under <a href="../category/osmnx.html">OSMNX</a>
+</p>
+<p style="text-align: left;">
+ 
+    Tags <a href="../tag/python.html">python</a> <a href="../tag/geopandas.html">geopandas</a> <a href="../tag/cartopy.html">cartopy</a> <a href="../tag/osmnx.html">osmnx</a> </p>
+<p>
+</p>
+      </div>
+      <div class="summary span8">
+	<p>Visualization of Police Response Times via Road Network</p> 
+	<a class="btn btn-mini xsmall" href="../policing.html">
+          <i class="icon-plus-sign"></i> Read More </a>
+	<hr />
+      </div>
+      
+    </div>
+      
 <div class="pagination">
 <ul>
     <li class="prev disabled"><a href="#">&larr; Previous</a></li>

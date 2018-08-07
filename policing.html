@@ -43,7 +43,7 @@
 	    <li >
 	      <a href="./category/landsat.html ">LANDSAT</a>
 	    <li  class="active" >
-	      <a href="./category/osmnx-geopandas-cartopy.html ">OSMNX, GeoPandas, Cartopy</a>
+	      <a href="./category/osmnx.html ">OSMNX</a>
 	    <li >
 	      <a href="./category/visualizations.html ">Visualizations</a>
 	</ul>
@@ -68,7 +68,7 @@
 <p>Thu 02 August 2018 </p>
 
 <p style="text-align: left;">
-Filed under <a href="./category/osmnx-geopandas-cartopy.html">OSMNX, GeoPandas, Cartopy</a>
+Filed under <a href="./category/osmnx.html">OSMNX</a>
 </p>
 <p style="text-align: left;">
  
@@ -83,7 +83,7 @@ Filed under <a href="./category/osmnx-geopandas-cartopy.html">OSMNX, GeoPandas, 
 <p>So, I thought that I would try to crank up the OSMNX package again, after using it last year to create art works showing the road networks of small local towns.  This interest was sparked via a flurry of tweets and stories on how grid-like various city road networks were.</p>
 <p>This time, I thought I would do something a little more serious than art works.  Prompted by the fact that the Queensland Government publishes a lot of Shapefiles showing locations of various utilities, I decided the look at how fast the police could respond to the rather linear road network local to our area.</p>
 <h2>Data Sources</h2>
-<p>The location of the polife station locations is https://data.qld.gov.au/dataset/qps-police-stations</p>
+<p>The location of the police station locations is https://data.qld.gov.au/dataset/qps-police-stations</p>
 <h2>Mapping Design</h2>
 <p>Because I wanted to underlay some geographic context to the visualization of the road network, I decided to go with Cartopy as the basic mapping software.</p>
 <p>In order to provide some context, I decided to use Cartopy to underlay the Stamen image tiles, showing just terrain.  The URL is http://tile.stamen.com/terrain-background</p>
@@ -338,6 +338,7 @@ plt.show()
 
 <h3>Resulting Graphic</h3>
 <p><img alt="ResponseMap" src="./images/police01.png"></p>
+<p>A larger version is <a href="images/police01.png">here</a></p>
 <p>You can see the close-in nodes in yellow for both stations, and the color gradient as you get further away.  There is one node colored black at the top of the map (almost certainly a node that appear inaccessible, because of truncation by the bounding box), and one node with a response time greater than 15 minutes in the hinterland.</p>
 <p>This analysis is clearly superficial, and the next step might be to use the Open Street Map road data to get a more accurate estimate of top speed on each piece of road (edge).  However, for a few lines of code, it does provide a visual impression of the spatial limitations of service capabilities.</p>
 <h3>Helper Routines</h3>
