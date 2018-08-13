@@ -63,8 +63,588 @@
 
     <div class='row-fluid''>
         <div class="article-title span9">
-            <a href="../communities.html"><h1>OSMNX and Identifying Communities</h1></a>
+            <a href="../ozpopgrid.html"><h1>Playing with Australia's Population Grid</h1></a>
         </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span2">
+<p>Mon 13 August 2018 </p>
+
+<p style="text-align: left;">
+Filed under <a href="../category/cartopy.html">Cartopy</a>
+</p>
+<p style="text-align: left;">
+ 
+    Tags <a href="../tag/python.html">python</a> <a href="../tag/geopandas.html">geopandas</a> <a href="../tag/cartopy.html">cartopy</a> </p>
+<p>
+</p>
+      </div>
+      <div class="article-content span8">
+	<h1>Visualizations of Australia's Population Grid</h1>
+<h2>Introduction</h2>
+<p>The Australian Bureau of Statistics (ABS) make available a population grid.  Essentially, they estimate the population living in each 1 kilometre grid cell, and make this available as a GeoTIFF (amongst other formats).  There is a lot of tricky estimating to go from the usual Census data to a mesh grid, that is explained in the website.  I thought it might be fun to look at visualizing this in different ways.</p>
+<p>I found myself chasing down some interesting cartographic rabbit holes, and learnt a useful Pandas trick.</p>
+<h2>Data Sources</h2>
+<p>You can find the population grid GeoTIFF at http://www.abs.gov.au/ausstats/abs@.nsf/mf/1270.0.55.007</p>
+<h2>Data Exploration</h2>
+<p>The first thing I did was to read the GeoTIFF, and work out what projection was used.</p>
+<div class="highlight"><pre><span></span>pop = gdal.Open(&#39;d:\\qml\\Australian_Population_Grid_2011.tif&#39;)
+data = pop.ReadAsArray()
+gt = pop.GetGeoTransform()
+proj = pop.GetProjection()
+
+inproj = osr.SpatialReference()
+inproj.ImportFromWkt(proj)
+
+print( &quot;[ RASTER BAND COUNT ]: &quot;, pop.RasterCount)
+cols = pop.RasterXSize
+print(&#39;cols = &#39;,cols)
+rows = pop.RasterYSize
+print(&#39; rows = &#39;, rows)
+bands = pop.RasterCount
+print(&#39;bands = &#39;, bands)
+driver = pop.GetDriver().LongName
+print(&#39;driver =&#39;, driver)
+
+print(&#39;MetaData = &#39;,pop.GetMetadata())
+
+print(inproj)
+</pre></div>
+
+
+<p>giving the following output.</p>
+<div class="highlight"><pre><span></span>[ RASTER BAND COUNT ]:  1
+cols =  6382
+rows =  3821
+bands =  1
+driver = GeoTIFF
+MetaData =  {&#39;AREA_OR_POINT&#39;: &#39;Area&#39;, &#39;DataType&#39;: &#39;Generic&#39;}
+PROJCS[&quot;GDA_1994_Albers&quot;,
+    GEOGCS[&quot;GCS_GDA_1994&quot;,
+        DATUM[&quot;Geocentric_Datum_of_Australia_1994&quot;,
+            SPHEROID[&quot;GRS_1980&quot;,6378137,298.257222101,
+                AUTHORITY[&quot;EPSG&quot;,&quot;7019&quot;]],
+            AUTHORITY[&quot;EPSG&quot;,&quot;6283&quot;]],
+        PRIMEM[&quot;Greenwich&quot;,0],
+        UNIT[&quot;degree&quot;,0.0174532925199433]],
+    PROJECTION[&quot;Albers_Conic_Equal_Area&quot;],
+    PARAMETER[&quot;standard_parallel_1&quot;,-18],
+    PARAMETER[&quot;standard_parallel_2&quot;,-36],
+    PARAMETER[&quot;latitude_of_center&quot;,0],
+    PARAMETER[&quot;longitude_of_center&quot;,132],
+    PARAMETER[&quot;false_easting&quot;,0],
+    PARAMETER[&quot;false_northing&quot;,0],
+    UNIT[&quot;metre&quot;,1,
+    AUTHORITY[&quot;EPSG&quot;,&quot;9001
+</pre></div>
+
+
+<p>A couple of things jumped out at me.  </p>
+<ul>
+<li>
+<p>First, they are using an Albers Equal Area Projection in which to draw the mesh grid.  It makes sense to use
+a Equal Area projection (not to use one would be weird), but the choice of Albers is unexplained in any documentation I could find.  There is an European Union project that is very similar (GEOSTAT 1A – Representing Census data
+in a European population grid), that uses a different projection.  However, the EU case is made harder for the 
+statiticians because the EU has to match the use of grids in differing projections by its member states.  In any case they seem to be using
+a Lamberth Azimuthal Equal Area.</p>
+</li>
+<li>
+<p>Second, the projection uses an Australian-specific Datum <code>GDA94</code>.  A very helpful website http://www.homer.com.au/webdoc/gis/wgs84fact.pdf
+explains that </p>
+<blockquote>
+<p>" ... keep in mind that GDA94 coordinates are fixed as at the 1st January 1994 (epoch 1994.0) and that the Australian plate is drifting in a north-easterly direction about seven centimetres per year."</p>
+</blockquote>
+</li>
+</ul>
+<p>It appears that the Spheroid used is almost exactly the same as WGS84, which is a relief.  We can use the default <code>Globe</code> provided by Cartopy.</p>
+<h2>Map Time!</h2>
+<h3>Global Albers</h3>
+<p>The first thing is to create a Cartopy Coordinate Reference System (CRS) to match the GeoTIFF:</p>
+<div class="highlight"><pre><span></span>albo = ccrs.AlbersEqualArea(central_latitude=0,
+ false_easting=0, 
+ false_northing=0, 
+ central_longitude=132, 
+ standard_parallels=(-18, -36) )
+</pre></div>
+
+
+<p>and then see what the world looks like in this projection.</p>
+<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+ax = fig.add_subplot(1, 1, 1, projection= albo )
+
+ax.set_global()
+ax.coastlines()
+
+#plt.imshow(data, extent=extent_tif, transform=albo)
+plt.title(&#39;World in Albers Equal Area (centered on Australia)&#39;, {&#39;fontsize&#39;:30}, pad=40)
+
+plt.show()
+</pre></div>
+
+
+<p>This gives us:</p>
+<p><img alt="AlbersMap" src="../images/ozpop01.png"></p>
+<p>A larger version is <a href="images/ozpop01.png">here</a></p>
+<h3>Zoom in to Australia</h3>
+<p>We can calculate the extent of the GeoTIFF by:</p>
+<div class="highlight"><pre><span></span>extent_tif = (gt[0], gt[0] + pop.RasterXSize * gt[1],
+        gt[3] + pop.RasterYSize * gt[5], gt[3])
+</pre></div>
+
+
+<p>So let us use that extent (in the <code>albo</code> projection units) to zoom into Australia, show the TIFF file, and plot some coastlines.  The TIFF file is a single band, and we use the default color map to map population density to a color.</p>
+<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+ax = fig.add_subplot(1, 1, 1, projection= albo )
+
+ax.set_extent(extent_tif, crs=albo)
+ax.coastlines(color=&#39;white&#39;, zorder=5)
+
+plt.imshow(data, extent=extent_tif, transform=albo,  )
+plt.title(&#39;Australian Population Grid, Albers Equal Area&#39;, {&#39;fontsize&#39;:30}, pad=40)
+
+plt.show()
+</pre></div>
+
+
+<p>This gives us:</p>
+<p><img alt="AlbersMap" src="../images/ozpop02.png"></p>
+<p>A larger version is <a href="images/ozpop02.png">here</a></p>
+<p>As this stage it started to dawn on me that:</p>
+<ul>
+<li>
+<p>The map probably extends so far west, so to include various islands that are part of Australia;</p>
+</li>
+<li>
+<p>You have to look very hard to see the odd pixel that has a non-zero value</p>
+</li>
+</ul>
+<h3>In a Global Context</h3>
+<p>The code:</p>
+<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+ax = fig.add_subplot(1, 1, 1, projection= albo )
+
+#ax.set_extent(extent_tif, crs=albo)
+ax.set_global()
+ax.coastlines(color=&#39;blue&#39;, zorder=5)
+
+plt.imshow(data, extent=extent_tif, transform=albo,  )
+
+plt.title(&#39;Australian Population Grid in World Context\nAlbers Equal Area&#39;, {&#39;fontsize&#39;:30}, pad=40)
+plt.show()
+</pre></div>
+
+
+<p>shows Australia in a global context, and reinforces the fact that our grid is rectangular (but only in the <code>albo</code> projection);  we will come back to this later.  At this scale, Australia's centres of population are so small you can't see them.</p>
+<p><img alt="AlbersMap" src="../images/ozpop03.png"></p>
+<p>A larger version is <a href="images/ozpop03.png">here</a></p>
+<h3>In a Local Context</h3>
+<p>My local patch (that I use quite often for examples) can be defined by:</p>
+<div class="highlight"><pre><span></span>local = ( 153, 153.2, -26.6, -26.4)
+</pre></div>
+
+
+<p>This defines the minimum and maximum longitude, followed by minimum and maximum latitude.</p>
+<p>We  display the Open Street Map tiles that cover this region, and then overlay the population grid over this.  I use a trick with <code>matplotlib</code> color-maps;  I define the color of the pixels that are under a (to be defined) value to be white, with <code>alpha=0</code>;  effectively, I set these pixels to be transparent.  Then when I call <code>imshow</code>, I set that value to 60 (<code>vmin=60</code>).  This gives me a map with areas under 60 people per square kilometre to be clear, and rest to have a color-coded shading applied (<code>alpha=0.5</code>).  </p>
+<p><img alt="LocalMap" src="../images/ozpop04.png"></p>
+<p>A larger version is <a href="images/ozpop04.png">here</a></p>
+<p>To pursue this theme a little, in the next example we set the <strong>over</strong> value behaviour to be fully transparent, and the <strong>under</strong> value behaviour to be black, almost opaque <code>alpha=0.8</code>.</p>
+<div class="highlight"><pre><span></span>my_cmap.set_over(&#39;white&#39;, alpha=0)
+my_cmap.set_under(&#39;black&#39;, alpha=0.8)
+</pre></div>
+
+
+<p>This serves to hide relatively unpopulated areas, and highlight those more densely populated areas.  The <code>imshow</code> call sets the value to be 100 (people per square kilometre)</p>
+<p><img alt="LocalMap" src="../images/ozpop05.png"></p>
+<p>A larger version is <a href="images/ozpop05.png">here</a></p>
+<h3>In a Continental Context</h3>
+<p>The following code plots each pixel of the GeoTIFF (except zero population cells are left transparent), and again, while it shows the emptiness of Australia, it does not really let you see where the majority of the population are to be found.</p>
+<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+ax = fig.add_subplot(1, 1, 1, projection= albo )
+
+#ax.set_extent(extent_tif, crs=albo)
+ax.set_extent(extent_tif, crs=albo )
+ax.coastlines(zorder=9)
+
+
+my_cmap = plt.cm.get_cmap(&#39;magma&#39;)
+
+my_cmap.set_under(&#39;white&#39;, alpha=0)
+
+
+
+plt.imshow(data, extent=extent_tif, transform=albo, cmap=my_cmap, vmin=1, vmax=20000, zorder=8)
+plt.title(&#39;Australian Population Grid\n Linear Scale. Albers Equal Area&#39;, {&#39;fontsize&#39;:20}, pad=40)
+
+plt.show()
+</pre></div>
+
+
+<p><img alt="AustraliaMap" src="../images/ozpop06.png"></p>
+<p>A larger version is <a href="images/ozpop06.png">here</a></p>
+<p>If we use a Log scale (<code>norm=colors.LogNorm(vmin=data.min()+1, vmax=data.max())</code> )for our mapping to a color from our color map, we get, via:</p>
+<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+ax = fig.add_subplot(1, 1, 1, projection= albo )
+
+#ax.set_extent(extent_tif, crs=albo)
+ax.set_extent(extent_tif, crs=albo )
+ax.coastlines(zorder=9)
+ax.gridlines()
+
+my_cmap = plt.cm.get_cmap(&#39;magma&#39;)
+my_cmap.set_under(&#39;white&#39;, alpha=1)
+
+
+
+pcm = plt.imshow(data, extent=extent_tif, transform=albo, cmap=my_cmap,norm=colors.LogNorm(vmin=data.min()+1, vmax=data.max()), zorder=8)
+cbar = fig.colorbar(pcm, ax=ax,  shrink=0.5, pad=0.1, extend=&#39;min&#39;)
+cbar.ax.set_ylabel(&#39;Population density (people per sq km): Log Scale&#39;, rotation=270, labelpad=20)
+cbar.ax.set_title(&#39;Population Density Legend&#39;)
+
+plt.title(&#39;Australian Population Grid\nLog Scale. Albers Equal Area&#39;, {&#39;fontsize&#39;:20}, pad=40)
+
+plt.show()
+</pre></div>
+
+
+<p>a more useful display.</p>
+<p><img alt="AustraliaMap" src="../images/ozpop09.png"></p>
+<p>A larger version is <a href="images/ozpop09.png">here</a></p>
+<h2>Hitting the data with a rebin hammer</h2>
+<p>Suppose we have a numpy array that looks like:</p>
+<div class="highlight"><pre><span></span>a = np.array([[ 1, 2, 3, 4, 5, 6],
+            [ 5 ,6, 7, 8, 7, 8],
+            [ 9,10,11,12, 13, 14],
+            [13,14,15,16, 17, 18]])
+</pre></div>
+
+
+<p>and we define a function that look like:</p>
+<div class="highlight"><pre><span></span>def shrink(data, rows, cols):
+    return data.reshape(rows, data.shape[0]//rows, cols, data.shape[1]//cols).sum(axis=1).sum(axis=2)
+</pre></div>
+
+
+<p>then </p>
+<div class="highlight"><pre><span></span>print(shrink(a, 2, 3))
+</pre></div>
+
+
+<p>gives us:</p>
+<div class="highlight"><pre><span></span><span class="k">[[14 22 26]</span>
+<span class="k">[46 54 62]]</span>
+</pre></div>
+
+
+<p>That is, we have taken our original 4 row, 6 column array, and reduced it to a 2 row, 3 column array, with each element holding the sum of the sub-array that has been collapsed.</p>
+<p>We have <code>data.shape</code> gives <code>(3821, 6382)</code>, so we take a chunk that is a multiple of 100 in row and column directions.</p>
+<p>We then shrink our data by <code>data3 = shrink(data2, 38, 63)</code>.</p>
+<p>Now the simplest possible display shows some non-zero values.</p>
+<div class="highlight"><pre><span></span>plt.imshow(data3)
+</pre></div>
+
+
+<p><img alt="AustraliaMap" src="../images/ozpop07.png"></p>
+<p>A larger version is <a href="images/ozpop07.png">here</a></p>
+<h2>Bubble Plot</h2>
+<p>In the next example, we plot a red bubble at each zon-zero cell of the grid.  We also draw the grid itself (very faintly, <code>alpha=0.2</code>).</p>
+<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+ax = fig.add_subplot(1, 1, 1,  projection=albo)
+
+ax.set_extent(extent_tif, crs=albo )
+
+mksize_min = 0
+mksize_max = 200
+data_min = data3.min()
+data_max = data3.max()
+
+down_scale_factor = 100
+
+#extent_tif = (gt[0], gt[0] + pop.RasterXSize * gt[1],
+#          gt[3] + pop.RasterYSize * gt[5], gt[3])
+
+x_step = gt[1]
+y_step = gt[5]
+
+for ix in range(data3.shape[1]):
+    for iy in range(data3.shape[0]):
+        row = data3.shape[0] - iy -1
+        col = ix
+
+        albo_x = extent_tif[0] + x_step*(ix+0.5) * down_scale_factor
+        albo_y = extent_tif[2] + abs(y_step)* (iy+0.5) * down_scale_factor
+
+        markersize=mksize_min + (mksize_max-mksize_min)*(data3[row, col]-data_min)/(data_max-data_min)
+
+        plt.plot(albo_x, albo_y ,
+                markersize=markersize, 
+                marker=&#39;o&#39;, 
+                color=&#39;red&#39;, 
+                alpha=0.25, zorder=9)
+
+
+    #end for
+#end for
+
+for ix in range(data3.shape[1]):
+    albo_x = extent_tif[0] + x_step*ix * down_scale_factor       
+    plt.plot([albo_x, albo_x] , [extent_tif[2], extent_tif[3]], linestyle=&#39;-&#39;, color=&#39;lightgrey&#39;, alpha=0.2)
+#end for
+
+for iy in range(data3.shape[0]):
+    albo_y = extent_tif[2] + abs(y_step)* iy * down_scale_factor
+    plt.plot([extent_tif[0], extent_tif[1] ] , [albo_y, albo_y], linestyle=&#39;-&#39;, color=&#39;lightgrey&#39;, alpha=0.2)
+#end for
+
+
+
+ax.coastlines()
+ax.gridlines()
+
+plt.title(&#39;Australian Population Grid\n Binned over 100km Grid. Albers Equal Area&#39;, {&#39;fontsize&#39;:20}, pad=40)
+
+plt.show()
+</pre></div>
+
+
+<p><img alt="BubbleMap" src="../images/ozpop08.png"></p>
+<p>A larger version is <a href="images/ozpop08.png">here</a></p>
+<h3>Cell Plot</h3>
+<p>Now, when we plot the value of each cell, using a Log scale, we get a more understandable graphic.  You can see Australians for the most part hugging the coastline; you can see the big mining towns like Mount Isa and Broken Hill.</p>
+<p><img alt="BubbleMap" src="../images/ozpop10.png"></p>
+<p>A larger version is <a href="images/ozpop10.png">here</a></p>
+<p>The code that produced this is below: as before, we plot the grid lines faintly (straight lines in this projection).</p>
+<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+ax = fig.add_subplot(1, 1, 1,  projection=albo)
+
+
+data3_ext = [extent_tif[0], extent_tif[0]+ x_step*data3.shape[1]*down_scale_factor, 
+            extent_tif[3], extent_tif[3]+ (y_step)* data3.shape[0]*down_scale_factor]
+#ax.set_global()
+ax.set_extent(data3_ext, crs=albo )
+
+my_cmap = plt.cm.get_cmap(&#39;gist_earth&#39;)
+#my_cmap.set_under(&#39;grey&#39;, alpha=0.1)
+
+ax.coastlines( zorder=9)
+
+pcm = plt.imshow(data3, 
+                extent=data3_ext, 
+                transform=albo, 
+                vmin=100, 
+                cmap=my_cmap, 
+                zorder=1, 
+                origin=&#39;top&#39;, 
+                norm=colors.LogNorm( ), #vmin=data3.min()+1, vmax=data3.max()),
+                )
+
+cbar = fig.colorbar(pcm, ax=ax,  shrink=0.5, pad=0.1, extend=&#39;min&#39;)
+cbar.ax.set_ylabel(&#39;Population density (people per 10,000 sq km): Log scale&#39;, rotation=270, labelpad=20)
+cbar.ax.set_title(&#39;Population Density Legend&#39;)
+
+for ix in range(data3.shape[1]):
+    albo_x = extent_tif[0] + x_step*ix * down_scale_factor       
+    plt.plot([albo_x, albo_x] , [extent_tif[2], extent_tif[3]], linestyle=&#39;-&#39;, color=&#39;lightgrey&#39;, alpha=0.2)
+#end for
+
+for iy in range(data3.shape[0]):
+    albo_y = extent_tif[2] + abs(y_step)* iy * down_scale_factor
+    plt.plot([extent_tif[0], extent_tif[1] ] , [albo_y, albo_y], linestyle=&#39;-&#39;, color=&#39;lightgrey&#39;, alpha=0.2)
+#end for
+
+ax.gridlines()
+
+plt.title(&#39;Australian Population Grid\n Binned over 100 km Grid. Albers Equal Area&#39;, {&#39;fontsize&#39;:20}, pad=40)
+
+plt.show()
+</pre></div>
+
+
+<h2>Plate Carree Map</h2>
+<p>Finally, just for fun, I plot the map in the Plate Carree projection.  This makes the population grid look curved, but thtis to be expected.  I also decided that I wanted to distinguish between a population count of zero because there is nobody there on land, and because it is out to sea.</p>
+<p>I learned a few things, because I decided to draw the non-rectangular patches myself  (<code>imshow</code> seems to be very slow in reshaping an image).</p>
+<p>First, we calculate the extent of the GeoTiff in longitude, latitude units.</p>
+<div class="highlight"><pre><span></span>x1, y1 = ccrs.PlateCarree().transform_point(-3853000.0,  -4835000.0, albo)
+
+x2, y2 = ccrs.PlateCarree().transform_point(2529000.0,  -1014000.0, albo)
+</pre></div>
+
+
+<p>Then the usual preamble to set up the Figure, and the Cartopy aware Axes objects.  Note we go down an extra 3 degree of latitude, because the Albers grid sinks down below the lines of constant latitude.</p>
+<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+
+pc_proj = ccrs.PlateCarree()
+ax = fig.add_subplot(1, 1, 1, projection= pc_proj )
+
+ax.set_extent((x1, x2, y1-3.0, y2), crs=ccrs.Geodetic())
+
+ax.coastlines(color=&#39;blue&#39;, zorder=5)
+</pre></div>
+
+
+<p>We define the limits of our data values:</p>
+<div class="highlight"><pre><span></span>dmax = data3.max()
+dmin = 0
+</pre></div>
+
+
+<p>We now use GeoPandas to read the Australian coastline, and fill the interior with light grey.</p>
+<div class="highlight"><pre><span></span># get country borders
+resolution = &#39;10m&#39;
+category = &#39;cultural&#39;
+name = &#39;admin_0_countries&#39;
+
+shpfilename = shapereader.natural_earth(resolution, category, name)
+
+# read the shapefile using geopandas
+df = gpd.read_file(shpfilename)
+
+# read the borders
+poly = df.loc[df[&#39;ADMIN&#39;] == &#39;Australia&#39;][&#39;geometry&#39;].values[0]
+ax.add_geometries(poly, 
+                crs=ccrs.PlateCarree(), 
+                facecolor=&#39;lightgrey&#39;, 
+                edgecolor=&#39;blue&#39;, zorder=1, alpha=0.75)
+ax.add_geometries(poly, 
+                crs=ccrs.PlateCarree(), 
+                facecolor=&#39;none&#39;, 
+                edgecolor=&#39;blue&#39;, zorder=15, alpha=0.75)
+</pre></div>
+
+
+<p>We then cycle through all the cells of the 100 km grid, transforming the Albers coordinated into Plate Carree coordinates (longitude and latitude), and draw the grid faintly (<code>alpha=0.2</code>). Then if there is anybody at all living in this 100 km grid cell, we create a patch, and remember its color.  We use the <code>terrain</code> color map.</p>
+<p>At the end we create a PatchCollection, set the colors, and add them to the Axes object.</p>
+<p>We then draw lat/lon gridlines, and set a title.</p>
+<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+
+pc_proj = ccrs.PlateCarree()
+ax = fig.add_subplot(1, 1, 1, projection= pc_proj )
+
+ax.set_extent((x1, x2, y1-3.0, y2), crs=ccrs.Geodetic())
+
+# get country borders
+resolution = &#39;10m&#39;
+category = &#39;cultural&#39;
+name = &#39;admin_0_countries&#39;
+
+shpfilename = shapereader.natural_earth(resolution, category, name)
+
+# read the shapefile using geopandas
+df = gpd.read_file(shpfilename)
+
+# read the german borders
+poly = df.loc[df[&#39;ADMIN&#39;] == &#39;Australia&#39;][&#39;geometry&#39;].values[0]
+ax.add_geometries(poly, 
+                crs=ccrs.PlateCarree(), 
+                facecolor=&#39;lightgrey&#39;, 
+                edgecolor=&#39;blue&#39;, zorder=1, alpha=0.75)
+ax.add_geometries(poly, 
+                crs=ccrs.PlateCarree(), 
+                facecolor=&#39;none&#39;, 
+                edgecolor=&#39;blue&#39;, zorder=15, alpha=0.75)
+
+dmax = data3.max()
+dmin = 0
+
+
+patches = []
+colors = []
+for ix in range(data3.shape[1]):
+    albo_x1 = extent_tif[0] + x_step*ix * down_scale_factor     
+    albo_x2 = extent_tif[0] + x_step*(ix+1) * down_scale_factor     
+    for iy in range(data3.shape[0]):
+        albo_y1 = extent_tif[2] + abs(y_step)* iy * down_scale_factor
+        albo_y2 = extent_tif[2] + abs(y_step)* (iy + 1) * down_scale_factor
+
+        gx1, gy1 = pc_proj.transform_point(albo_x1, albo_y1, albo)
+        gx2, gy2 = pc_proj.transform_point(albo_x1, albo_y2, albo)
+        gx3, gy3 = pc_proj.transform_point(albo_x2, albo_y2, albo)      
+        gx4, gy4 = pc_proj.transform_point(albo_x2, albo_y1, albo)
+
+        plt.plot([gx1, gx2, gx3, gx4, gx1], [gy1, gy2, gy3, gy4, gy1], 
+                linestyle=&#39;-&#39;, 
+                color=&#39;lightgrey&#39;, 
+                alpha=0.2, 
+                zorder=15,
+                )
+
+        if(data3[data3.shape[0]-iy-1, ix]&gt;1):
+            this_color = cm.terrain(math.log10(data3[data3.shape[0]-iy-1, ix]-dmin) / math.log10(dmax-dmin) )
+            box = Polygon([[gx1, gy1], [gx2, gy2], [gx3, gy3], [gx4, gy4] ],)
+            patches.append(box)
+            colors.append(this_color)
+    #end for
+#end for
+
+p = PatchCollection(patches)
+p.set_color(colors)
+p.set_edgecolor(&#39;lightblue&#39;, )
+p.set_zorder(9)
+ax.add_collection(p,)
+
+gl = ax.gridlines(draw_labels=True)
+
+gl.xformatter = LONGITUDE_FORMATTER
+gl.yformatter = LATITUDE_FORMATTER
+
+plt.title(&#39;Australian Population Grid\nRebinned to 100 km Grid - Log Scale. Plate Carree&#39;, {&#39;fontsize&#39;:20}, pad=40)
+
+plt.show()
+</pre></div>
+
+
+<p>We get a map like:</p>
+<p><img alt="PlateCarreeMap" src="../images/ozpop12.png"></p>
+<p>A larger version is <a href="images/ozpop12.png">here</a></p>
+<h2>Conclusion</h2>
+<p>For completeness, here are the imports for this Jupyter Notebook 
+(not all are used in the code fragments above, as some are for producing output to support reproducability).</p>
+<div class="highlight"><pre><span></span><span class="c1"># all imports should go here</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="kn">as</span> <span class="nn">ccrs</span>
+<span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">GoogleTiles</span>
+<span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">OSM</span>
+<span class="kn">import</span> <span class="nn">cartopy.feature</span> <span class="kn">as</span> <span class="nn">cfeature</span>
+<span class="kn">from</span> <span class="nn">cartopy.mpl.gridliner</span> <span class="kn">import</span> <span class="n">LONGITUDE_FORMATTER</span><span class="p">,</span> <span class="n">LATITUDE_FORMATTER</span>
+<span class="kn">from</span> <span class="nn">cartopy.io</span> <span class="kn">import</span> <span class="n">shapereader</span>
+
+<span class="kn">from</span> <span class="nn">osgeo</span> <span class="kn">import</span> <span class="n">gdal</span><span class="p">,</span> <span class="n">osr</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.colors</span> <span class="kn">as</span> <span class="nn">colors</span>
+<span class="kn">from</span> <span class="nn">matplotlib.patches</span> <span class="kn">import</span> <span class="n">Polygon</span>
+<span class="kn">from</span> <span class="nn">matplotlib.collections</span> <span class="kn">import</span> <span class="n">PatchCollection</span>
+<span class="kn">import</span> <span class="nn">matplotlib.cm</span> <span class="kn">as</span> <span class="nn">cm</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">import</span> <span class="nn">geopandas</span> <span class="kn">as</span> <span class="nn">gpd</span>
+</pre></div> 
+	<a class="btn btn-mini xsmall" href="../ozpopgrid.html">
+          <i class="icon-comment"></i> Comment </a>
+	<hr />
+      </div>
+      
+    </div>
+    
+
+ 
+        
+
+
+
+    <div class='row-fluid'>
+      <div class='article-title span9'> 
+        <a href="../communities.html"><h1>OSMNX and Identifying Communities</h1></a>
+      </div>
     </div>
     <div class="row-fluid">
       <div class="span2">
@@ -79,154 +659,15 @@ Filed under <a href="../category/osmnx.html">OSMNX</a>
 <p>
 </p>
       </div>
-      <div class="article-content span8">
-	<h1>Visualization of communities via the Road Network</h1>
-<h2>Introduction</h2>
-<p>Having extracted the local road network from  Open Street Maps (via OSMNX - see earlier blog posts), I thought it might be interesting to checkout what properties 
-of the road network we could automatically extract.  One such property is that of 'community'.</p>
-<h2>Data Sources</h2>
-<p>To provide continuity with the previous maps, I included the local police stations.<br>
-The source of the police station locations is https://data.qld.gov.au/dataset/qps-police-stations</p>
-<h2>Mapping Design</h2>
-<p>Because I wanted to underlay some geographic context to the visualization of the road network, I decided to go with Cartopy as the basic mapping software, as its support for inclusion of map tiles is excellent.</p>
-<p>In order to provide some context, I decided to use Cartopy to underlay the Stamen image tiles, showing just terrain.  The URL is http://tile.stamen.com/terrain-background</p>
-<p>This also proves a nice (and accurate) coastline, without which the map would be a little confusing.</p>
-<p>As before, I chose OSMNX for road information, as it is unsurpassed in this area.</p>
-<h2>Implementation</h2>
-<h3>Background Map Tiles</h3>
-<p>The Stamen terrain-only background map tiles are not supported out-of-box by Cartopy, but it is pretty easy to get access to them.</p>
-<p>The following code fragment gets us an <code>imagery</code> map tile provider that we can pass to Cartopy.</p>
-<div class="highlight"><pre><span></span><span class="kr">class</span> <span class="nx">StamenToner</span><span class="p">(</span><span class="nx">GoogleTiles</span><span class="p">)</span><span class="o">:</span>
-    <span class="nx">def</span> <span class="nx">_image_url</span><span class="p">(</span><span class="nx">self</span><span class="p">,</span> <span class="nx">tile</span><span class="p">)</span><span class="o">:</span>
-        <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">z</span> <span class="o">=</span> <span class="nx">tile</span>
-        <span class="nx">url</span> <span class="o">=</span> <span class="s1">&#39;http://tile.stamen.com/terrain-background/{}/{}/{}.png&#39;</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="nx">z</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nx">url</span>    
-    <span class="err">#</span> <span class="nx">end</span> <span class="nx">_image_url</span>
-<span class="err">#</span> <span class="nx">end</span> <span class="nx">StamenToner</span>
-
-<span class="nx">imagery</span> <span class="o">=</span> <span class="nx">StamenToner</span><span class="p">()</span>
-</pre></div>
-
-
-<h3>Defining the map</h3>
-<p>First we create a figure holding a map, that uses the PlateCarree coordinate refrence system (CRS).  Next, we set the extent of our map (to be just my local area).</p>
-<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20, 20) )
-ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree() )
-
-home = ( 153, 153.2, -26.6, -26.4) #home = ( 152.5, 153.5, -27, -26)
-ax.set_extent(home, crs=ccrs.PlateCarree() )
-</pre></div>
-
-
-<h3>Loading the road network</h3>
-<p>Next we load the road network, and convert the nodes (intersections) and edges (road segments) of our graph into GeoPandas GeoDataFrames.</p>
-<div class="highlight"><pre><span></span>graph = ox.graph_from_bbox(home[3], home[2], home[1], home[0], network_type=&#39;drive&#39;, truncate_by_edge=True) 
-n_df, e_df = ox.save_load.graph_to_gdfs(graph, nodes=True, edges=True)
-</pre></div>
-
-
-<h3>Plotting the roads</h3>
-<p>Next we add the background image, and plot the road network.  We set <code>zorder</code> to 2, so that all the roads are visible, even when we add out community shading.</p>
-<div class="highlight"><pre><span></span>ax.add_image(imagery, 12, alpha=0.5)
-e_df.plot(ax=ax, edgecolor=&#39;black&#39;, linewidth=1, facecolor=&#39;none&#39;, zorder=2, alpha=0.8, )
-</pre></div>
-
-
-<h3>Extract the communities</h3>
-<p>Next, we add an attribute <code>community</code> to our GeoDataFrame that represents nodes, and set it to 0 for all nodes.</p>
-<p>Then we use an algorithm provided by <code>networkx</code>.  I tried most of the <code>networkx</code> community algorithms: some took to long to complete,  some failed on the types of network (graphs) returned by OSMNX, but <code>async_fluidc</code>:</p>
-<ul>
-<li>
-<p>gave results that accorded with my intuition</p>
-</li>
-<li>
-<p>was reasonably snappy</p>
-</li>
-</ul>
-<p>Note that the networks returned via <code>OSMNX</code> must be converted to undirected network before processing.  I chose to extract 8 communities;  this was an arbitary guess, but as it turns out, not a bad one given the size of the area in my map.</p>
-<p>The <code>async_fluidc</code> call returns sets of nodes; each node in the set belong to the same community.  We loop over these sets, and assign an integer to each node, being the community index (starting at 1 for non-programmer friendlyness)</p>
-<div class="highlight"><pre><span></span>n_df[&#39;community&#39;] = 0
-zz = community.asyn_fluidc(graph.to_undirected(), 8 )
-for i, x in enumerate(zz):
-    for n in x:
-        n_df.at[n, &#39;community&#39;] = i+1
-    #end for
-#end for
-</pre></div>
-
-
-<h3>Plotting the communities</h3>
-<p>We show the communities by usng GeoPandas to draw the nodes, with a marker colored according to the <code>community</code>.  I decided to use the <code>Set3</code> colormap.</p>
-<div class="highlight"><pre><span></span>n_df.plot(ax=ax, marker=&#39;o&#39;, markersize=200, column=&#39;community&#39;, cmap=&#39;Set3&#39;, zorder=1, legend=True, categorical=True)
-</pre></div>
-
-
-<h3>map embellishments</h3>
-<p>I add a marker for my home.</p>
-<div class="highlight"><pre><span></span># plot marker with lon / lat
-home_lat, home_lon = -26.527,153.08679
-ax.plot(home_lon, home_lat, marker=&#39;o&#39;, transform=ccrs.PlateCarree(), markersize=5, alpha=1, color=&#39;red&#39;, zorder=5 )
-</pre></div>
-
-
-<p>I add markers for local police stations.</p>
-<div class="highlight"><pre><span></span>station_file=&#39;D:\\Cartography\\QPS_STATIONS.shp&#39;
-police_df = gpd.read_file(station_file)
-police_df.plot(ax=ax, marker=&#39;s&#39;, color=&#39;darkblue&#39;, zorder=5, legend=True)
-</pre></div>
-
-
-<p>I add a grid.</p>
-<div class="highlight"><pre><span></span>gl = ax.gridlines(draw_labels=True)
-gl.xlabels_top = gl.ylabels_right = False
-gl.xformatter = LONGITUDE_FORMATTER
-gl.yformatter = LATITUDE_FORMATTER
-</pre></div>
-
-
-<p>I add a title, and show the result.</p>
-<div class="highlight"><pre><span></span>plt.title(&#39;OSM Roads and Community Detection&#39;, {&#39;fontsize&#39;:30}, pad=40)
-
-plt.show()
-</pre></div>
-
-
-<h2>Resulting graphic</h2>
-<p><img alt="CommunityMap" src="../images/community.png"></p>
-<p>A larger version is <a href="images/community.png">here</a></p>
-<p>This accords pretty well with my perception of the local communities.  The number of communities I chose to extract (8) is maybe a little large, as community 6 (light grey) is probably not real.  The differences between the coastal communities (1 - teal, 2 - pink, 8 - dark yellow), and the hinterland community (4 - orange) are very real in real life.</p>
-<h2>Conclusion</h2>
-<p>For completeness, here are the imports for this Jupyter Notebook 
-(not all are used in the code fragments above, as some are for producing output to support reproducability).</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">osmnx</span> <span class="kn">as</span> <span class="nn">ox</span>
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="kn">as</span> <span class="nn">nx</span>
-<span class="kn">from</span> <span class="nn">networkx.algorithms</span> <span class="kn">import</span> <span class="n">community</span>
-
-<span class="kn">import</span> <span class="nn">geopandas</span> <span class="kn">as</span> <span class="nn">gpd</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="kn">as</span> <span class="nn">mpatches</span>
-<span class="kn">import</span> <span class="nn">matplotlib.colors</span> <span class="kn">as</span> <span class="nn">mpc</span>
-<span class="kn">import</span> <span class="nn">matplotlib.cm</span> <span class="kn">as</span> <span class="nn">mcm</span>
-
-<span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="kn">as</span> <span class="nn">ccrs</span>
-<span class="kn">from</span> <span class="nn">cartopy.mpl.gridliner</span> <span class="kn">import</span> <span class="n">LONGITUDE_FORMATTER</span><span class="p">,</span> <span class="n">LATITUDE_FORMATTER</span>
-<span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">GoogleTiles</span>
-
-<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Polygon</span>
-<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">LineString</span>
-
-<span class="kn">import</span> <span class="nn">itertools</span>
-</pre></div> 
+      <div class="summary span8">
+	<p>Visualization of communities identified via the road network</p> 
 	<a class="btn btn-mini xsmall" href="../communities.html">
-          <i class="icon-comment"></i> Comment </a>
+          <i class="icon-plus-sign"></i> Read More </a>
 	<hr />
       </div>
       
     </div>
-    
+      
 
  
         
@@ -287,39 +728,6 @@ Filed under <a href="../category/geopandas.html">GeoPandas</a>
       <div class="summary span8">
 	<p>GeoPandas and Data Display</p> 
 	<a class="btn btn-mini xsmall" href="../geopandasdisplay.html">
-          <i class="icon-plus-sign"></i> Read More </a>
-	<hr />
-      </div>
-      
-    </div>
-      
-
- 
-        
-
-
-
-    <div class='row-fluid'>
-      <div class='article-title span9'> 
-        <a href="../landsat2.html"><h1>LANDSAT Color Image Processing</h1></a>
-      </div>
-    </div>
-    <div class="row-fluid">
-      <div class="span2">
-<p>Wed 05 April 2017 </p>
-
-<p style="text-align: left;">
-Filed under <a href="../category/landsat.html">LANDSAT</a>
-</p>
-<p style="text-align: left;">
- 
-    Tags <a href="../tag/python.html">python</a> <a href="../tag/cartopy.html">cartopy</a> <a href="../tag/landsat.html">landsat</a> <a href="../tag/satellite.html">satellite</a> </p>
-<p>
-</p>
-      </div>
-      <div class="summary span8">
-	<p>LANDSAT color image processing and display</p> 
-	<a class="btn btn-mini xsmall" href="../landsat2.html">
           <i class="icon-plus-sign"></i> Read More </a>
 	<hr />
       </div>

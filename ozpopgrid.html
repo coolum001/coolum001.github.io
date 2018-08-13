@@ -3,21 +3,21 @@
 <head>
 
     <meta charset="utf-8">
-    <title>net-analysis.com Data Analysis Blog <small>Don Cameron</small></title>
+    <title>Playing with Australia's Population Grid - net-analysis.com Data Analysis Blog</title>
     <meta name="description" content="">
     <meta name="author" content="Don Cameron">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
-    <script src="../theme/html5.js"></script>
+    <script src="./theme/html5.js"></script>
     <![endif]-->
 
 
     <!-- Le styles -->
     <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap.no-icons.min.css" rel="stylesheet">
-    <link href="../theme/local.css" rel="stylesheet">
-    <link href="../theme/pygments.css" rel="stylesheet">
-    <link href="../theme/font-awesome.css" rel="stylesheet">
+    <link href="./theme/local.css" rel="stylesheet">
+    <link href="./theme/pygments.css" rel="stylesheet">
+    <link href="./theme/font-awesome.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Gudea:400,400italic|Alegreya+SC' rel='stylesheet' type='text/css'>
 
 </head>
@@ -27,25 +27,25 @@
   <div class="container">
     <div class="row-fluid">
       <div class="span9">
-	<a href=".." class="brand">net-analysis.com Data Analysis Blog</a>
+	<a href="." class="brand">net-analysis.com Data Analysis Blog</a>
       </div>
 
       <div class="span3" id="blog-nav">
 	<ul class="nav nav-pills pull-right">
 	    <li >
-	      <a href="../category/basemap.html ">Basemap</a>
+	      <a href="./category/basemap.html ">Basemap</a>
+	    <li  class="active" >
+	      <a href="./category/cartopy.html ">Cartopy</a>
 	    <li >
-	      <a href="../category/cartopy.html ">Cartopy</a>
+	      <a href="./category/geopandas.html ">GeoPandas</a>
 	    <li >
-	      <a href="../category/geopandas.html ">GeoPandas</a>
+	      <a href="./category/introduction.html ">Introduction</a>
 	    <li >
-	      <a href="../category/introduction.html ">Introduction</a>
+	      <a href="./category/landsat.html ">LANDSAT</a>
 	    <li >
-	      <a href="../category/landsat.html ">LANDSAT</a>
+	      <a href="./category/osmnx.html ">OSMNX</a>
 	    <li >
-	      <a href="../category/osmnx.html ">OSMNX</a>
-	    <li >
-	      <a href="../category/visualizations.html ">Visualizations</a>
+	      <a href="./category/visualizations.html ">Visualizations</a>
 	</ul>
       </div>
     </div> <!-- End of fluid row-->
@@ -57,29 +57,27 @@
     <div class="row-fluid">
 
         <div class="span10">
-        
-
-        
-
-    <div class='row-fluid''>
-        <div class="article-title span9">
-            <a href="../ozpopgrid.html"><h1>Playing with Australia's Population Grid</h1></a>
-        </div>
-    </div>
+    <div class='article'>
+      <div class="row-fluid">
+           <div class="content-title span9">
+             <h1>Playing with Australia's Population Grid</h1>
+           </div>
+      </div>
     <div class="row-fluid">
       <div class="span2">
 <p>Mon 13 August 2018 </p>
 
 <p style="text-align: left;">
-Filed under <a href="../category/cartopy.html">Cartopy</a>
+Filed under <a href="./category/cartopy.html">Cartopy</a>
 </p>
 <p style="text-align: left;">
  
-    Tags <a href="../tag/python.html">python</a> <a href="../tag/geopandas.html">geopandas</a> <a href="../tag/cartopy.html">cartopy</a> </p>
+    Tags <a href="./tag/python.html">python</a> <a href="./tag/geopandas.html">geopandas</a> <a href="./tag/cartopy.html">cartopy</a> </p>
 <p>
 </p>
       </div>
-      <div class="article-content span8">
+      
+      <div class="span8">
 	<h1>Visualizations of Australia's Population Grid</h1>
 <h2>Introduction</h2>
 <p>The Australian Bureau of Statistics (ABS) make available a population grid.  Essentially, they estimate the population living in each 1 kilometre grid cell, and make this available as a GeoTIFF (amongst other formats).  There is a lot of tricky estimating to go from the usual Census data to a mesh grid, that is explained in the website.  I thought it might be fun to look at visualizing this in different ways.</p>
@@ -183,7 +181,7 @@ plt.show()
 
 
 <p>This gives us:</p>
-<p><img alt="AlbersMap" src="../images/ozpop01.png"></p>
+<p><img alt="AlbersMap" src="./images/ozpop01.png"></p>
 <p>A larger version is <a href="images/ozpop01.png">here</a></p>
 <h3>Zoom in to Australia</h3>
 <p>We can calculate the extent of the GeoTIFF by:</p>
@@ -207,7 +205,7 @@ plt.show()
 
 
 <p>This gives us:</p>
-<p><img alt="AlbersMap" src="../images/ozpop02.png"></p>
+<p><img alt="AlbersMap" src="./images/ozpop02.png"></p>
 <p>A larger version is <a href="images/ozpop02.png">here</a></p>
 <p>As this stage it started to dawn on me that:</p>
 <ul>
@@ -235,7 +233,7 @@ plt.show()
 
 
 <p>shows Australia in a global context, and reinforces the fact that our grid is rectangular (but only in the <code>albo</code> projection);  we will come back to this later.  At this scale, Australia's centres of population are so small you can't see them.</p>
-<p><img alt="AlbersMap" src="../images/ozpop03.png"></p>
+<p><img alt="AlbersMap" src="./images/ozpop03.png"></p>
 <p>A larger version is <a href="images/ozpop03.png">here</a></p>
 <h3>In a Local Context</h3>
 <p>My local patch (that I use quite often for examples) can be defined by:</p>
@@ -245,7 +243,7 @@ plt.show()
 
 <p>This defines the minimum and maximum longitude, followed by minimum and maximum latitude.</p>
 <p>We  display the Open Street Map tiles that cover this region, and then overlay the population grid over this.  I use a trick with <code>matplotlib</code> color-maps;  I define the color of the pixels that are under a (to be defined) value to be white, with <code>alpha=0</code>;  effectively, I set these pixels to be transparent.  Then when I call <code>imshow</code>, I set that value to 60 (<code>vmin=60</code>).  This gives me a map with areas under 60 people per square kilometre to be clear, and rest to have a color-coded shading applied (<code>alpha=0.5</code>).  </p>
-<p><img alt="LocalMap" src="../images/ozpop04.png"></p>
+<p><img alt="LocalMap" src="./images/ozpop04.png"></p>
 <p>A larger version is <a href="images/ozpop04.png">here</a></p>
 <p>To pursue this theme a little, in the next example we set the <strong>over</strong> value behaviour to be fully transparent, and the <strong>under</strong> value behaviour to be black, almost opaque <code>alpha=0.8</code>.</p>
 <div class="highlight"><pre><span></span>my_cmap.set_over(&#39;white&#39;, alpha=0)
@@ -254,7 +252,7 @@ my_cmap.set_under(&#39;black&#39;, alpha=0.8)
 
 
 <p>This serves to hide relatively unpopulated areas, and highlight those more densely populated areas.  The <code>imshow</code> call sets the value to be 100 (people per square kilometre)</p>
-<p><img alt="LocalMap" src="../images/ozpop05.png"></p>
+<p><img alt="LocalMap" src="./images/ozpop05.png"></p>
 <p>A larger version is <a href="images/ozpop05.png">here</a></p>
 <h3>In a Continental Context</h3>
 <p>The following code plots each pixel of the GeoTIFF (except zero population cells are left transparent), and again, while it shows the emptiness of Australia, it does not really let you see where the majority of the population are to be found.</p>
@@ -279,7 +277,7 @@ plt.show()
 </pre></div>
 
 
-<p><img alt="AustraliaMap" src="../images/ozpop06.png"></p>
+<p><img alt="AustraliaMap" src="./images/ozpop06.png"></p>
 <p>A larger version is <a href="images/ozpop06.png">here</a></p>
 <p>If we use a Log scale (<code>norm=colors.LogNorm(vmin=data.min()+1, vmax=data.max())</code> )for our mapping to a color from our color map, we get, via:</p>
 <div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
@@ -307,7 +305,7 @@ plt.show()
 
 
 <p>a more useful display.</p>
-<p><img alt="AustraliaMap" src="../images/ozpop09.png"></p>
+<p><img alt="AustraliaMap" src="./images/ozpop09.png"></p>
 <p>A larger version is <a href="images/ozpop09.png">here</a></p>
 <h2>Hitting the data with a rebin hammer</h2>
 <p>Suppose we have a numpy array that looks like:</p>
@@ -343,7 +341,7 @@ plt.show()
 </pre></div>
 
 
-<p><img alt="AustraliaMap" src="../images/ozpop07.png"></p>
+<p><img alt="AustraliaMap" src="./images/ozpop07.png"></p>
 <p>A larger version is <a href="images/ozpop07.png">here</a></p>
 <h2>Bubble Plot</h2>
 <p>In the next example, we plot a red bubble at each zon-zero cell of the grid.  We also draw the grid itself (very faintly, <code>alpha=0.2</code>).</p>
@@ -406,11 +404,11 @@ plt.show()
 </pre></div>
 
 
-<p><img alt="BubbleMap" src="../images/ozpop08.png"></p>
+<p><img alt="BubbleMap" src="./images/ozpop08.png"></p>
 <p>A larger version is <a href="images/ozpop08.png">here</a></p>
 <h3>Cell Plot</h3>
 <p>Now, when we plot the value of each cell, using a Log scale, we get a more understandable graphic.  You can see Australians for the most part hugging the coastline; you can see the big mining towns like Mount Isa and Broken Hill.</p>
-<p><img alt="BubbleMap" src="../images/ozpop10.png"></p>
+<p><img alt="BubbleMap" src="./images/ozpop10.png"></p>
 <p>A larger version is <a href="images/ozpop10.png">here</a></p>
 <p>The code that produced this is below: as before, we plot the grid lines faintly (straight lines in this projection).</p>
 <div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
@@ -593,7 +591,7 @@ plt.show()
 
 
 <p>We get a map like:</p>
-<p><img alt="PlateCarreeMap" src="../images/ozpop12.png"></p>
+<p><img alt="PlateCarreeMap" src="./images/ozpop12.png"></p>
 <p>A larger version is <a href="images/ozpop12.png">here</a></p>
 <h2>Conclusion</h2>
 <p>For completeness, here are the imports for this Jupyter Notebook 
@@ -627,130 +625,15 @@ plt.show()
 <span class="kn">import</span> <span class="nn">math</span>
 
 <span class="kn">import</span> <span class="nn">geopandas</span> <span class="kn">as</span> <span class="nn">gpd</span>
-</pre></div> 
-	<a class="btn btn-mini xsmall" href="../ozpopgrid.html">
-          <i class="icon-comment"></i> Comment </a>
+</pre></div>
 	<hr />
       </div>
-      
     </div>
+    <div class="span10">
+      <h3>Comments</h3>
     
-
- 
-        
-
-
-
-    <div class='row-fluid'>
-      <div class='article-title span9'> 
-        <a href="../communities.html"><h1>OSMNX and Identifying Communities</h1></a>
-      </div>
+    </div>  
     </div>
-    <div class="row-fluid">
-      <div class="span2">
-<p>Thu 02 August 2018 </p>
-
-<p style="text-align: left;">
-Filed under <a href="../category/osmnx.html">OSMNX</a>
-</p>
-<p style="text-align: left;">
- 
-    Tags <a href="../tag/python.html">python</a> <a href="../tag/geopandas.html">geopandas</a> <a href="../tag/cartopy.html">cartopy</a> <a href="../tag/osmnx.html">osmnx</a> <a href="../tag/networkx.html">networkx</a> </p>
-<p>
-</p>
-      </div>
-      <div class="summary span8">
-	<p>Visualization of communities identified via the road network</p> 
-	<a class="btn btn-mini xsmall" href="../communities.html">
-          <i class="icon-plus-sign"></i> Read More </a>
-	<hr />
-      </div>
-      
-    </div>
-      
-
- 
-        
-
-
-
-    <div class='row-fluid'>
-      <div class='article-title span9'> 
-        <a href="../policing.html"><h1>OSMNX and Policing Response Times</h1></a>
-      </div>
-    </div>
-    <div class="row-fluid">
-      <div class="span2">
-<p>Thu 02 August 2018 </p>
-
-<p style="text-align: left;">
-Filed under <a href="../category/osmnx.html">OSMNX</a>
-</p>
-<p style="text-align: left;">
- 
-    Tags <a href="../tag/python.html">python</a> <a href="../tag/geopandas.html">geopandas</a> <a href="../tag/cartopy.html">cartopy</a> <a href="../tag/osmnx.html">osmnx</a> </p>
-<p>
-</p>
-      </div>
-      <div class="summary span8">
-	<p>Visualization of Police Response Times via Road Network</p> 
-	<a class="btn btn-mini xsmall" href="../policing.html">
-          <i class="icon-plus-sign"></i> Read More </a>
-	<hr />
-      </div>
-      
-    </div>
-      
-
- 
-        
-
-
-
-    <div class='row-fluid'>
-      <div class='article-title span9'> 
-        <a href="../geopandasdisplay.html"><h1>Using GeoPandas to Display Data in Spatial Context</h1></a>
-      </div>
-    </div>
-    <div class="row-fluid">
-      <div class="span2">
-<p>Sun 22 July 2018 </p>
-
-<p style="text-align: left;">
-Filed under <a href="../category/geopandas.html">GeoPandas</a>
-</p>
-<p style="text-align: left;">
- 
-    Tags <a href="../tag/geopandas.html">geopandas</a> <a href="../tag/python.html">python</a> <a href="../tag/colorbar.html">colorbar</a> <a href="../tag/projections.html">projections</a> <a href="../tag/cartopy.html">cartopy</a> </p>
-<p>
-</p>
-      </div>
-      <div class="summary span8">
-	<p>GeoPandas and Data Display</p> 
-	<a class="btn btn-mini xsmall" href="../geopandasdisplay.html">
-          <i class="icon-plus-sign"></i> Read More </a>
-	<hr />
-      </div>
-      
-    </div>
-      
-<div class="pagination">
-<ul>
-    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
-
-    <li class="active"><a href="../author/don-cameron.html">1</a></li>
-    <li class=""><a href="../author/don-cameron2.html">2</a></li>
-    <li class=""><a href="../author/don-cameron3.html">3</a></li>
-    <li class=""><a href="../author/don-cameron4.html">4</a></li>
-    <li class=""><a href="../author/don-cameron5.html">5</a></li>
-
-    <li class="next"><a href="../author/don-cameron2.html">Next &rarr;</a></li>
-
-</ul>
-</div>
-
- 
-  
         </div>
         
         
@@ -800,11 +683,11 @@ http://www.net-analysis.com.   It documents a learning process, and hence owes a
             <li class="nav-header"> 
               Site
             </li>
-            <li><a href=".."><i class="icon-home" style="color: #1f334b">
+            <li><a href="."><i class="icon-home" style="color: #1f334b">
                 </i>Home</a></li>
-            <li><a href="../archives.html"><i class="icon-list" style="color: #1f334b">
+            <li><a href="./archives.html"><i class="icon-list" style="color: #1f334b">
                 </i>Archives</a></li>
-	    <li><a href="../tags.html"><i class="icon-tags" style="color: #1f334b">
+	    <li><a href="./tags.html"><i class="icon-tags" style="color: #1f334b">
                 </i>Tags</a></li>
 	    
 	  </ul>
@@ -814,7 +697,7 @@ http://www.net-analysis.com.   It documents a learning process, and hence owes a
       </div> <!--end of fluid row-->
     </div> <!--end of blog-footer-->
     <hr />
-    <p align="center"><a href="..">net-analysis.com Data Analysis Blog</a>
+    <p align="center"><a href=".">net-analysis.com Data Analysis Blog</a>
       &copy; Don Cameron
     Powered by <a href="https://github.com/getpelican/pelican">Pelican</a> and
         <a href="https://twitter.github.com/bootstrap">Twitter Bootstrap</a>. 

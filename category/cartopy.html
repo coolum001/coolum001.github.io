@@ -63,8 +63,588 @@
 
     <div class='row-fluid''>
         <div class="article-title span9">
-            <a href="../cartopymultiline.html"><h1>Cartopy Display of Multi-point Lines</h1></a>
+            <a href="../ozpopgrid.html"><h1>Playing with Australia's Population Grid</h1></a>
         </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span2">
+<p>Mon 13 August 2018 </p>
+
+<p style="text-align: left;">
+Filed under <a href="../category/cartopy.html">Cartopy</a>
+</p>
+<p style="text-align: left;">
+ 
+    Tags <a href="../tag/python.html">python</a> <a href="../tag/geopandas.html">geopandas</a> <a href="../tag/cartopy.html">cartopy</a> </p>
+<p>
+</p>
+      </div>
+      <div class="article-content span8">
+	<h1>Visualizations of Australia's Population Grid</h1>
+<h2>Introduction</h2>
+<p>The Australian Bureau of Statistics (ABS) make available a population grid.  Essentially, they estimate the population living in each 1 kilometre grid cell, and make this available as a GeoTIFF (amongst other formats).  There is a lot of tricky estimating to go from the usual Census data to a mesh grid, that is explained in the website.  I thought it might be fun to look at visualizing this in different ways.</p>
+<p>I found myself chasing down some interesting cartographic rabbit holes, and learnt a useful Pandas trick.</p>
+<h2>Data Sources</h2>
+<p>You can find the population grid GeoTIFF at http://www.abs.gov.au/ausstats/abs@.nsf/mf/1270.0.55.007</p>
+<h2>Data Exploration</h2>
+<p>The first thing I did was to read the GeoTIFF, and work out what projection was used.</p>
+<div class="highlight"><pre><span></span>pop = gdal.Open(&#39;d:\\qml\\Australian_Population_Grid_2011.tif&#39;)
+data = pop.ReadAsArray()
+gt = pop.GetGeoTransform()
+proj = pop.GetProjection()
+
+inproj = osr.SpatialReference()
+inproj.ImportFromWkt(proj)
+
+print( &quot;[ RASTER BAND COUNT ]: &quot;, pop.RasterCount)
+cols = pop.RasterXSize
+print(&#39;cols = &#39;,cols)
+rows = pop.RasterYSize
+print(&#39; rows = &#39;, rows)
+bands = pop.RasterCount
+print(&#39;bands = &#39;, bands)
+driver = pop.GetDriver().LongName
+print(&#39;driver =&#39;, driver)
+
+print(&#39;MetaData = &#39;,pop.GetMetadata())
+
+print(inproj)
+</pre></div>
+
+
+<p>giving the following output.</p>
+<div class="highlight"><pre><span></span>[ RASTER BAND COUNT ]:  1
+cols =  6382
+rows =  3821
+bands =  1
+driver = GeoTIFF
+MetaData =  {&#39;AREA_OR_POINT&#39;: &#39;Area&#39;, &#39;DataType&#39;: &#39;Generic&#39;}
+PROJCS[&quot;GDA_1994_Albers&quot;,
+    GEOGCS[&quot;GCS_GDA_1994&quot;,
+        DATUM[&quot;Geocentric_Datum_of_Australia_1994&quot;,
+            SPHEROID[&quot;GRS_1980&quot;,6378137,298.257222101,
+                AUTHORITY[&quot;EPSG&quot;,&quot;7019&quot;]],
+            AUTHORITY[&quot;EPSG&quot;,&quot;6283&quot;]],
+        PRIMEM[&quot;Greenwich&quot;,0],
+        UNIT[&quot;degree&quot;,0.0174532925199433]],
+    PROJECTION[&quot;Albers_Conic_Equal_Area&quot;],
+    PARAMETER[&quot;standard_parallel_1&quot;,-18],
+    PARAMETER[&quot;standard_parallel_2&quot;,-36],
+    PARAMETER[&quot;latitude_of_center&quot;,0],
+    PARAMETER[&quot;longitude_of_center&quot;,132],
+    PARAMETER[&quot;false_easting&quot;,0],
+    PARAMETER[&quot;false_northing&quot;,0],
+    UNIT[&quot;metre&quot;,1,
+    AUTHORITY[&quot;EPSG&quot;,&quot;9001
+</pre></div>
+
+
+<p>A couple of things jumped out at me.  </p>
+<ul>
+<li>
+<p>First, they are using an Albers Equal Area Projection in which to draw the mesh grid.  It makes sense to use
+a Equal Area projection (not to use one would be weird), but the choice of Albers is unexplained in any documentation I could find.  There is an European Union project that is very similar (GEOSTAT 1A – Representing Census data
+in a European population grid), that uses a different projection.  However, the EU case is made harder for the 
+statiticians because the EU has to match the use of grids in differing projections by its member states.  In any case they seem to be using
+a Lamberth Azimuthal Equal Area.</p>
+</li>
+<li>
+<p>Second, the projection uses an Australian-specific Datum <code>GDA94</code>.  A very helpful website http://www.homer.com.au/webdoc/gis/wgs84fact.pdf
+explains that </p>
+<blockquote>
+<p>" ... keep in mind that GDA94 coordinates are fixed as at the 1st January 1994 (epoch 1994.0) and that the Australian plate is drifting in a north-easterly direction about seven centimetres per year."</p>
+</blockquote>
+</li>
+</ul>
+<p>It appears that the Spheroid used is almost exactly the same as WGS84, which is a relief.  We can use the default <code>Globe</code> provided by Cartopy.</p>
+<h2>Map Time!</h2>
+<h3>Global Albers</h3>
+<p>The first thing is to create a Cartopy Coordinate Reference System (CRS) to match the GeoTIFF:</p>
+<div class="highlight"><pre><span></span>albo = ccrs.AlbersEqualArea(central_latitude=0,
+ false_easting=0, 
+ false_northing=0, 
+ central_longitude=132, 
+ standard_parallels=(-18, -36) )
+</pre></div>
+
+
+<p>and then see what the world looks like in this projection.</p>
+<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+ax = fig.add_subplot(1, 1, 1, projection= albo )
+
+ax.set_global()
+ax.coastlines()
+
+#plt.imshow(data, extent=extent_tif, transform=albo)
+plt.title(&#39;World in Albers Equal Area (centered on Australia)&#39;, {&#39;fontsize&#39;:30}, pad=40)
+
+plt.show()
+</pre></div>
+
+
+<p>This gives us:</p>
+<p><img alt="AlbersMap" src="../images/ozpop01.png"></p>
+<p>A larger version is <a href="images/ozpop01.png">here</a></p>
+<h3>Zoom in to Australia</h3>
+<p>We can calculate the extent of the GeoTIFF by:</p>
+<div class="highlight"><pre><span></span>extent_tif = (gt[0], gt[0] + pop.RasterXSize * gt[1],
+        gt[3] + pop.RasterYSize * gt[5], gt[3])
+</pre></div>
+
+
+<p>So let us use that extent (in the <code>albo</code> projection units) to zoom into Australia, show the TIFF file, and plot some coastlines.  The TIFF file is a single band, and we use the default color map to map population density to a color.</p>
+<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+ax = fig.add_subplot(1, 1, 1, projection= albo )
+
+ax.set_extent(extent_tif, crs=albo)
+ax.coastlines(color=&#39;white&#39;, zorder=5)
+
+plt.imshow(data, extent=extent_tif, transform=albo,  )
+plt.title(&#39;Australian Population Grid, Albers Equal Area&#39;, {&#39;fontsize&#39;:30}, pad=40)
+
+plt.show()
+</pre></div>
+
+
+<p>This gives us:</p>
+<p><img alt="AlbersMap" src="../images/ozpop02.png"></p>
+<p>A larger version is <a href="images/ozpop02.png">here</a></p>
+<p>As this stage it started to dawn on me that:</p>
+<ul>
+<li>
+<p>The map probably extends so far west, so to include various islands that are part of Australia;</p>
+</li>
+<li>
+<p>You have to look very hard to see the odd pixel that has a non-zero value</p>
+</li>
+</ul>
+<h3>In a Global Context</h3>
+<p>The code:</p>
+<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+ax = fig.add_subplot(1, 1, 1, projection= albo )
+
+#ax.set_extent(extent_tif, crs=albo)
+ax.set_global()
+ax.coastlines(color=&#39;blue&#39;, zorder=5)
+
+plt.imshow(data, extent=extent_tif, transform=albo,  )
+
+plt.title(&#39;Australian Population Grid in World Context\nAlbers Equal Area&#39;, {&#39;fontsize&#39;:30}, pad=40)
+plt.show()
+</pre></div>
+
+
+<p>shows Australia in a global context, and reinforces the fact that our grid is rectangular (but only in the <code>albo</code> projection);  we will come back to this later.  At this scale, Australia's centres of population are so small you can't see them.</p>
+<p><img alt="AlbersMap" src="../images/ozpop03.png"></p>
+<p>A larger version is <a href="images/ozpop03.png">here</a></p>
+<h3>In a Local Context</h3>
+<p>My local patch (that I use quite often for examples) can be defined by:</p>
+<div class="highlight"><pre><span></span>local = ( 153, 153.2, -26.6, -26.4)
+</pre></div>
+
+
+<p>This defines the minimum and maximum longitude, followed by minimum and maximum latitude.</p>
+<p>We  display the Open Street Map tiles that cover this region, and then overlay the population grid over this.  I use a trick with <code>matplotlib</code> color-maps;  I define the color of the pixels that are under a (to be defined) value to be white, with <code>alpha=0</code>;  effectively, I set these pixels to be transparent.  Then when I call <code>imshow</code>, I set that value to 60 (<code>vmin=60</code>).  This gives me a map with areas under 60 people per square kilometre to be clear, and rest to have a color-coded shading applied (<code>alpha=0.5</code>).  </p>
+<p><img alt="LocalMap" src="../images/ozpop04.png"></p>
+<p>A larger version is <a href="images/ozpop04.png">here</a></p>
+<p>To pursue this theme a little, in the next example we set the <strong>over</strong> value behaviour to be fully transparent, and the <strong>under</strong> value behaviour to be black, almost opaque <code>alpha=0.8</code>.</p>
+<div class="highlight"><pre><span></span>my_cmap.set_over(&#39;white&#39;, alpha=0)
+my_cmap.set_under(&#39;black&#39;, alpha=0.8)
+</pre></div>
+
+
+<p>This serves to hide relatively unpopulated areas, and highlight those more densely populated areas.  The <code>imshow</code> call sets the value to be 100 (people per square kilometre)</p>
+<p><img alt="LocalMap" src="../images/ozpop05.png"></p>
+<p>A larger version is <a href="images/ozpop05.png">here</a></p>
+<h3>In a Continental Context</h3>
+<p>The following code plots each pixel of the GeoTIFF (except zero population cells are left transparent), and again, while it shows the emptiness of Australia, it does not really let you see where the majority of the population are to be found.</p>
+<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+ax = fig.add_subplot(1, 1, 1, projection= albo )
+
+#ax.set_extent(extent_tif, crs=albo)
+ax.set_extent(extent_tif, crs=albo )
+ax.coastlines(zorder=9)
+
+
+my_cmap = plt.cm.get_cmap(&#39;magma&#39;)
+
+my_cmap.set_under(&#39;white&#39;, alpha=0)
+
+
+
+plt.imshow(data, extent=extent_tif, transform=albo, cmap=my_cmap, vmin=1, vmax=20000, zorder=8)
+plt.title(&#39;Australian Population Grid\n Linear Scale. Albers Equal Area&#39;, {&#39;fontsize&#39;:20}, pad=40)
+
+plt.show()
+</pre></div>
+
+
+<p><img alt="AustraliaMap" src="../images/ozpop06.png"></p>
+<p>A larger version is <a href="images/ozpop06.png">here</a></p>
+<p>If we use a Log scale (<code>norm=colors.LogNorm(vmin=data.min()+1, vmax=data.max())</code> )for our mapping to a color from our color map, we get, via:</p>
+<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+ax = fig.add_subplot(1, 1, 1, projection= albo )
+
+#ax.set_extent(extent_tif, crs=albo)
+ax.set_extent(extent_tif, crs=albo )
+ax.coastlines(zorder=9)
+ax.gridlines()
+
+my_cmap = plt.cm.get_cmap(&#39;magma&#39;)
+my_cmap.set_under(&#39;white&#39;, alpha=1)
+
+
+
+pcm = plt.imshow(data, extent=extent_tif, transform=albo, cmap=my_cmap,norm=colors.LogNorm(vmin=data.min()+1, vmax=data.max()), zorder=8)
+cbar = fig.colorbar(pcm, ax=ax,  shrink=0.5, pad=0.1, extend=&#39;min&#39;)
+cbar.ax.set_ylabel(&#39;Population density (people per sq km): Log Scale&#39;, rotation=270, labelpad=20)
+cbar.ax.set_title(&#39;Population Density Legend&#39;)
+
+plt.title(&#39;Australian Population Grid\nLog Scale. Albers Equal Area&#39;, {&#39;fontsize&#39;:20}, pad=40)
+
+plt.show()
+</pre></div>
+
+
+<p>a more useful display.</p>
+<p><img alt="AustraliaMap" src="../images/ozpop09.png"></p>
+<p>A larger version is <a href="images/ozpop09.png">here</a></p>
+<h2>Hitting the data with a rebin hammer</h2>
+<p>Suppose we have a numpy array that looks like:</p>
+<div class="highlight"><pre><span></span>a = np.array([[ 1, 2, 3, 4, 5, 6],
+            [ 5 ,6, 7, 8, 7, 8],
+            [ 9,10,11,12, 13, 14],
+            [13,14,15,16, 17, 18]])
+</pre></div>
+
+
+<p>and we define a function that look like:</p>
+<div class="highlight"><pre><span></span>def shrink(data, rows, cols):
+    return data.reshape(rows, data.shape[0]//rows, cols, data.shape[1]//cols).sum(axis=1).sum(axis=2)
+</pre></div>
+
+
+<p>then </p>
+<div class="highlight"><pre><span></span>print(shrink(a, 2, 3))
+</pre></div>
+
+
+<p>gives us:</p>
+<div class="highlight"><pre><span></span><span class="k">[[14 22 26]</span>
+<span class="k">[46 54 62]]</span>
+</pre></div>
+
+
+<p>That is, we have taken our original 4 row, 6 column array, and reduced it to a 2 row, 3 column array, with each element holding the sum of the sub-array that has been collapsed.</p>
+<p>We have <code>data.shape</code> gives <code>(3821, 6382)</code>, so we take a chunk that is a multiple of 100 in row and column directions.</p>
+<p>We then shrink our data by <code>data3 = shrink(data2, 38, 63)</code>.</p>
+<p>Now the simplest possible display shows some non-zero values.</p>
+<div class="highlight"><pre><span></span>plt.imshow(data3)
+</pre></div>
+
+
+<p><img alt="AustraliaMap" src="../images/ozpop07.png"></p>
+<p>A larger version is <a href="images/ozpop07.png">here</a></p>
+<h2>Bubble Plot</h2>
+<p>In the next example, we plot a red bubble at each zon-zero cell of the grid.  We also draw the grid itself (very faintly, <code>alpha=0.2</code>).</p>
+<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+ax = fig.add_subplot(1, 1, 1,  projection=albo)
+
+ax.set_extent(extent_tif, crs=albo )
+
+mksize_min = 0
+mksize_max = 200
+data_min = data3.min()
+data_max = data3.max()
+
+down_scale_factor = 100
+
+#extent_tif = (gt[0], gt[0] + pop.RasterXSize * gt[1],
+#          gt[3] + pop.RasterYSize * gt[5], gt[3])
+
+x_step = gt[1]
+y_step = gt[5]
+
+for ix in range(data3.shape[1]):
+    for iy in range(data3.shape[0]):
+        row = data3.shape[0] - iy -1
+        col = ix
+
+        albo_x = extent_tif[0] + x_step*(ix+0.5) * down_scale_factor
+        albo_y = extent_tif[2] + abs(y_step)* (iy+0.5) * down_scale_factor
+
+        markersize=mksize_min + (mksize_max-mksize_min)*(data3[row, col]-data_min)/(data_max-data_min)
+
+        plt.plot(albo_x, albo_y ,
+                markersize=markersize, 
+                marker=&#39;o&#39;, 
+                color=&#39;red&#39;, 
+                alpha=0.25, zorder=9)
+
+
+    #end for
+#end for
+
+for ix in range(data3.shape[1]):
+    albo_x = extent_tif[0] + x_step*ix * down_scale_factor       
+    plt.plot([albo_x, albo_x] , [extent_tif[2], extent_tif[3]], linestyle=&#39;-&#39;, color=&#39;lightgrey&#39;, alpha=0.2)
+#end for
+
+for iy in range(data3.shape[0]):
+    albo_y = extent_tif[2] + abs(y_step)* iy * down_scale_factor
+    plt.plot([extent_tif[0], extent_tif[1] ] , [albo_y, albo_y], linestyle=&#39;-&#39;, color=&#39;lightgrey&#39;, alpha=0.2)
+#end for
+
+
+
+ax.coastlines()
+ax.gridlines()
+
+plt.title(&#39;Australian Population Grid\n Binned over 100km Grid. Albers Equal Area&#39;, {&#39;fontsize&#39;:20}, pad=40)
+
+plt.show()
+</pre></div>
+
+
+<p><img alt="BubbleMap" src="../images/ozpop08.png"></p>
+<p>A larger version is <a href="images/ozpop08.png">here</a></p>
+<h3>Cell Plot</h3>
+<p>Now, when we plot the value of each cell, using a Log scale, we get a more understandable graphic.  You can see Australians for the most part hugging the coastline; you can see the big mining towns like Mount Isa and Broken Hill.</p>
+<p><img alt="BubbleMap" src="../images/ozpop10.png"></p>
+<p>A larger version is <a href="images/ozpop10.png">here</a></p>
+<p>The code that produced this is below: as before, we plot the grid lines faintly (straight lines in this projection).</p>
+<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+ax = fig.add_subplot(1, 1, 1,  projection=albo)
+
+
+data3_ext = [extent_tif[0], extent_tif[0]+ x_step*data3.shape[1]*down_scale_factor, 
+            extent_tif[3], extent_tif[3]+ (y_step)* data3.shape[0]*down_scale_factor]
+#ax.set_global()
+ax.set_extent(data3_ext, crs=albo )
+
+my_cmap = plt.cm.get_cmap(&#39;gist_earth&#39;)
+#my_cmap.set_under(&#39;grey&#39;, alpha=0.1)
+
+ax.coastlines( zorder=9)
+
+pcm = plt.imshow(data3, 
+                extent=data3_ext, 
+                transform=albo, 
+                vmin=100, 
+                cmap=my_cmap, 
+                zorder=1, 
+                origin=&#39;top&#39;, 
+                norm=colors.LogNorm( ), #vmin=data3.min()+1, vmax=data3.max()),
+                )
+
+cbar = fig.colorbar(pcm, ax=ax,  shrink=0.5, pad=0.1, extend=&#39;min&#39;)
+cbar.ax.set_ylabel(&#39;Population density (people per 10,000 sq km): Log scale&#39;, rotation=270, labelpad=20)
+cbar.ax.set_title(&#39;Population Density Legend&#39;)
+
+for ix in range(data3.shape[1]):
+    albo_x = extent_tif[0] + x_step*ix * down_scale_factor       
+    plt.plot([albo_x, albo_x] , [extent_tif[2], extent_tif[3]], linestyle=&#39;-&#39;, color=&#39;lightgrey&#39;, alpha=0.2)
+#end for
+
+for iy in range(data3.shape[0]):
+    albo_y = extent_tif[2] + abs(y_step)* iy * down_scale_factor
+    plt.plot([extent_tif[0], extent_tif[1] ] , [albo_y, albo_y], linestyle=&#39;-&#39;, color=&#39;lightgrey&#39;, alpha=0.2)
+#end for
+
+ax.gridlines()
+
+plt.title(&#39;Australian Population Grid\n Binned over 100 km Grid. Albers Equal Area&#39;, {&#39;fontsize&#39;:20}, pad=40)
+
+plt.show()
+</pre></div>
+
+
+<h2>Plate Carree Map</h2>
+<p>Finally, just for fun, I plot the map in the Plate Carree projection.  This makes the population grid look curved, but thtis to be expected.  I also decided that I wanted to distinguish between a population count of zero because there is nobody there on land, and because it is out to sea.</p>
+<p>I learned a few things, because I decided to draw the non-rectangular patches myself  (<code>imshow</code> seems to be very slow in reshaping an image).</p>
+<p>First, we calculate the extent of the GeoTiff in longitude, latitude units.</p>
+<div class="highlight"><pre><span></span>x1, y1 = ccrs.PlateCarree().transform_point(-3853000.0,  -4835000.0, albo)
+
+x2, y2 = ccrs.PlateCarree().transform_point(2529000.0,  -1014000.0, albo)
+</pre></div>
+
+
+<p>Then the usual preamble to set up the Figure, and the Cartopy aware Axes objects.  Note we go down an extra 3 degree of latitude, because the Albers grid sinks down below the lines of constant latitude.</p>
+<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+
+pc_proj = ccrs.PlateCarree()
+ax = fig.add_subplot(1, 1, 1, projection= pc_proj )
+
+ax.set_extent((x1, x2, y1-3.0, y2), crs=ccrs.Geodetic())
+
+ax.coastlines(color=&#39;blue&#39;, zorder=5)
+</pre></div>
+
+
+<p>We define the limits of our data values:</p>
+<div class="highlight"><pre><span></span>dmax = data3.max()
+dmin = 0
+</pre></div>
+
+
+<p>We now use GeoPandas to read the Australian coastline, and fill the interior with light grey.</p>
+<div class="highlight"><pre><span></span># get country borders
+resolution = &#39;10m&#39;
+category = &#39;cultural&#39;
+name = &#39;admin_0_countries&#39;
+
+shpfilename = shapereader.natural_earth(resolution, category, name)
+
+# read the shapefile using geopandas
+df = gpd.read_file(shpfilename)
+
+# read the borders
+poly = df.loc[df[&#39;ADMIN&#39;] == &#39;Australia&#39;][&#39;geometry&#39;].values[0]
+ax.add_geometries(poly, 
+                crs=ccrs.PlateCarree(), 
+                facecolor=&#39;lightgrey&#39;, 
+                edgecolor=&#39;blue&#39;, zorder=1, alpha=0.75)
+ax.add_geometries(poly, 
+                crs=ccrs.PlateCarree(), 
+                facecolor=&#39;none&#39;, 
+                edgecolor=&#39;blue&#39;, zorder=15, alpha=0.75)
+</pre></div>
+
+
+<p>We then cycle through all the cells of the 100 km grid, transforming the Albers coordinated into Plate Carree coordinates (longitude and latitude), and draw the grid faintly (<code>alpha=0.2</code>). Then if there is anybody at all living in this 100 km grid cell, we create a patch, and remember its color.  We use the <code>terrain</code> color map.</p>
+<p>At the end we create a PatchCollection, set the colors, and add them to the Axes object.</p>
+<p>We then draw lat/lon gridlines, and set a title.</p>
+<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+
+pc_proj = ccrs.PlateCarree()
+ax = fig.add_subplot(1, 1, 1, projection= pc_proj )
+
+ax.set_extent((x1, x2, y1-3.0, y2), crs=ccrs.Geodetic())
+
+# get country borders
+resolution = &#39;10m&#39;
+category = &#39;cultural&#39;
+name = &#39;admin_0_countries&#39;
+
+shpfilename = shapereader.natural_earth(resolution, category, name)
+
+# read the shapefile using geopandas
+df = gpd.read_file(shpfilename)
+
+# read the german borders
+poly = df.loc[df[&#39;ADMIN&#39;] == &#39;Australia&#39;][&#39;geometry&#39;].values[0]
+ax.add_geometries(poly, 
+                crs=ccrs.PlateCarree(), 
+                facecolor=&#39;lightgrey&#39;, 
+                edgecolor=&#39;blue&#39;, zorder=1, alpha=0.75)
+ax.add_geometries(poly, 
+                crs=ccrs.PlateCarree(), 
+                facecolor=&#39;none&#39;, 
+                edgecolor=&#39;blue&#39;, zorder=15, alpha=0.75)
+
+dmax = data3.max()
+dmin = 0
+
+
+patches = []
+colors = []
+for ix in range(data3.shape[1]):
+    albo_x1 = extent_tif[0] + x_step*ix * down_scale_factor     
+    albo_x2 = extent_tif[0] + x_step*(ix+1) * down_scale_factor     
+    for iy in range(data3.shape[0]):
+        albo_y1 = extent_tif[2] + abs(y_step)* iy * down_scale_factor
+        albo_y2 = extent_tif[2] + abs(y_step)* (iy + 1) * down_scale_factor
+
+        gx1, gy1 = pc_proj.transform_point(albo_x1, albo_y1, albo)
+        gx2, gy2 = pc_proj.transform_point(albo_x1, albo_y2, albo)
+        gx3, gy3 = pc_proj.transform_point(albo_x2, albo_y2, albo)      
+        gx4, gy4 = pc_proj.transform_point(albo_x2, albo_y1, albo)
+
+        plt.plot([gx1, gx2, gx3, gx4, gx1], [gy1, gy2, gy3, gy4, gy1], 
+                linestyle=&#39;-&#39;, 
+                color=&#39;lightgrey&#39;, 
+                alpha=0.2, 
+                zorder=15,
+                )
+
+        if(data3[data3.shape[0]-iy-1, ix]&gt;1):
+            this_color = cm.terrain(math.log10(data3[data3.shape[0]-iy-1, ix]-dmin) / math.log10(dmax-dmin) )
+            box = Polygon([[gx1, gy1], [gx2, gy2], [gx3, gy3], [gx4, gy4] ],)
+            patches.append(box)
+            colors.append(this_color)
+    #end for
+#end for
+
+p = PatchCollection(patches)
+p.set_color(colors)
+p.set_edgecolor(&#39;lightblue&#39;, )
+p.set_zorder(9)
+ax.add_collection(p,)
+
+gl = ax.gridlines(draw_labels=True)
+
+gl.xformatter = LONGITUDE_FORMATTER
+gl.yformatter = LATITUDE_FORMATTER
+
+plt.title(&#39;Australian Population Grid\nRebinned to 100 km Grid - Log Scale. Plate Carree&#39;, {&#39;fontsize&#39;:20}, pad=40)
+
+plt.show()
+</pre></div>
+
+
+<p>We get a map like:</p>
+<p><img alt="PlateCarreeMap" src="../images/ozpop12.png"></p>
+<p>A larger version is <a href="images/ozpop12.png">here</a></p>
+<h2>Conclusion</h2>
+<p>For completeness, here are the imports for this Jupyter Notebook 
+(not all are used in the code fragments above, as some are for producing output to support reproducability).</p>
+<div class="highlight"><pre><span></span><span class="c1"># all imports should go here</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="kn">as</span> <span class="nn">ccrs</span>
+<span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">GoogleTiles</span>
+<span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">OSM</span>
+<span class="kn">import</span> <span class="nn">cartopy.feature</span> <span class="kn">as</span> <span class="nn">cfeature</span>
+<span class="kn">from</span> <span class="nn">cartopy.mpl.gridliner</span> <span class="kn">import</span> <span class="n">LONGITUDE_FORMATTER</span><span class="p">,</span> <span class="n">LATITUDE_FORMATTER</span>
+<span class="kn">from</span> <span class="nn">cartopy.io</span> <span class="kn">import</span> <span class="n">shapereader</span>
+
+<span class="kn">from</span> <span class="nn">osgeo</span> <span class="kn">import</span> <span class="n">gdal</span><span class="p">,</span> <span class="n">osr</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.colors</span> <span class="kn">as</span> <span class="nn">colors</span>
+<span class="kn">from</span> <span class="nn">matplotlib.patches</span> <span class="kn">import</span> <span class="n">Polygon</span>
+<span class="kn">from</span> <span class="nn">matplotlib.collections</span> <span class="kn">import</span> <span class="n">PatchCollection</span>
+<span class="kn">import</span> <span class="nn">matplotlib.cm</span> <span class="kn">as</span> <span class="nn">cm</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">import</span> <span class="nn">geopandas</span> <span class="kn">as</span> <span class="nn">gpd</span>
+</pre></div> 
+	<a class="btn btn-mini xsmall" href="../ozpopgrid.html">
+          <i class="icon-comment"></i> Comment </a>
+	<hr />
+      </div>
+      
+    </div>
+    
+
+ 
+        
+
+
+
+    <div class='row-fluid'>
+      <div class='article-title span9'> 
+        <a href="../cartopymultiline.html"><h1>Cartopy Display of Multi-point Lines</h1></a>
+      </div>
     </div>
     <div class="row-fluid">
       <div class="span2">
@@ -79,256 +659,15 @@ Filed under <a href="../category/cartopy.html">Cartopy</a>
 <p>
 </p>
       </div>
-      <div class="article-content span8">
-	<h1>Cartopy and MultiLine Geometries</h1>
-<h2>Introduction</h2>
-<p>So, I set myself the challenge of visualizing Australia's oil and gas fields, and associated pipelines, as an exercise
-in learning Cartopy.  I wound up learning more that I had anticipated.</p>
-<p>The Australia Government  provides shapefiles for <a href="https://data.gov.au/dataset/oil-and-gas-field-locations">oil and gas field locations</a>,
-and for  <a href="https://data.gov.au/dataset/oil-and-gas-pipelines-of-australia">oil and gas pipelines</a>.  So far, so good.</p>
-<p>So I downloaded the shapefiles, and the visualization of the oil and gas fields went fine.  However, the pipelines
-visualization looked weird.  A little poking around showed that the pipeline shapefile contained data that Shapely interpreted
-as a MultiLine geometry.  Essentially, Shapely knows about Points, Lines, MultilinesStrings, Polygons, and MultiPolygons, and this was my
-first brush with Multilines.</p>
-<h2>The Problem</h2>
-<p>It turns out that Cartopy has decided that multi-point lines are really polygons in disguise.  An example program that illustrates
-the problem is below.</p>
-<div class="highlight"><pre><span></span>    <span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">MultiLineString</span>
-
-    <span class="n">lines</span> <span class="o">=</span> <span class="n">MultiLineString</span><span class="p">([((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>  <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">))])</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
-
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
-    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">(</span><span class="n">central_longitude</span><span class="o">=</span><span class="mi">140</span><span class="p">))</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_extent</span><span class="p">((</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">))</span>
-
-    <span class="n">ax</span><span class="o">.</span><span class="n">add_feature</span><span class="p">(</span><span class="n">cartopy</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">LAND</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">add_feature</span><span class="p">(</span><span class="n">cartopy</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">OCEAN</span><span class="p">)</span>
-
-    <span class="n">ax</span><span class="o">.</span><span class="n">add_geometries</span><span class="p">([</span><span class="n">lines</span><span class="p">],</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">(),</span>\
-                              <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-
-    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-
-
-<p>In this trivial example, we create a MultiLine (called MultiLineString by Shapely), that has two parts.
-The first part is a simple Start Point to End Point line (<code>((0, 0), (10, 10))</code>).  The second part is a line with
-four points (i.e. a Start Point, and End Point, and two points in the middle - <code>((0, 20),  (10, 15), (15, 10), (20, 0))</code>).</p>
-<p>We then crank up a Cartopy-aware Axes object, add Cartopy Land and Ocean features, and add the line geometry.  The limits
-of the Axes are set to the area around the (0,0) point in lat/lon space where our lines are defined:  i.e. near the west coast of Africa.</p>
-<p>This results in:</p>
-<p><img alt="Cartopy MultiPoint Line Bug Example" src="../images/ml01.png"></p>
-<p>As you can see, the simple line was drawn just fine, but the multipoint line was filled in!  And try as I might,
-I could not find the magic combination of parameters to instruct Cartopy not to fill this geometry.</p>
-<p>So then I turned to Plan B.  Here, I created a new geometry, based upon that read from the shapefile, but with simple
-lines replacing the multipoint lines.  The relevant code fragment loooks like:</p>
-<div class="highlight"><pre><span></span>    # turn multipoint lines into simple start-end lines
-    line_good=[]
-    for l in lines:
-        start_pt = list(l.coords)[0]
-        for i in range(1,len(l.coords)):
-           end_pt = list(l.coords)[i]
-           simple_line = (start_pt, end_pt)
-           line_good.append(simple_line)
-           start_pt = end_pt
-        #end for
-    #end for
-
-    lines = MultiLineString(line_good)
-    for l in lines:
-        ax.add_geometries([l], ccrs.PlateCarree(),\
-                                  edgecolor=&#39;green&#39;, facecolor=None, alpha = 0.8, linewidth=2)
-    #end for
-
-    plt.show()
-</pre></div>
-
-
-<p>Here, in the outer <code>for</code> loop, we run through all Lines in our MultiLineString geometry.  For each point in the Line, starting at the second,
-we create a simple two point line, where the start point is the end point of the last simple line  (i.e. all the simple two-point lines join up,
-nose to tail, to recreate the multi-point line).  We then create a new Shapely MultiLineString, and add it to the Cartopy-aware Axes object.</p>
-<p>And voila!</p>
-<p><img alt="Cartopy Workaround Example" src="../images/ml02.png"></p>
-<p>Now my lines are drawn as lines, not polygons.  By the way, Google-ing around seems to indicate that some people think this Cartopy behaviour is by design, and
-is not a bug.  I have lodged an issue on GitHub.</p>
-<h2>Back to my Map</h2>
-<p>So now I know how to draw lines from shapefiles, we return the to the original job.</p>
-<h3>Geographic data sources</h3>
-<p>First, we want a high quality map (and we do want a high quality map, because oil fields are quite small compared to the extent of Australia,
-so we will want to zoom in some.  Accordingly we define some high quality mapping data, to be loaded from Natural Earth.  In this case, 'high quality'
-mean using 1:10Million (not 1:100Million) data.</p>
-<div class="highlight"><pre><span></span>    BORDERS_10m = cartopy.feature.NaturalEarthFeature(&#39;cultural&#39;, &#39;admin_0_boundary_lines_land&#39;,
-                                  &#39;10m&#39;, edgecolor=&#39;black&#39;, facecolor=&#39;none&#39;)
-    &quot;&quot;&quot;country boundaries.&quot;&quot;&quot;
-
-    COASTLINE_10m = cartopy.feature.NaturalEarthFeature(&#39;physical&#39;, &#39;coastline&#39;, &#39;10m&#39;,
-                                    edgecolor=&#39;black&#39;, facecolor=&#39;none&#39;)
-    &quot;&quot;&quot;coastline, including major islands.&quot;&quot;&quot;
-
-    LAKES_10m = cartopy.feature.NaturalEarthFeature(&#39;physical&#39;, &#39;lakes&#39;, &#39;10m&#39;,
-                                edgecolor=&#39;face&#39;,
-                                facecolor=cartopy.feature.COLORS[&#39;water&#39;])
-    &quot;&quot;&quot; natural and artificial lakes.&quot;&quot;&quot;
-
-    LAND_10m = cartopy.feature.NaturalEarthFeature(&#39;physical&#39;, &#39;land&#39;, &#39;10m&#39;,
-                               edgecolor=&#39;face&#39;,
-                               facecolor=cartopy.feature.COLORS[&#39;land&#39;])
-    &quot;&quot;&quot;land polygons, including major islands.&quot;&quot;&quot;
-
-    OCEAN_10m = cartopy.feature.NaturalEarthFeature(&#39;physical&#39;, &#39;ocean&#39;, &#39;10m&#39;,
-                                edgecolor=&#39;face&#39;,
-                                facecolor=cartopy.feature.COLORS[&#39;water&#39;])
-    &quot;&quot;&quot;Small scale (1:110m) ocean polygons.&quot;&quot;&quot;
-
-    RIVERS_10m = cartopy.feature.NaturalEarthFeature(&#39;physical&#39;, &#39;rivers_lake_centerlines&#39;, &#39;10m&#39;,
-                                 edgecolor=cartopy.feature.COLORS[&#39;water&#39;],
-                                 facecolor=&#39;none&#39;)
-    &quot;&quot;&quot;single-line drainages, including lake centerlines.&quot;&quot;&quot;
-</pre></div>
-
-
-<p>Cartopy will download this data on first use, and cache it. The first time you use a feature that triggers a download, you get a warning:</p>
-<div class="highlight"><pre><span></span>    D:\Anaconda3\lib\site-packages\cartopy\io\__init__.py:264: DownloadWarning: 
-    Downloading: http://naciscdn.org/naturalearth/10m/cultural/ne_10m_admin_0_boundary_lines_land.zip
-      warnings.warn(&#39;Downloading: {}&#39;.format(url), DownloadWarning)
-</pre></div>
-
-
-<h3>Create the map background</h3>
-<p>Then we create the fancy map, upon which our visualization will be drawn.</p>
-<div class="highlight"><pre><span></span>    fig = plt.figure(figsize=(10,10))
-    ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=140))
-    #ax.set_extent((110, 155, -45, -5))  # whole of Australia
-    ax.set_extent((120, 132, -18, -6))   # NE Australia to E Timor
-
-    ax.gridlines(draw_labels=True)
-
-    ax.add_feature(LAND_10m)
-    ax.add_feature(OCEAN_10m)
-    ax.add_feature(COASTLINE_10m)
-    ax.add_feature(RIVERS_10m )
-    ax.add_feature(BORDERS_10m )
-</pre></div>
-
-
-<p>First, we create a matplotlib figure, and then a Cartopy-aware Axes object.  We choose to constrain our map to just around
-North West Australia (the sharing of oil and gas resources with East Timor is currently an on-going dispute with East Timor).
-We draw gridlines, and add the geographical features to provide context for our visualization.  We decided not to use the 
-<code>LAKES_10m</code> feature.</p>
-<h3>Read the oil field shapefile</h3>
-<div class="highlight"><pre><span></span>    print(&#39;Adding gas fields ...&#39;)
-    add_shp = &#39;../data/fields&#39;
-
-    shp = shapereader.Reader(add_shp)
-    add_s = shp.records()
-    ADD_alpha = 0.99
-
-    for add in add_s:
-
-        if( add.geometry == None):
-            pass
-        else:
-            ax.add_geometries([add.geometry], ccrs.PlateCarree(),\
-                              edgecolor=&#39;red&#39;,  facecolor=&#39;tan&#39;, alpha = ADD_alpha)        
-        #end if
-
-    #end for
-</pre></div>
-
-
-<p>We create an instance the Cartopy shapereader, and use it to access the records in the shapefile.  For each shape,
-we check to see if the record geometry is None (the equivalent of missing data); if not, we add it to the Cartopy map,
-with our chosen color.  We set <code>alpha</code> to be close to 1.0, so that they show out.</p>
-<h3>Read the pipeline shapefile</h3>
-<div class="highlight"><pre><span></span>    print(&#39;Adding pipelines ...&#39;)
-    add_shp = &#39;../data/pipelines&#39;
-
-    shp = shapereader.Reader(add_shp)
-    add_s = shp.records()
-    ADD_alpha = 0.99
-
-    for add in add_s:
-
-        if( add.geometry == None):
-            pass
-        else:
-            lines = add.geometry
-            line_good=[]
-            for l in lines:
-               start_pt = list(l.coords)[0]
-                for i in range(1,len(l.coords)):
-                   end_pt = list(l.coords)[i]
-                   simple_line = (start_pt, end_pt)
-                   line_good.append(simple_line)
-                    start_pt = end_pt
-                #end for
-            #end for
-            lines = MultiLineString(line_good)
-
-            ax.add_geometries([lines], ccrs.PlateCarree(),\
-                              edgecolor=&#39;green&#39;, facecolor=None, alpha = ADD_alpha)    
-        #end if
-
-    #end for
-
-    plt.show()
-</pre></div>
-
-
-<p>This code matches the previous example, except for the the trick of unravelling the multi-point lines into
-simple nose-to-tail lines.  We add this newly created geometry to the underlying map, giving the line a distinctive color. </p>
-<h3>The Result</h3>
-<p>The result of this is shown below.</p>
-<p><img alt="Cartopy High Quality Example" src="../images/ml03.png"></p>
-<p>It would be interesting to show the edge of the continental shelf, and Australia's Economic Zone border.  I have downloaded a shapefile
-of the world tectonic plates, but it might be more illuminating to use a digital elevation model to show underwater topography.
-These are all extensions for another day (and blog post).</p>
-<p>To make this a finished product, I should add a title, a legend, provide attribution for data sources, and supply reproducibility fine-print
-(and maybe throw in a Copyright claim).  However, it's not bad for a start.</p>
-<h2>The Imports</h2>
-<p>Just for completeness, here are the imports for the Notebook that holds all the code above
-(not all are by the code fragments above, and some are used only to support print-outs that define the environment for reproducibility purposes) :</p>
-<div class="highlight"><pre><span></span>    <span class="c1"># all imports should go here</span>
-
-    <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-    <span class="kn">import</span> <span class="nn">sys</span>
-    <span class="kn">import</span> <span class="nn">os</span>
-    <span class="kn">import</span> <span class="nn">subprocess</span>
-    <span class="kn">import</span> <span class="nn">datetime</span>
-    <span class="kn">import</span> <span class="nn">platform</span>
-    <span class="kn">import</span> <span class="nn">datetime</span>
-
-    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-    <span class="c1">#import seaborn as sb</span>
-
-    <span class="kn">import</span>  <span class="nn">cartopy</span>
-    <span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="kn">as</span> <span class="nn">ccrs</span>
-    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">OSM</span>
-    <span class="kn">import</span> <span class="nn">cartopy.feature</span> <span class="kn">as</span> <span class="nn">cfeature</span>
-    <span class="kn">from</span> <span class="nn">cartopy.io</span> <span class="kn">import</span> <span class="n">shapereader</span>
-    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">StamenTerrain</span>
-    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">GoogleTiles</span>
-    <span class="kn">from</span> <span class="nn">owslib.wmts</span> <span class="kn">import</span> <span class="n">WebMapTileService</span>
-
-    <span class="kn">from</span> <span class="nn">matplotlib.path</span> <span class="kn">import</span> <span class="n">Path</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.patheffects</span> <span class="kn">as</span> <span class="nn">PathEffects</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="kn">as</span> <span class="nn">mpatches</span>
-
-    <span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">MultiLineString</span>
-
-    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-</pre></div>
-
-
-<p>The link to notebook that has all the code is will be coming soon.</p> 
+      <div class="summary span8">
+	<p>Cartopy display of multi-point line geometries</p> 
 	<a class="btn btn-mini xsmall" href="../cartopymultiline.html">
-          <i class="icon-comment"></i> Comment </a>
+          <i class="icon-plus-sign"></i> Read More </a>
 	<hr />
       </div>
       
     </div>
-    
+      
 
  
         
@@ -389,39 +728,6 @@ Filed under <a href="../category/cartopy.html">Cartopy</a>
       <div class="summary span8">
 	<p>Using Cartopy to display bushfire burns</p> 
 	<a class="btn btn-mini xsmall" href="../cartopyimages.html">
-          <i class="icon-plus-sign"></i> Read More </a>
-	<hr />
-      </div>
-      
-    </div>
-      
-
- 
-        
-
-
-
-    <div class='row-fluid'>
-      <div class='article-title span9'> 
-        <a href="../cartopyintro.html"><h1>Introduction to Cartopy</h1></a>
-      </div>
-    </div>
-    <div class="row-fluid">
-      <div class="span2">
-<p>Wed 22 February 2017 </p>
-
-<p style="text-align: left;">
-Filed under <a href="../category/cartopy.html">Cartopy</a>
-</p>
-<p style="text-align: left;">
- 
-    Tags <a href="../tag/python.html">python</a> <a href="../tag/cartopy.html">cartopy</a> </p>
-<p>
-</p>
-      </div>
-      <div class="summary span8">
-	<p>Introduction and discussion of Cartopy</p> 
-	<a class="btn btn-mini xsmall" href="../cartopyintro.html">
           <i class="icon-plus-sign"></i> Read More </a>
 	<hr />
       </div>
