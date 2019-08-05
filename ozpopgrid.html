@@ -86,27 +86,27 @@ Filed under <a href="./category/cartopy.html">Cartopy</a>
 <p>You can find the population grid GeoTIFF at http://www.abs.gov.au/ausstats/abs@.nsf/mf/1270.0.55.007</p>
 <h2>Data Exploration</h2>
 <p>The first thing I did was to read the GeoTIFF, and work out what projection was used.</p>
-<div class="highlight"><pre><span></span>pop = gdal.Open(&#39;d:\\qml\\Australian_Population_Grid_2011.tif&#39;)
-data = pop.ReadAsArray()
-gt = pop.GetGeoTransform()
-proj = pop.GetProjection()
+<div class="highlight"><pre><span></span><span class="n">pop</span> <span class="o">=</span> <span class="n">gdal</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="s1">&#39;d:</span><span class="se">\\</span><span class="s1">qml</span><span class="se">\\</span><span class="s1">Australian_Population_Grid_2011.tif&#39;</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">ReadAsArray</span><span class="p">()</span>
+<span class="n">gt</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">GetGeoTransform</span><span class="p">()</span>
+<span class="n">proj</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">GetProjection</span><span class="p">()</span>
 
-inproj = osr.SpatialReference()
-inproj.ImportFromWkt(proj)
+<span class="n">inproj</span> <span class="o">=</span> <span class="n">osr</span><span class="o">.</span><span class="n">SpatialReference</span><span class="p">()</span>
+<span class="n">inproj</span><span class="o">.</span><span class="n">ImportFromWkt</span><span class="p">(</span><span class="n">proj</span><span class="p">)</span>
 
-print( &quot;[ RASTER BAND COUNT ]: &quot;, pop.RasterCount)
-cols = pop.RasterXSize
-print(&#39;cols = &#39;,cols)
-rows = pop.RasterYSize
-print(&#39; rows = &#39;, rows)
-bands = pop.RasterCount
-print(&#39;bands = &#39;, bands)
-driver = pop.GetDriver().LongName
-print(&#39;driver =&#39;, driver)
+<span class="nb">print</span><span class="p">(</span> <span class="s2">&quot;[ RASTER BAND COUNT ]: &quot;</span><span class="p">,</span> <span class="n">pop</span><span class="o">.</span><span class="n">RasterCount</span><span class="p">)</span>
+<span class="n">cols</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">RasterXSize</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;cols = &#39;</span><span class="p">,</span><span class="n">cols</span><span class="p">)</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">RasterYSize</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39; rows = &#39;</span><span class="p">,</span> <span class="n">rows</span><span class="p">)</span>
+<span class="n">bands</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">RasterCount</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;bands = &#39;</span><span class="p">,</span> <span class="n">bands</span><span class="p">)</span>
+<span class="n">driver</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">GetDriver</span><span class="p">()</span><span class="o">.</span><span class="n">LongName</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;driver =&#39;</span><span class="p">,</span> <span class="n">driver</span><span class="p">)</span>
 
-print(&#39;MetaData = &#39;,pop.GetMetadata())
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;MetaData = &#39;</span><span class="p">,</span><span class="n">pop</span><span class="o">.</span><span class="n">GetMetadata</span><span class="p">())</span>
 
-print(inproj)
+<span class="nb">print</span><span class="p">(</span><span class="n">inproj</span><span class="p">)</span>
 </pre></div>
 
 
@@ -141,7 +141,7 @@ PROJCS[&quot;GDA_1994_Albers&quot;,
 <ul>
 <li>
 <p>First, they are using an Albers Equal Area Projection in which to draw the mesh grid.  It makes sense to use
-a Equal Area projection (not to use one would be weird), but the choice of Albers is unexplained in any documentation I could find.  There is an European Union project that is very similar (GEOSTAT 1A – Representing Census data
+a Equal Area projection (not to use one would be weird), but the choice of Albers is unexplained in any documentation I could find.  There is an European Union project that is very similar (GEOSTAT 1A � Representing Census data
 in a European population grid), that uses a different projection.  However, the EU case is made harder for the 
 statiticians because the EU has to match the use of grids in differing projections by its member states.  In any case they seem to be using
 a Lamberth Azimuthal Equal Area.</p>
@@ -158,25 +158,25 @@ explains that </p>
 <h2>Map Time!</h2>
 <h3>Global Albers</h3>
 <p>The first thing is to create a Cartopy Coordinate Reference System (CRS) to match the GeoTIFF:</p>
-<div class="highlight"><pre><span></span>albo = ccrs.AlbersEqualArea(central_latitude=0,
- false_easting=0, 
- false_northing=0, 
- central_longitude=132, 
- standard_parallels=(-18, -36) )
+<div class="highlight"><pre><span></span><span class="n">albo</span> <span class="o">=</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">AlbersEqualArea</span><span class="p">(</span><span class="n">central_latitude</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+ <span class="n">false_easting</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
+ <span class="n">false_northing</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
+ <span class="n">central_longitude</span><span class="o">=</span><span class="mi">132</span><span class="p">,</span> 
+ <span class="n">standard_parallels</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">18</span><span class="p">,</span> <span class="o">-</span><span class="mi">36</span><span class="p">)</span> <span class="p">)</span>
 </pre></div>
 
 
 <p>and then see what the world looks like in this projection.</p>
-<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
-ax = fig.add_subplot(1, 1, 1, projection= albo )
+<div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span> <span class="n">albo</span> <span class="p">)</span>
 
-ax.set_global()
-ax.coastlines()
+<span class="n">ax</span><span class="o">.</span><span class="n">set_global</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">coastlines</span><span class="p">()</span>
 
-#plt.imshow(data, extent=extent_tif, transform=albo)
-plt.title(&#39;World in Albers Equal Area (centered on Australia)&#39;, {&#39;fontsize&#39;:30}, pad=40)
+<span class="c1">#plt.imshow(data, extent=extent_tif, transform=albo)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;World in Albers Equal Area (centered on Australia)&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;fontsize&#39;</span><span class="p">:</span><span class="mi">30</span><span class="p">},</span> <span class="n">pad</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
 
-plt.show()
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
 
@@ -345,62 +345,62 @@ plt.show()
 <p>A larger version is <a href="images/ozpop07.png">here</a></p>
 <h2>Bubble Plot</h2>
 <p>In the next example, we plot a red bubble at each zon-zero cell of the grid.  We also draw the grid itself (very faintly, <code>alpha=0.2</code>).</p>
-<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
-ax = fig.add_subplot(1, 1, 1,  projection=albo)
+<div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>  <span class="n">projection</span><span class="o">=</span><span class="n">albo</span><span class="p">)</span>
 
-ax.set_extent(extent_tif, crs=albo )
+<span class="n">ax</span><span class="o">.</span><span class="n">set_extent</span><span class="p">(</span><span class="n">extent_tif</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="n">albo</span> <span class="p">)</span>
 
-mksize_min = 0
-mksize_max = 200
-data_min = data3.min()
-data_max = data3.max()
+<span class="n">mksize_min</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">mksize_max</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">data_min</span> <span class="o">=</span> <span class="n">data3</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+<span class="n">data_max</span> <span class="o">=</span> <span class="n">data3</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 
-down_scale_factor = 100
+<span class="n">down_scale_factor</span> <span class="o">=</span> <span class="mi">100</span>
 
-#extent_tif = (gt[0], gt[0] + pop.RasterXSize * gt[1],
-#          gt[3] + pop.RasterYSize * gt[5], gt[3])
+<span class="c1">#extent_tif = (gt[0], gt[0] + pop.RasterXSize * gt[1],</span>
+<span class="c1">#          gt[3] + pop.RasterYSize * gt[5], gt[3])</span>
 
-x_step = gt[1]
-y_step = gt[5]
+<span class="n">x_step</span> <span class="o">=</span> <span class="n">gt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">y_step</span> <span class="o">=</span> <span class="n">gt</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
 
-for ix in range(data3.shape[1]):
-    for iy in range(data3.shape[0]):
-        row = data3.shape[0] - iy -1
-        col = ix
+<span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data3</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+    <span class="k">for</span> <span class="n">iy</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data3</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="n">data3</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">iy</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="n">ix</span>
 
-        albo_x = extent_tif[0] + x_step*(ix+0.5) * down_scale_factor
-        albo_y = extent_tif[2] + abs(y_step)* (iy+0.5) * down_scale_factor
+        <span class="n">albo_x</span> <span class="o">=</span> <span class="n">extent_tif</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_step</span><span class="o">*</span><span class="p">(</span><span class="n">ix</span><span class="o">+</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">down_scale_factor</span>
+        <span class="n">albo_y</span> <span class="o">=</span> <span class="n">extent_tif</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">y_step</span><span class="p">)</span><span class="o">*</span> <span class="p">(</span><span class="n">iy</span><span class="o">+</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">down_scale_factor</span>
 
-        markersize=mksize_min + (mksize_max-mksize_min)*(data3[row, col]-data_min)/(data_max-data_min)
+        <span class="n">markersize</span><span class="o">=</span><span class="n">mksize_min</span> <span class="o">+</span> <span class="p">(</span><span class="n">mksize_max</span><span class="o">-</span><span class="n">mksize_min</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">data3</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span><span class="o">-</span><span class="n">data_min</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">data_max</span><span class="o">-</span><span class="n">data_min</span><span class="p">)</span>
 
-        plt.plot(albo_x, albo_y ,
-                markersize=markersize, 
-                marker=&#39;o&#39;, 
-                color=&#39;red&#39;, 
-                alpha=0.25, zorder=9)
-
-
-    #end for
-#end for
-
-for ix in range(data3.shape[1]):
-    albo_x = extent_tif[0] + x_step*ix * down_scale_factor       
-    plt.plot([albo_x, albo_x] , [extent_tif[2], extent_tif[3]], linestyle=&#39;-&#39;, color=&#39;lightgrey&#39;, alpha=0.2)
-#end for
-
-for iy in range(data3.shape[0]):
-    albo_y = extent_tif[2] + abs(y_step)* iy * down_scale_factor
-    plt.plot([extent_tif[0], extent_tif[1] ] , [albo_y, albo_y], linestyle=&#39;-&#39;, color=&#39;lightgrey&#39;, alpha=0.2)
-#end for
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">albo_x</span><span class="p">,</span> <span class="n">albo_y</span> <span class="p">,</span>
+                <span class="n">markersize</span><span class="o">=</span><span class="n">markersize</span><span class="p">,</span> 
+                <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> 
+                <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> 
+                <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
 
 
+    <span class="c1">#end for</span>
+<span class="c1">#end for</span>
 
-ax.coastlines()
-ax.gridlines()
+<span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data3</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+    <span class="n">albo_x</span> <span class="o">=</span> <span class="n">extent_tif</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_step</span><span class="o">*</span><span class="n">ix</span> <span class="o">*</span> <span class="n">down_scale_factor</span>       
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">albo_x</span><span class="p">,</span> <span class="n">albo_x</span><span class="p">]</span> <span class="p">,</span> <span class="p">[</span><span class="n">extent_tif</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">extent_tif</span><span class="p">[</span><span class="mi">3</span><span class="p">]],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;lightgrey&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="c1">#end for</span>
 
-plt.title(&#39;Australian Population Grid\n Binned over 100km Grid. Albers Equal Area&#39;, {&#39;fontsize&#39;:20}, pad=40)
+<span class="k">for</span> <span class="n">iy</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data3</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+    <span class="n">albo_y</span> <span class="o">=</span> <span class="n">extent_tif</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">y_step</span><span class="p">)</span><span class="o">*</span> <span class="n">iy</span> <span class="o">*</span> <span class="n">down_scale_factor</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">extent_tif</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">extent_tif</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">]</span> <span class="p">,</span> <span class="p">[</span><span class="n">albo_y</span><span class="p">,</span> <span class="n">albo_y</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;lightgrey&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="c1">#end for</span>
 
-plt.show()
+
+
+<span class="n">ax</span><span class="o">.</span><span class="n">coastlines</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">gridlines</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Australian Population Grid</span><span class="se">\n</span><span class="s1"> Binned over 100km Grid. Albers Equal Area&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;fontsize&#39;</span><span class="p">:</span><span class="mi">20</span><span class="p">},</span> <span class="n">pad</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
 
