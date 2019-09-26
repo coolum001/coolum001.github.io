@@ -3,21 +3,21 @@
 <head>
 
     <meta charset="utf-8">
-    <title>net-analysis.com Data Analysis Blog</title>
+    <title>net-analysis.com Data Analysis Blog <small>deployment</small></title>
     <meta name="description" content="">
     <meta name="author" content="Don Cameron">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
-    <script src="./theme/html5.js"></script>
+    <script src="../theme/html5.js"></script>
     <![endif]-->
 
 
     <!-- Le styles -->
     <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap.no-icons.min.css" rel="stylesheet">
-    <link href="./theme/local.css" rel="stylesheet">
-    <link href="./theme/pygments.css" rel="stylesheet">
-    <link href="./theme/font-awesome.css" rel="stylesheet">
+    <link href="../theme/local.css" rel="stylesheet">
+    <link href="../theme/pygments.css" rel="stylesheet">
+    <link href="../theme/font-awesome.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Gudea:400,400italic|Alegreya+SC' rel='stylesheet' type='text/css'>
 
 </head>
@@ -27,29 +27,29 @@
   <div class="container">
     <div class="row-fluid">
       <div class="span9">
-	<a href="." class="brand">net-analysis.com Data Analysis Blog</a>
+	<a href=".." class="brand">net-analysis.com Data Analysis Blog</a>
       </div>
 
       <div class="span3" id="blog-nav">
 	<ul class="nav nav-pills pull-right">
 	    <li >
-	      <a href="./category/basemap.html ">Basemap</a>
+	      <a href="../category/basemap.html ">Basemap</a>
 	    <li >
-	      <a href="./category/cartopy.html ">Cartopy</a>
+	      <a href="../category/cartopy.html ">Cartopy</a>
 	    <li >
-	      <a href="./category/fastai.html ">fastai</a>
+	      <a href="../category/fastai.html ">fastai</a>
 	    <li >
-	      <a href="./category/geopandas.html ">GeoPandas</a>
+	      <a href="../category/geopandas.html ">GeoPandas</a>
 	    <li >
-	      <a href="./category/introduction.html ">Introduction</a>
+	      <a href="../category/introduction.html ">Introduction</a>
 	    <li >
-	      <a href="./category/landsat.html ">LANDSAT</a>
+	      <a href="../category/landsat.html ">LANDSAT</a>
 	    <li >
-	      <a href="./category/osmnx.html ">OSMNX</a>
+	      <a href="../category/osmnx.html ">OSMNX</a>
 	    <li >
-	      <a href="./category/sympy.html ">sympy</a>
+	      <a href="../category/sympy.html ">sympy</a>
 	    <li >
-	      <a href="./category/visualizations.html ">Visualizations</a>
+	      <a href="../category/visualizations.html ">Visualizations</a>
 	</ul>
       </div>
     </div> <!-- End of fluid row-->
@@ -67,7 +67,7 @@
 
     <div class='row-fluid''>
         <div class="article-title span9">
-            <a href="./adventcloud.html"><h1>Adventures in Cloudland</h1></a>
+            <a href="../adventcloud.html"><h1>Adventures in Cloudland</h1></a>
         </div>
     </div>
     <div class="row-fluid">
@@ -75,11 +75,11 @@
 <p>Thu 26 September 2019 </p>
 
 <p style="text-align: left;">
-Filed under <a href="./category/fastai.html">fastai</a>
+Filed under <a href="../category/fastai.html">fastai</a>
 </p>
 <p style="text-align: left;">
  
-    Tags <a href="./tag/cloud.html">cloud</a> <a href="./tag/fastai.html">fastai</a> <a href="./tag/deployment.html">deployment</a> </p>
+    Tags <a href="../tag/cloud.html">cloud</a> <a href="../tag/fastai.html">fastai</a> <a href="../tag/deployment.html">deployment</a> </p>
 <p>
 </p>
       </div>
@@ -92,9 +92,9 @@ Filed under <a href="./category/fastai.html">fastai</a>
 organized a set of workshops, for interested people to work through the video lectures as a group.</p>
 <p>As an exercise, I replicated one of the examples in the course, where you present an image, and a Convolutional Neural Network (CNN) outputs the likelihood / certainty / probability that the image contains one of a set of pre-defined objects.  The course example categories were breeds of cat;  I decided to develop a recognizer for the Australian Museum 30 most common urban birds.</p>
 <p>To train a CNN, you need a large number of pre-labelled images.  Thanks to Google Image search, I was able to get large numbers of images for each bird species.  Large amounts of CNN training later, and a rapid learning uptake (mostly via StackOverflow)  of my Python web-backend of choice (Flask), I got an web app that could be very confident when given a photo of a Rainbow Lorikeet.</p>
-<p><img alt="BirdApp1" src="./images/rainbow.png"></p>
+<p><img alt="BirdApp1" src="../images/rainbow.png"></p>
 <p>But, like me, was a little less sure about black birds.</p>
-<p><img alt="BirdApp1" src="./images/raven.png"></p>
+<p><img alt="BirdApp1" src="../images/raven.png"></p>
 <h2>Vanity of vanities! All is vanity</h2>
 <p>I was inordinately proud of this web app, and immediately thought about web hosting.  Being a cheap bastard, I wanted to do it for as close as possible for free.</p>
 <p>There was a recommendation on the reddit Python forum for a hosting / cloud company called <a href="https://www.pythonanywhere.com/">PythonAnywhere</a>.</p>
@@ -113,13 +113,13 @@ organized a set of workshops, for interested people to work through the video le
 <p>So then I set my sights on the giants of the Cloud, Microsoft Azure and Google Cloud.  Again (being a  cheap bastard), I cranked up free accounts on both.  Again, I learned that my app was too large for this.</p>
 <p>Both Azure and Google know about Python 3 (although Google internally uses Python 2 - spit), and taking an app from a <code>Git</code> repository, but the process of running up the environment (via <code>PIP</code>) always fell over in both providers with memory (or maybe disk limitations).  I could have moved to more expansive (read expensive) accounts, but decided against this, as I had heard horror stories of unexpected Cloud bills, due to some mis-configuration by the end-user.</p>
 <p>As an example of unexpected consequences, at one stage Azure offered me the option to crank up a Azure Cloud Shell (CLI), which I activated.  Later I noticed in the Azure console that I had a storage account.</p>
-<p><img alt="azurecli1" src="./images/azurecli1.png"></p>
+<p><img alt="azurecli1" src="../images/azurecli1.png"></p>
 <p>Where did that come from, I wondered: from my request for a Cloud Shell was the answer.</p>
-<p><img alt="azurecli2" src="./images/azurecli2.png"></p>
+<p><img alt="azurecli2" src="../images/azurecli2.png"></p>
 <p>I wonder how big this storage is, I wondered: could be quiet large I found - 6 GB is quite large by my standards.</p>
-<p><img alt="azurecli3" src="./images/azurecli3.png"></p>
+<p><img alt="azurecli3" src="../images/azurecli3.png"></p>
 <p>Fortunately, the costs are not high (yet)</p>
-<p><img alt="azurecli4" src="./images/azurecli4.png"></p>
+<p><img alt="azurecli4" src="../images/azurecli4.png"></p>
 <h2>Plan B</h2>
 <p>So at this stage, I decided it was time to learn some new technology (maybe way past time).  Both Google Cloud, Amazon Web Services (AWS) and Microsoft Azure know about Docker images, and running them up as a web server.</p>
 <h3>Onwards to Docker</h3>
@@ -175,13 +175,13 @@ torch
 <h2>App Management</h2>
 <p>As a matter of interest, the screenshots below show the management consoles for all the providers.</p>
 <h3>PythonAnywhere</h3>
-<p><img alt="pythonanywhere" src="./images/pythonanywhere.png"></p>
+<p><img alt="pythonanywhere" src="../images/pythonanywhere.png"></p>
 <h3>Google Cloud</h3>
-<p><img alt="googlecloud" src="./images/googlecloud.png"></p>
+<p><img alt="googlecloud" src="../images/googlecloud.png"></p>
 <h3>Azure</h3>
-<p><img alt="azure" src="./images/azure.png"></p>
+<p><img alt="azure" src="../images/azure.png"></p>
 <h3>AWS</h3>
-<p><img alt="aws" src="./images/aws.png"></p>
+<p><img alt="aws" src="../images/aws.png"></p>
 <h2>Conclusions</h2>
 <p>Some random thoughts:</p>
 <p>. Having initially  tripped over in developing on a different OS than my deployment OS, I have a new-found respect for Docker.  It is definitely a technology 
@@ -189,158 +189,20 @@ you should at least a nodding acquaintance  with. </p>
 <p>. PythonAnywhere would be my recommendation for web app deployment of small to medium apps.  I haven't done a detailed cost analysis, but the fact you don't have to learn a mountain of new jargon is a plus.  Using any of the other Cloud providers for production would require learning a whole new jargon and set of concepts.</p>
 <p>. My experience in this event, and previous interactions with Amazon, is that AWS support is very good, and this would maybe be the deciding factor if I had to do this for real.</p>
 <p>.  A quote that I suspect is uncomfortably  true; <em>"Nobody has figured out how to make money from AI/ML,    other than by selling you a pile of compute and storage for your AI/ML misadventures".</em></p> 
-	<a class="btn btn-mini xsmall" href="./adventcloud.html">
+	<a class="btn btn-mini xsmall" href="../adventcloud.html">
           <i class="icon-comment"></i> Comment </a>
 	<hr />
       </div>
       
     </div>
     
-
- 
-        
-
-
-
-    <div class='row-fluid'>
-      <div class='article-title span9'> 
-        <a href="./cnneyestest.html"><h1>Informally Testing a CNN Locating Eyes in an Image</h1></a>
-      </div>
-    </div>
-    <div class="row-fluid">
-      <div class="span2">
-<p>Tue 24 September 2019 </p>
-
-<p style="text-align: left;">
-Filed under <a href="./category/fastai.html">fastai</a>
-</p>
-<p style="text-align: left;">
- 
-    Tags <a href="./tag/fastai.html">fastai</a> <a href="./tag/ml.html">ML</a> <a href="./tag/machine-learning.html">Machine Learning</a> </p>
-<p>
-</p>
-      </div>
-      <div class="summary span8">
-	
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Test-of-Eyes-CNN-Locator">Test of Eyes CNN Locator<a class="anchor-link" href="#Test-of-Eyes-CNN-Locator">&#182;</a></h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h2><p>This is a test of the fastai CNN model (as shown in an earlier blog post).  We load up the model, and the test the model of a completely different database of face image than that used to train the model.  I am most interested in the limitations or failure modes of the model we have trained.</p> 
-	<a class="btn btn-mini xsmall" href="./cnneyestest.html">
-          <i class="icon-plus-sign"></i> Read More </a>
-	<hr />
-      </div>
-      
-    </div>
-      
-
- 
-        
-
-
-
-    <div class='row-fluid'>
-      <div class='article-title span9'> 
-        <a href="./cnneyes.html"><h1>Using a CNN to Locate Eyes in an Image</h1></a>
-      </div>
-    </div>
-    <div class="row-fluid">
-      <div class="span2">
-<p>Sun 22 September 2019 </p>
-
-<p style="text-align: left;">
-Filed under <a href="./category/fastai.html">fastai</a>
-</p>
-<p style="text-align: left;">
- 
-    Tags <a href="./tag/fastai.html">fastai</a> <a href="./tag/ml.html">ML</a> <a href="./tag/machine-learning.html">Machine Learning</a> </p>
-<p>
-</p>
-      </div>
-      <div class="summary span8">
-	
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="The-Eyes-have-it!">The Eyes have it!<a class="anchor-link" href="#The-Eyes-have-it!">&#182;</a></h1><hr>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h2><p>This Jupyterlab note book is an example of using the fastai library to process an image, and return some list of (X,Y) coordinates of interest.</p>
-<p>The fastai Machine Learning course I can strongly recommend: <a href="https://course.fast.ai">fastai course, version 3</a>.  The good people at the Coding from Beach Meetup <a href="https://www.meetup.com/en-AU/Coding-from-Beach/">Coding from Beach</a> 
-	<a class="btn btn-mini xsmall" href="./cnneyes.html">
-          <i class="icon-plus-sign"></i> Read More </a>
-	<hr />
-      </div>
-      
-    </div>
-      
-
- 
-        
-
-
-
-    <div class='row-fluid'>
-      <div class='article-title span9'> 
-        <a href="./euclidea.html"><h1>Symbolic Algebra and Geometric Puzzles</h1></a>
-      </div>
-    </div>
-    <div class="row-fluid">
-      <div class="span2">
-<p>Thu 08 August 2019 </p>
-
-<p style="text-align: left;">
-Filed under <a href="./category/sympy.html">sympy</a>
-</p>
-<p style="text-align: left;">
- 
-    Tags <a href="./tag/geometry.html">Geometry</a> <a href="./tag/sympy.html">sympy</a> <a href="./tag/symbolic-algebra.html">Symbolic Algebra</a> </p>
-<p>
-</p>
-      </div>
-      <div class="summary span8">
-	
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input"> 
-	<a class="btn btn-mini xsmall" href="./euclidea.html">
-          <i class="icon-plus-sign"></i> Read More </a>
-	<hr />
-      </div>
-      
-    </div>
-      
 <div class="pagination">
 <ul>
     <li class="prev disabled"><a href="#">&larr; Previous</a></li>
 
-    <li class="active"><a href="./index.html">1</a></li>
-    <li class=""><a href="./index2.html">2</a></li>
-    <li class=""><a href="./index3.html">3</a></li>
-    <li class=""><a href="./index4.html">4</a></li>
-    <li class=""><a href="./index5.html">5</a></li>
-    <li class=""><a href="./index6.html">6</a></li>
+    <li class="active"><a href="../tag/deployment.html">1</a></li>
 
-    <li class="next"><a href="./index2.html">Next &rarr;</a></li>
+    <li class="next disabled"><a href="#">&rarr; Next</a></li>
 
 </ul>
 </div>
@@ -396,11 +258,11 @@ http://www.net-analysis.com.   It documents a learning process, and hence owes a
             <li class="nav-header"> 
               Site
             </li>
-            <li><a href="."><i class="icon-home" style="color: #1f334b">
+            <li><a href=".."><i class="icon-home" style="color: #1f334b">
                 </i>Home</a></li>
-            <li><a href="./archives.html"><i class="icon-list" style="color: #1f334b">
+            <li><a href="../archives.html"><i class="icon-list" style="color: #1f334b">
                 </i>Archives</a></li>
-	    <li><a href="./tags.html"><i class="icon-tags" style="color: #1f334b">
+	    <li><a href="../tags.html"><i class="icon-tags" style="color: #1f334b">
                 </i>Tags</a></li>
 	    
 	  </ul>
@@ -410,7 +272,7 @@ http://www.net-analysis.com.   It documents a learning process, and hence owes a
       </div> <!--end of fluid row-->
     </div> <!--end of blog-footer-->
     <hr />
-    <p align="center"><a href=".">net-analysis.com Data Analysis Blog</a>
+    <p align="center"><a href="..">net-analysis.com Data Analysis Blog</a>
       &copy; Don Cameron
     Powered by <a href="https://github.com/getpelican/pelican">Pelican</a> and
         <a href="https://twitter.github.com/bootstrap">Twitter Bootstrap</a>. 
