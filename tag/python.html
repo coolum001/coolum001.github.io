@@ -79,12 +79,12 @@
 
     <div class='row-fluid''>
         <div class="article-title span9">
-            <a href="../unixpipes.html"><h1>Using Python to Emulate Unix Pipes</h1></a>
+            <a href="../stringchallenges.html"><h1>Solving String Challenges in Python</h1></a>
         </div>
     </div>
     <div class="row-fluid">
       <div class="span2">
-<p>Thu 09 January 2020 </p>
+<p>Wed 25 March 2020 </p>
 
 <p style="text-align: left;">
 Filed under <a href="../category/python.html">Python</a>
@@ -1073,26 +1073,16 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Unix-utility-emulation">Unix utility emulation<a class="anchor-link" href="#Unix-utility-emulation">&#182;</a></h1><hr>
-<h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h2><p>This post is an example of emulation unix utilities in Python.  I was prompted by another blog posting about the difficulties of Unix shell scripting. The blogger was trying to accumulate the time taken to execute a given script multiple times (difficulties arose because Unix Shell scripting doesn't do floating calculations easily).  Ignoring the details, I wondered how I would do the core script in Python.</p>
-<p>See: <a href="https://blog.plover.com/Unix/tools.html">https://blog.plover.com/Unix/tools.html</a></p>
-<p><code>awk '{print $11}' FILE_NAME_PATTERN | sort | uniq -c | sort -n | grep -v EXCLUDE_PATTERN</code></p>
-<p>Basically, this says:</p>
-<ul>
-<li><p>For all files with names that match a specified pattern</p>
-</li>
-<li><p>Read the file, extracting the 11-th field of each line</p>
-</li>
-<li><p>Sort the fields</p>
-</li>
-<li><p>Use <code>uniq</code> output the unique field values, and append the count of the unique field values</p>
-</li>
-<li><p>Sort into ascending order</p>
-</li>
-<li><p>Exclude fields that match a given pattern.</p>
-<p>The script is being used to process website logs.</p>
-</li>
-</ul>
+<h1 id="Python-String-Minatures">Python String Minatures<a class="anchor-link" href="#Python-String-Minatures">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I was reading a blog post at <a href="http://beyondloom.com/blog/strings.html">http://beyondloom.com/blog/strings.html</a>, where a number of string manipulation challenges were posted.  They were supposed to be solved by <code>APL</code> style one-liners in K, but I deciced to redo them in Python</p>
 
 </div>
 </div>
@@ -1102,10 +1092,8 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Implementation">Implementation<a class="anchor-link" href="#Implementation">&#182;</a></h2><h3 id="Imports">Imports<a class="anchor-link" href="#Imports">&#182;</a></h3><p><code>glob</code> does file name search, with pattern matching</p>
-<p><code>re</code> does regular expressions</p>
-<p><code>collections</code> contains <code>Counter</code>, which (no suprise) counts instances ob objects</p>
-
+<hr>
+<h1 id="Define-the-Environment">Define the Environment<a class="anchor-link" href="#Define-the-Environment">&#182;</a></h1>
 </div>
 </div>
 </div>
@@ -1114,9 +1102,14 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">glob</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">collections</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">List</span>
+
+
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">permutations</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">islice</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">compress</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">cycle</span>
 </pre></div>
 
 </div>
@@ -1129,8 +1122,8 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Load up <code>lab_black</code> to format our Python nicely.</p>
-
+<hr>
+<h3 id="Given-a-string-x-and-a-character-y,-how-many-times-does-y-occur-in-x?">Given a string x and a character y, how many times does y occur in x?<a class="anchor-link" href="#Given-a-string-x-and-a-character-y,-how-many-times-does-y-occur-in-x?">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -1139,10 +1132,35 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">reload_ext</span> lab_black
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">str_count</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Counter</span><span class="p">:</span>
+
+    <span class="k">return</span> <span class="n">Counter</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+<span class="c1">#end str_count</span>
+
+
+<span class="n">c</span> <span class="o">=</span> <span class="n">str_count</span><span class="p">(</span><span class="s1">&#39;Australia&#39;</span><span class="p">)</span>
+<span class="n">c</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">],</span> <span class="n">c</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="n">c</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(1, 2, 0)</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -1152,8 +1170,9 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Find-file-names">Find file names<a class="anchor-link" href="#Find-file-names">&#182;</a></h4><p>Find all file names that match a pattern in target directory</p>
-
+<p>Solved by using the Counter object from the <code>collections</code> package</p>
+<hr>
+<h3 id="Given-a-string-x,-is-it-identical-when-read-forwards-and-backwards?">Given a string x, is it identical when read forwards and backwards?<a class="anchor-link" href="#Given-a-string-x,-is-it-identical-when-read-forwards-and-backwards?">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -1162,12 +1181,32 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">SOURCE_DIR</span> <span class="o">=</span> <span class="s1">&#39;../data/&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">is_palindrome</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">string</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">string</span><span class="p">))</span>
+<span class="c1">#end is_palindrome</span>
 
-<span class="n">fnames</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">SOURCE_DIR</span> <span class="o">+</span> <span class="s1">&#39;test01 - Copy (*).txt&#39;</span><span class="p">)</span>
+<span class="n">is_palindrome</span><span class="p">(</span><span class="s1">&#39;racecar&#39;</span><span class="p">),</span> <span class="n">is_palindrome</span><span class="p">(</span><span class="s1">&#39;palindrame&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(True, False)</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -1177,11 +1216,9 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Read-Files">Read Files<a class="anchor-link" href="#Read-Files">&#182;</a></h4><p>We create a <code>Counter</code> instance, read the contents of each file, split each line into fields, and update the count of field 2.  Note that we use the <code>with</code> statement to avoid all the file closing cleanup.</p>
-<p>We also cater for the case where the log file has NO field 2.</p>
-<p>Note a <em>gotcha</em>:  If you give a string to Counter, it thinks it is a list of <code>chars</code>, and counts each character.  You have to wrap strings in a list.</p>
-<p>Finally, we get the list in descending order, reverse it, and make it into a list again.</p>
-
+<p>In fact the concept of reversing a string gets very complicated in dealing with general Unicode strings (some languages have different shapes for the same letter at the end, middle, or front of words, for example)</p>
+<hr>
+<h3 id="Given-a-string-x,-produce-a-list-of-characters-which-appear-more-than-once-in-x.">Given a string x, produce a list of characters which appear more than once in x.<a class="anchor-link" href="#Given-a-string-x,-produce-a-list-of-characters-which-appear-more-than-once-in-x.">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -1190,35 +1227,35 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># create a counter of field values from field 1</span>
-<span class="n">f1_count</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">Counter</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">non_uniques2</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+    <span class="n">cnt</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">cnt</span> <span class="k">if</span> <span class="n">cnt</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">res</span>
 
-<span class="c1"># open each file name</span>
-<span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">fnames</span><span class="p">:</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="c1"># read all lines in this file</span>
-        <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-        <span class="c1"># strip off leading and trailing whitespace, split on whitespace</span>
-        <span class="c1"># update count of second field</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="c1"># get field (if present)</span>
-                <span class="n">field</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
-                <span class="c1"># update count, note passing in a string gets it chopped into chars</span>
-                <span class="c1"># have to pass list with string as only item</span>
-                <span class="n">f1_count</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="n">field</span><span class="p">])</span>
-            <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="c1"># no field 1, ignore this (maybe blank line?)</span>
-                <span class="k">pass</span>
-            <span class="c1"># end try</span>
-        <span class="c1"># end for</span>
-    <span class="c1"># end with</span>
-<span class="c1"># end for</span>
-<span class="c1"># sort list by count, then reverse, then turn into list again</span>
-<span class="n">counts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">f1_count</span><span class="o">.</span><span class="n">most_common</span><span class="p">()))</span>
+<span class="c1">#end non_unique</span>
+
+<span class="n">non_uniques2</span><span class="p">(</span><span class="s1">&#39;applause&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;a&#39;, &#39;p&#39;]</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -1228,9 +1265,9 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Excluding-Don't-Cares">Excluding Don't Cares<a class="anchor-link" href="#Excluding-Don't-Cares">&#182;</a></h4><p>Finally, we go through the list of (<code>field</code>, <code>count</code>) tuples, excluding those that match the specified pattern. I made this a little fancy, in that I catered for the case with no exclusion pattern.</p>
-<p>In the spirit of Unix, the output is just the raw tuples.</p>
-
+<p>Create a Counter dictionary, and iterate over all keys</p>
+<hr>
+<h3 id="Given-strings-x-and-y,-do-both-strings-contain-the-same-letters,-possibly-in-a-different-order?">Given strings x and y, do both strings contain the same letters, possibly in a different order?<a class="anchor-link" href="#Given-strings-x-and-y,-do-both-strings-contain-the-same-letters,-possibly-in-a-different-order?">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -1239,17 +1276,12 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># do the exclusion on RE pattern</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">same_chars</span><span class="p">(</span><span class="n">str1</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">str2</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">str1</span><span class="p">)</span><span class="o">==</span><span class="nb">sorted</span><span class="p">(</span><span class="n">str2</span><span class="p">)</span>
+<span class="c1">#end same_chars</span>
 
-<span class="n">exclude</span> <span class="o">=</span> <span class="s1">&#39;^c$&#39;</span>
-<span class="n">final_counts</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">counts</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">exclude</span> <span class="o">==</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">exclude</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="kc">None</span><span class="p">)</span>
-<span class="p">]</span>
-
-<span class="c1"># raw display on counts</span>
-<span class="n">__</span> <span class="o">=</span> <span class="p">[</span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">final_counts</span><span class="p">]</span>
+<span class="n">same_chars</span><span class="p">(</span><span class="s1">&#39;tab&#39;</span><span class="p">,</span> <span class="s1">&#39;bat&#39;</span><span class="p">),</span> <span class="n">same_chars</span><span class="p">(</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">)</span>
+    
 </pre></div>
 
 </div>
@@ -1261,16 +1293,14 @@ h6:hover .anchor-link {
 
 
 <div class="output_area">
-<div class="prompt"></div>
+<div class="prompt output_prompt">Out[6]:</div>
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>vvvvvv 1
-a 1
-d 1
-b 3
-f 6
-</pre>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(True, False)</pre>
 </div>
+
 </div>
 
 </div>
@@ -1282,8 +1312,8 @@ f 6
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Fancy-Report">Fancy Report<a class="anchor-link" href="#Fancy-Report">&#182;</a></h4><p>I decided to add a reporting function that had the exclusion function build it.  Not quite in the spirit of Unix, but nicer to look at (a manager of Arsenal FC once famously said "If you want entertainment, go to circus": Unix bros would probably say "If you want to look at something nice, go to an art gallery")</p>
-
+<hr>
+<h3 id="Given-a-string-x,-find-all-the-characters-which-occur-exactly-once,-in-the-order-they-appear.">Given a string x, find all the characters which occur exactly once, in the order they appear.<a class="anchor-link" href="#Given-a-string-x,-find-all-the-characters-which-occur-exactly-once,-in-the-order-they-appear.">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -1292,54 +1322,13 @@ f 6
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">report_counts</span><span class="p">(</span>
-    <span class="n">counts</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">exclude</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    report_counts: prints a formatted report show values and counts, </span>
-<span class="sd">                excluding values that match a RE pattern</span>
-<span class="sd">    Parameters</span>
-<span class="sd">    counts: list of form [(v1, n1), (v2, n2) ...], v_i strings, n_i counts</span>
-<span class="sd">    </span>
-<span class="sd">    exclude: string holding RE pattern to supress a line if pattern matches in v_i string</span>
-<span class="sd">              default None</span>
-<span class="sd">    </span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">title1</span> <span class="o">=</span> <span class="s1">&#39;Value&#39;</span>
-    <span class="n">title2</span> <span class="o">=</span> <span class="s1">&#39;Count&#39;</span>
-    <span class="n">underbar</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
-    <span class="n">col1</span> <span class="o">=</span> <span class="mi">15</span>
-    <span class="n">col2</span> <span class="o">=</span> <span class="mi">5</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{title1:^</span><span class="si">{col1}</span><span class="s1">}|{title2:^</span><span class="si">{col2}</span><span class="s1">}&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">uniques</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="n">cnt</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+    <span class="n">single</span> <span class="o">=</span>  <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">string</span> <span class="k">if</span> <span class="n">cnt</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">single</span>
+<span class="c1">#end non_unique</span>
 
-    <span class="nb">print</span><span class="p">(</span>
-        <span class="n">f</span><span class="s1">&#39;{underbar:</span><span class="si">{underbar}</span><span class="s1">^</span><span class="si">{col1}</span><span class="s1">}|{underbar:</span><span class="si">{underbar}</span><span class="s1">^</span><span class="si">{col2}</span><span class="s1">}&#39;</span>
-    <span class="p">)</span>
-
-    <span class="c1"># print line of report if no exclude pattern given,</span>
-    <span class="c1"># or if exclude pattern (non-None) not seen</span>
-    <span class="n">__</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{v:&gt;</span><span class="si">{col1}</span><span class="s1">}|{n:&gt;</span><span class="si">{col2}</span><span class="s1">}&#39;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">counts</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">exclude</span> <span class="o">==</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="ow">or</span> <span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">exclude</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="p">]</span>
-
-
-<span class="c1"># end</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">report_counts</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="s1">&#39;^c|b$&#39;</span><span class="p">)</span>
+<span class="n">uniques</span><span class="p">(</span><span class="s1">&#39;applause&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1351,52 +1340,14 @@ f 6
 
 
 <div class="output_area">
-<div class="prompt"></div>
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>     Value     |Count
----------------|-----
-         vvvvvv|    1
-              a|    1
-              d|    1
-              f|    6
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">report_counts</span><span class="p">(</span><span class="n">final_counts</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
+<div class="prompt output_prompt">Out[7]:</div>
 
 
-<div class="output_area">
-<div class="prompt"></div>
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>     Value     |Count
----------------|-----
-         vvvvvv|    1
-              a|    1
-              d|    1
-              b|    3
-              f|    6
-</pre>
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;l&#39;, &#39;u&#39;, &#39;s&#39;, &#39;e&#39;]</pre>
 </div>
+
 </div>
 
 </div>
@@ -1408,10 +1359,116 @@ f 6
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="More-Pythonic?">More Pythonic?<a class="anchor-link" href="#More-Pythonic?">&#182;</a></h3><p>The nested <code>for</code> loops above are not very Pythonic-looking.</p>
-<p>The code below collapses them into a set of nested comprehensions.</p>
-<p>Sadly, so far as I can see there is no way the get the effect of a <code>with</code> Context Manager in a list comprehension.  Also sadly, I can't see any way to catch and ignore Exceptions in a list comprehension, which makes them very brittle in this case.</p>
+<hr>
+<h3 id="Given-strings-x-and-y,-is-x-a-rotation-of-the-characters-in-y?">Given strings x and y, is x a rotation of the characters in y?<a class="anchor-link" href="#Given-strings-x-and-y,-is-x-a-rotation-of-the-characters-in-y?">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">is_rotation</span><span class="p">(</span><span class="n">str1</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">str2</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">bool</span><span class="p">:</span>
+    
+    <span class="k">if</span><span class="p">(</span> <span class="nb">len</span><span class="p">(</span><span class="n">str1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">str2</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">elif</span><span class="p">(</span> <span class="n">str1</span> <span class="o">==</span> <span class="n">str2</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">elif</span><span class="p">(</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">str1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">str2</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">str1</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">str1</span> <span class="o">==</span><span class="n">str2</span><span class="p">[</span><span class="o">-</span><span class="n">i</span><span class="p">:]</span> <span class="o">+</span> <span class="n">str2</span><span class="p">[:</span><span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="c1">#end if</span>
+        <span class="c1">#end for</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="c1">#end if</span>
+<span class="c1">#end is_rotation</span>
 
+<span class="n">str1</span> <span class="o">=</span> <span class="s1">&#39;foobar&#39;</span>
+<span class="n">str2</span> <span class="o">=</span> <span class="s1">&#39;barfoo&#39;</span>
+<span class="n">is_rotation</span><span class="p">(</span><span class="s1">&#39;foobar&#39;</span><span class="p">,</span> <span class="s1">&#39;barfoo&#39;</span><span class="p">),</span><span class="n">is_rotation</span><span class="p">(</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;bat&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[8]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(True, False)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I use some cheap heuristic checks to short-circuit the test loop for strings that are certain to fail</p>
+<hr>
+<h3 id="Given-a-list-of-strings-x,-sort-the-strings-by-length,-ascending.">Given a list of strings x, sort the strings by length, ascending.<a class="anchor-link" href="#Given-a-list-of-strings-x,-sort-the-strings-by-length,-ascending.">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">sort_by_len</span><span class="p">(</span><span class="n">str_list</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span><span class="o">-&gt;</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">str_list</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">)</span>
+<span class="c1">#end sort_by_len</span>
+
+<span class="n">sort_by_len</span><span class="p">([</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;bb&#39;</span><span class="p">,</span> <span class="s1">&#39;ccccccc&#39;</span><span class="p">,</span> <span class="s1">&#39;xxx&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[9]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;&#39;, &#39;a&#39;, &#39;bb&#39;, &#39;xxx&#39;, &#39;ccccccc&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<h3 id="Given-a-string-x,-identify-the-character-which-occurs-most-frequently">Given a string x, identify the character which occurs most frequently<a class="anchor-link" href="#Given-a-string-x,-identify-the-character-which-occurs-most-frequently">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -1420,32 +1477,63 @@ f 6
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">zz</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">Counter</span><span class="p">(</span>
-    <span class="p">[</span>
-        <span class="n">x</span>
-        <span class="k">for</span> <span class="n">file_list</span> <span class="ow">in</span> <span class="p">[</span>
-            <span class="p">[</span>
-                <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
-                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-            <span class="p">]</span>
-            <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">fnames</span>
-        <span class="p">]</span>
-        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">file_list</span>
-    <span class="p">]</span>
-<span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">most_pop_char</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">str</span><span class="p">:</span>
+
+    <span class="k">return</span> <span class="n">Counter</span><span class="p">(</span><span class="n">string</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="c1">#end most_pop_char</span>
+
+<span class="n">most_pop_char</span><span class="p">(</span><span class="s1">&#39;a bb ccc dddd xxxx, yyyyyyy&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[10]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;y&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<h3 id="Given-a-string-x-consisting-of-words-(one-or-more-non-space-characters)-which-are-separated-by-spaces,-reverse-the-order-of-the-characters-in-each-word.">Given a string x consisting of words (one or more non-space characters) which are separated by spaces, reverse the order of the characters in each word.<a class="anchor-link" href="#Given-a-string-x-consisting-of-words-(one-or-more-non-space-characters)-which-are-separated-by-spaces,-reverse-the-order-of-the-characters-in-each-word.">&#182;</a></h3>
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">zz</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">reverse_words</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">str</span><span class="p">:</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+    <span class="n">rev_words</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">w</span><span class="p">))</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">words</span><span class="p">]</span>
+ 
+    <span class="n">rev_string</span> <span class="o">=</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rev_words</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">rev_string</span>                     
+    
+<span class="c1">#end reverse_words</span>
+
+<span class="n">reverse_words</span><span class="p">(</span><span class="s1">&#39;this is a very short sentance Hurray&#39;</span><span class="p">),</span> <span class="n">reverse_words</span><span class="p">(</span><span class="s1">&#39;zoop&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1462,7 +1550,7 @@ f 6
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>Counter({&#39;b&#39;: 3, &#39;c&#39;: 5, &#39;f&#39;: 6, &#39;d&#39;: 1, &#39;a&#39;: 1, &#39;vvvvvv&#39;: 1})</pre>
+<pre>(&#39;siht si a yrev trohs ecnatnes yarruH&#39;, &#39;pooz&#39;)</pre>
 </div>
 
 </div>
@@ -1476,8 +1564,8 @@ f 6
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This shows the input to the Counter object (a list of field tokens)</p>
-
+<hr>
+<h3 id="Given-a-string-x-and-a-boolean-vector-y-of-the-same-length,-extract-the-characters-of-x-corresponding-to-a-1-in-y.">Given a string x and a boolean vector y of the same length, extract the characters of x corresponding to a 1 in y.<a class="anchor-link" href="#Given-a-string-x-and-a-boolean-vector-y-of-the-same-length,-extract-the-characters-of-x-corresponding-to-a-1-in-y.">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -1486,17 +1574,15 @@ f 6
 <div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span>
-    <span class="n">x</span>
-    <span class="k">for</span> <span class="n">file_list</span> <span class="ow">in</span> <span class="p">[</span>
-        <span class="p">[</span>
-            <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-        <span class="p">]</span>
-        <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">fnames</span>
-    <span class="p">]</span>
-    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">file_list</span>
-<span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">])</span><span class="o">-&gt;</span><span class="nb">str</span><span class="p">:</span>
+    
+    <span class="n">res</span> <span class="o">=</span>  <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">m</span>  <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span> <span class="k">if</span> <span class="n">m</span><span class="p">]</span>
+    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="c1">#end extract</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">extract</span><span class="p">(</span><span class="s1">&#39;abcdef&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">compress</span><span class="p">(</span><span class="s1">&#39;abcdef&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]))))</span>
 </pre></div>
 
 </div>
@@ -1508,30 +1594,13 @@ f 6
 
 
 <div class="output_area">
-<div class="prompt output_prompt">Out[12]:</div>
+<div class="prompt"></div>
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;b&#39;,
- &#39;b&#39;,
- &#39;c&#39;,
- &#39;f&#39;,
- &#39;f&#39;,
- &#39;f&#39;,
- &#39;f&#39;,
- &#39;f&#39;,
- &#39;f&#39;,
- &#39;b&#39;,
- &#39;d&#39;,
- &#39;c&#39;,
- &#39;c&#39;,
- &#39;c&#39;,
- &#39;c&#39;,
- &#39;a&#39;,
- &#39;vvvvvv&#39;]</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>abe
+abe
+</pre>
 </div>
-
 </div>
 
 </div>
@@ -1543,8 +1612,9 @@ f 6
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This comprehension returns a list, each item of which is the list of field token in the corresponding file.  The code above flattens this into a single list.</p>
-
+<p>Python <code>Collections</code> has method to do just this, as shown above</p>
+<hr>
+<h3 id="Given-a-string-x-and-a-boolean-vector-y,-spread-the-characters-of-x-to-the-positions-of-1s-in-y,-filling-intervening-characters-with-underscores">Given a string x and a boolean vector y, spread the characters of x to the positions of 1s in y, filling intervening characters with underscores<a class="anchor-link" href="#Given-a-string-x-and-a-boolean-vector-y,-spread-the-characters-of-x-to-the-positions-of-1s-in-y,-filling-intervening-characters-with-underscores">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -1553,10 +1623,14 @@ f 6
 <div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">[</span>
-    <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()]</span>
-    <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">fnames</span>
-<span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">spread2</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">])</span><span class="o">-&gt;</span><span class="nb">str</span><span class="p">:</span>
+    
+    <span class="n">chars</span> <span class="o">=</span> <span class="n">islice</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">next</span><span class="p">(</span><span class="n">chars</span><span class="p">)</span> <span class="k">if</span> <span class="n">m</span> <span class="k">else</span> <span class="s1">&#39;_&#39;</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mask</span><span class="p">]</span>
+    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="c1">#end spread2</span>
+
+<span class="n">spread2</span><span class="p">(</span><span class="s1">&#39;abc&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]),</span> <span class="n">spread2</span><span class="p">(</span><span class="s1">&#39;abcdef&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]),</span> 
 </pre></div>
 
 </div>
@@ -1573,11 +1647,7 @@ f 6
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[[&#39;b&#39;],
- [&#39;b&#39;],
- [&#39;c&#39;, &#39;f&#39;, &#39;f&#39;, &#39;f&#39;, &#39;f&#39;, &#39;f&#39;, &#39;f&#39;],
- [&#39;b&#39;],
- [&#39;d&#39;, &#39;c&#39;, &#39;c&#39;, &#39;c&#39;, &#39;c&#39;, &#39;a&#39;, &#39;vvvvvv&#39;]]</pre>
+<pre>(&#39;a__b__c&#39;, &#39;a_b__cd____e_f&#39;)</pre>
 </div>
 
 </div>
@@ -1591,8 +1661,6 @@ f 6
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Scaling-Up">Scaling Up<a class="anchor-link" href="#Scaling-Up">&#182;</a></h2><p>The toy data sets used about are all very well, but then I thought about "What if my files are Mega-or-Giga bytes big".  So I recast my code to use generators (i.e. lazy evaluation, rather than greedy evaluation).</p>
-<p>This approach might fall over if there are huge numbers of log files, more than the allowed number of open files, because as I said above, open file cleanup is not supported.</p>
 
 </div>
 </div>
@@ -1602,25 +1670,61 @@ f 6
 <div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">zz_gen</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()]</span>
-    <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">fnames</span>
-<span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">spread3</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">])</span><span class="o">-&gt;</span><span class="nb">str</span><span class="p">:</span>
+    
+    <span class="n">chars</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">next</span><span class="p">(</span><span class="n">chars</span><span class="p">)</span> <span class="k">if</span> <span class="n">m</span> <span class="k">else</span> <span class="s1">&#39;_&#39;</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mask</span><span class="p">]</span>
+    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="c1">#end spread3</span>
+
+<span class="n">spread3</span><span class="p">(</span><span class="s1">&#39;abc&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[14]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(&#39;a_b__cabca_&#39;,)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We have two solutions, the second one catering for the case where the input string is shorter than the mask.  We create iterators from the input string, to allow easier access from inside the list comprehension</p>
+<hr>
+<h3 id="Given-a-string-x,-remove-all-the-vowels-entirely.">Given a string x, remove all the vowels entirely.<a class="anchor-link" href="#Given-a-string-x,-remove-all-the-vowels-entirely.">&#182;</a></h3>
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">collections</span><span class="o">.</span><span class="n">Counter</span><span class="p">(</span>
-    <span class="p">(</span><span class="n">x</span> <span class="k">for</span> <span class="n">file_list</span> <span class="ow">in</span> <span class="n">zz_gen</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">file_list</span><span class="p">)</span>
-<span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">de_vowel</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">str</span><span class="p">:</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">string</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span> <span class="ow">in</span> <span class="s1">&#39;aeiou&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="c1">#end de_vowel</span>
+
+<span class="n">de_vowel</span><span class="p">(</span><span class="s1">&#39;cat&#39;</span><span class="p">),</span> <span class="n">de_vowel</span><span class="p">(</span><span class="s1">&#39;A very short sentence&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1637,7 +1741,7 @@ f 6
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>Counter({&#39;b&#39;: 3, &#39;c&#39;: 5, &#39;f&#39;: 6, &#39;d&#39;: 1, &#39;a&#39;: 1, &#39;vvvvvv&#39;: 1})</pre>
+<pre>(&#39;ct&#39;, &#39;A vry shrt sntnc&#39;)</pre>
 </div>
 
 </div>
@@ -1645,13 +1749,28 @@ f 6
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<h3 id="Given-a-string-x,-replace-all-the-vowels-(a,-e,-i,-o,-u,-or-y)-with-underscores.">Given a string x, replace all the vowels (a, e, i, o, u, or y) with underscores.<a class="anchor-link" href="#Given-a-string-x,-replace-all-the-vowels-(a,-e,-i,-o,-u,-or-y)-with-underscores.">&#182;</a></h3>
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">zz_gen</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">de_vowel2</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">str</span><span class="p">:</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span> <span class="ow">in</span> <span class="s1">&#39;aeiouy&#39;</span> <span class="k">else</span> <span class="s1">&#39;_&#39;</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">string</span><span class="p">]</span>
+    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="c1">#end de_vowel2</span>
+
+<span class="n">de_vowel2</span><span class="p">(</span><span class="s1">&#39;cat&#39;</span><span class="p">),</span> <span class="n">de_vowel2</span><span class="p">(</span><span class="s1">&#39;This is a short sentence&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1668,7 +1787,7 @@ f 6
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;generator object &lt;genexpr&gt; at 0x0000012F35ABE1B0&gt;</pre>
+<pre>(&#39;c_t&#39;, &#39;Th_s _s _ sh_rt s_nt_nc_&#39;)</pre>
 </div>
 
 </div>
@@ -1676,6 +1795,114 @@ f 6
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<h3 id="Given-a-string-x-consisting-of-words-separated-by-spaces-(as-above),-and-a-string-y,-replace-all-words-in-x-which-are-the-same-as-y-with-a-series-of-xes.">Given a string x consisting of words separated by spaces (as above), and a string y, replace all words in x which are the same as y with a series of xes.<a class="anchor-link" href="#Given-a-string-x-consisting-of-words-separated-by-spaces-(as-above),-and-a-string-y,-replace-all-words-in-x-which-are-the-same-as-y-with-a-series-of-xes.">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">hide_words</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">secret</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">str</span><span class="p">:</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+    <span class="n">new_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">w</span><span class="o">==</span><span class="n">secret</span> <span class="k">else</span> <span class="s1">&#39;*&#39;</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">words</span><span class="p">]</span>
+ 
+    <span class="n">new_string</span> <span class="o">=</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_words</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_string</span>                     
+    
+<span class="c1">#end hide_words</span>
+
+<span class="n">hide_words</span><span class="p">(</span><span class="s1">&#39;this is a very short sentance, this is  Hurray&#39;</span><span class="p">,</span> <span class="s1">&#39;this&#39;</span><span class="p">),</span> <span class="n">hide_words</span><span class="p">(</span><span class="s1">&#39;zoop&#39;</span><span class="p">,</span> <span class="s1">&#39;cat&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[17]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(&#39;**** is a very short sentance, **** is Hurray&#39;, &#39;zoop&#39;)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<h3 id="Given-a-string-x,-generate-a-list-of-all-possible-reorderings-of-the-characters-in-x">Given a string x, generate a list of all possible reorderings of the characters in x<a class="anchor-link" href="#Given-a-string-x,-generate-a-list-of-all-possible-reorderings-of-the-characters-in-x">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">all_perms</span><span class="p">(</span><span class="n">word</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">permutations</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">ps</span><span class="p">]</span>
+<span class="c1">#end all_perms</span>
+
+<span class="n">all_perms</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[18]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;xyz&#39;, &#39;xzy&#39;, &#39;yxz&#39;, &#39;yzx&#39;, &#39;zxy&#39;, &#39;zyx&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<h1 id="Conclusions">Conclusions<a class="anchor-link" href="#Conclusions">&#182;</a></h1><p>Most of the above could be compressed even more, with the loss of some readibility.  I would claim that most are very close to one-liners</p>
+
+</div>
+</div>
 </div>
  
 
@@ -1708,13 +1935,46 @@ f 6
 }
 </script>
  
-	<a class="btn btn-mini xsmall" href="../unixpipes.html">
+	<a class="btn btn-mini xsmall" href="../stringchallenges.html">
           <i class="icon-comment"></i> Comment </a>
 	<hr />
       </div>
       
     </div>
     
+
+ 
+        
+
+
+
+    <div class='row-fluid'>
+      <div class='article-title span9'> 
+        <a href="../unixpipes.html"><h1>Using Python to Emulate Unix Pipes</h1></a>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span2">
+<p>Thu 09 January 2020 </p>
+
+<p style="text-align: left;">
+Filed under <a href="../category/python.html">Python</a>
+</p>
+<p style="text-align: left;">
+ 
+    Tags <a href="../tag/python.html">python</a> </p>
+<p>
+</p>
+      </div>
+      <div class="summary span8">
+	<p>Using Python to Emulate Unix Pipes</p> 
+	<a class="btn btn-mini xsmall" href="../unixpipes.html">
+          <i class="icon-plus-sign"></i> Read More </a>
+	<hr />
+      </div>
+      
+    </div>
+      
 
  
         
@@ -1775,39 +2035,6 @@ Filed under <a href="../category/osmnx.html">OSMNX</a>
       <div class="summary span8">
 	<p>Visualization of communities identified via the road network</p> 
 	<a class="btn btn-mini xsmall" href="../communities.html">
-          <i class="icon-plus-sign"></i> Read More </a>
-	<hr />
-      </div>
-      
-    </div>
-      
-
- 
-        
-
-
-
-    <div class='row-fluid'>
-      <div class='article-title span9'> 
-        <a href="../policing.html"><h1>OSMNX and Policing Response Times</h1></a>
-      </div>
-    </div>
-    <div class="row-fluid">
-      <div class="span2">
-<p>Thu 02 August 2018 </p>
-
-<p style="text-align: left;">
-Filed under <a href="../category/osmnx.html">OSMNX</a>
-</p>
-<p style="text-align: left;">
- 
-    Tags <a href="../tag/python.html">python</a> <a href="../tag/geopandas.html">geopandas</a> <a href="../tag/cartopy.html">cartopy</a> <a href="../tag/osmnx.html">osmnx</a> </p>
-<p>
-</p>
-      </div>
-      <div class="summary span8">
-	<p>Visualization of Police Response Times via Road Network</p> 
-	<a class="btn btn-mini xsmall" href="../policing.html">
           <i class="icon-plus-sign"></i> Read More </a>
 	<hr />
       </div>
