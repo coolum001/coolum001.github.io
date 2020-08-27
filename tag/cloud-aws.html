@@ -87,12 +87,12 @@
 
     <div class='row-fluid''>
         <div class="article-title span9">
-            <a href="../cloudresume2.html"><h1>Cloud Resume Challenge Part 2</h1></a>
+            <a href="../cloudresume3.html"><h1>Cloud Resume Challenge Part 3</h1></a>
         </div>
     </div>
     <div class="row-fluid">
       <div class="span2">
-<p>Mon 17 August 2020 </p>
+<p>Thu 27 August 2020 </p>
 
 <p style="text-align: left;">
 Filed under <a href="../category/cloud.html">Cloud</a>
@@ -1081,7 +1081,8 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="AWS-Cloud-Resume-Challenge:-Part-2">AWS Cloud Resume Challenge: Part 2<a class="anchor-link" href="#AWS-Cloud-Resume-Challenge:-Part-2">&#182;</a></h1>
+<h1 id="AWS-Cloud-Resumé-Challenge:-Part-3">AWS Cloud Resum&#233; Challenge: Part 3<a class="anchor-link" href="#AWS-Cloud-Resumé-Challenge:-Part-3">&#182;</a></h1><hr>
+
 </div>
 </div>
 </div>
@@ -1090,61 +1091,19 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<hr>
-<h2 id="Preface-/-Initialization">Preface / Initialization<a class="anchor-link" href="#Preface-/-Initialization">&#182;</a></h2><p>Generate the graphics used in this report</p>
+<h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h2><p>This is part three of the AWS Cloud Resumé Challenge, in which I productize the creation of the AWS Cloud configuration that I previously created by clicking around in the AWS Console, like a demented Click Monkey.</p>
+<p>Having the AWS setup as a code file, then allows it to be placed under configuration control: Configuration as Code.</p>
+<p>I found a few wrinkles and gotchas that I will go through below.</p>
 
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>dot -o images/arch-02.svg -T svg arch-02.txt
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>dot -o images/arch-03.svg -T svg arch-03.txt
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>dot -o images/arch-04.svg -T svg arch-04.txt
-</pre></div>
-
-</div>
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<hr>
-<h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h2><p>I decided to respond to the Cloud Resume Challenge.  This was a challenge to put your resume up on the Internet, in a fully cloud-enabled way, using Amazon Web Services (AWS) offerings  (see <a href="https://cloudresumechallenge.dev/">https://cloudresumechallenge.dev/</a>).  I found it interesting, a little bit challenging, and am learning more about AWS.</p>
-<h3 id="Previously">Previously<a class="anchor-link" href="#Previously">&#182;</a></h3><p>In the first part, I successfully created an AWS S3 Bucket, and stored my HTML and CSS Content there.  Then I created a Domain Name via AWS Route53 specifically for the resume (see <a href="https://donrcameron-cloudresume.com/">https://donrcameron-cloudresume.com/</a>), and pointed the Domain Name DNS resolution to a  CloudFront entrypoint.  CloudFront then acted as an Edge cache for my S3 Bucket Content.  CloudFront was instructed to only allow HTTPS access (redirecting HTTP traffic), so I needed to use AWS Certificate Manager to create my SSL certificates.</p>
-<h3 id="The-Next-Steps">The Next Steps<a class="anchor-link" href="#The-Next-Steps">&#182;</a></h3><p>In this part, the requirement 
-calls for a page-load counter.  I use a Javascript script to access an AWS Lambda via AWS Gateway API. The Lambda reads a counter from a DymamoDB database, increment and updates the counter, and returns the counter to the Gateway API.  The Javascript script get the counter, and writes it into a field in the webpage.</p>
+<h3 id="To-Recap">To Recap<a class="anchor-link" href="#To-Recap">&#182;</a></h3><p>The design that I will be creating by configuration code is that below (figure from a previous post).</p>
 
 </div>
 </div>
@@ -1164,62 +1123,7 @@ calls for a page-load counter.  I use a Javascript script to access an AWS Lambd
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<hr>
-<h2 id="DynamoDB-Database">DynamoDB Database<a class="anchor-link" href="#DynamoDB-Database">&#182;</a></h2><p>The database design was simplicity personified.  I wanted just one integer to be stored persistently, to be updated when needed.</p>
-<p>Naturally, there were some decisions to be made:  the first of which was "Which region should store the database?".  I evenetually decided to use the Second Asia-Pacific SouthEast Region (read Sydney).  This is the nearest to where I am located, and this is just a vanity project after all.</p>
-<p>I also decided to generalize the database a trifle, and support loading counters for a range of webpages and applications.  So the primary key is the application or webpage name, and the counter is stored in <code>loadcount</code>.  I learnt the hard way that in DataBase land, <code>count</code> is a reserved word.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="images/arch-03.svg" alt=""></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The AWS Console view of the table is below.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="images/DynamoDB-1.png" alt=""></p>
-<p><a href="images/DynamoDB-1.png">Larger image of above</a></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The AWS Console view of the contents is as below.  I have only one counter running (<code>ResumeApp</code>), and at the time of this snapshot, it had been downloaded 17 times.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="images/DynamoDB-2.png" alt=""></p>
-<p><a href="images/DynamoDB-2.png">Larger image of above</a></p>
+<p>The Browser client has embedded Javascript code that calls the endpoint of an API Gateway instance.  The API Gateway instance calls a AWS Lambda function, that reads, increments, and writes back a counter held in a DynamoDB datatable.</p>
 
 </div>
 </div>
@@ -1230,8 +1134,7 @@ calls for a page-load counter.  I use a Javascript script to access an AWS Lambd
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <hr>
-<h2 id="Lambda">Lambda<a class="anchor-link" href="#Lambda">&#182;</a></h2><p>The next step is for a AWS lambda (when triggered) to read the database, and return the current value to the caller after incrementing the value and rewriting to the database.</p>
-<p>We can drill down into the Python code via the AWS Console.  Again, be sure to set the correct region.  The first screen shows us all our Lambda Functions we have defined.</p>
+<h2 id="Design-Choices">Design Choices<a class="anchor-link" href="#Design-Choices">&#182;</a></h2><h3 id="Play-it-again,-Sam">Play it again, Sam<a class="anchor-link" href="#Play-it-again,-Sam">&#182;</a></h3><p>The configuration language I could have used is called AWS CloudFormation, which is the more general purpose configuration language.  However, Amazon (and the general AWS Cloud community) heavily push the AWS Serverless Application Model (SAM) option. Configurations in SAM are build into CloudFormation specifications, but are much more concise, and a lot of the "best-practice" work is done for you.</p>
 
 </div>
 </div>
@@ -1241,146 +1144,8 @@ calls for a page-load counter.  I use a Javascript script to access an AWS Lambd
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="images/Lambda-1.png" alt="">
-<a href="images/Lambda-1.png">Larger image of above</a></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Drilling down to our Lambda for the Challenge, we get</p>
-<p><img src="images/Lambda-2.png" alt=""></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="images/Lambda-2.png">Larger image of above</a></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The actual code is:</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
-
-<span class="kn">import</span> <span class="nn">boto3</span>
-
-<span class="n">dynamodb</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;dynamodb&#39;</span><span class="p">)</span>
-<span class="n">table</span> <span class="o">=</span> <span class="n">dynamodb</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s1">&#39;visitcount&#39;</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
-
-    <span class="n">response</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">get_item</span><span class="p">(</span><span class="n">Key</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;appname&#39;</span> <span class="p">:</span> <span class="s1">&#39;ResumeApp&#39;</span><span class="p">}</span> <span class="p">)</span>
-
-    <span class="n">count</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;Item&quot;</span><span class="p">][</span><span class="s2">&quot;loadcount&quot;</span><span class="p">]</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Get Response = &quot;</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span> <span class="s2">&quot;Count = &quot;</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
-
-    <span class="c1"># increment string version of visit count</span>
-    <span class="n">new_count</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">count</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">update_item</span><span class="p">(</span>
-        <span class="n">Key</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;appname&#39;</span><span class="p">:</span> <span class="s1">&#39;ResumeApp&#39;</span><span class="p">},</span>
-        <span class="n">UpdateExpression</span><span class="o">=</span><span class="s1">&#39;set loadcount = :c&#39;</span><span class="p">,</span>
-        <span class="n">ExpressionAttributeValues</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;:c&#39;</span><span class="p">:</span> <span class="n">new_count</span><span class="p">},</span>
-        <span class="n">ReturnValues</span><span class="o">=</span><span class="s1">&#39;UPDATED_NEW&#39;</span>
-        <span class="p">)</span>
-
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Update Response =  &quot;</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">{</span>
-        <span class="s1">&#39;statusCode&#39;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
-        <span class="s1">&#39;body&#39;</span><span class="p">:</span> <span class="n">new_count</span>
-    <span class="p">}</span>
-<span class="c1">#end lambda_handler</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><code>boto3</code> is the AWS Python support library.  We initialize by getting the <code>dynbamodb</code> resource, and then getting our table within <code>dynamodb</code>.</p>
-<p>Hitting the <code>Test</code> button gives us:</p>
-
-<pre><code>Execution result: succeeded(logs)
-Details
-The area below shows the result returned by your function execution. Learn more about returning results from your function.
-{
-  "statusCode": 200,
-  "body": "18"
-}
-Summary</code></pre>
-<p>and in our logs we have:</p>
-
-<pre><code>Log output
-The section below shows the logging calls in your code. These correspond to a single row within the CloudWatch log group corresponding to this Lambda function. Click here to view the CloudWatch log group.
-START RequestId: 725ae498-fcf1-4f03-8f3a-2bf1474aaa79 Version: $LATEST
-Get Response =  {'Item': {'appname': 'ResumeApp', 'loadcount': '17'}, ...
-Count =  17
-Update Response =   {'Attributes': {'loadcount': '18'}, ...</code></pre>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>In this current design, we have hard-coded the App Name in the Lambda, so there is no need for any parameter to be passed in.  The next iteration would have the counter name to be a parameter to be passed in, to select the correct row in the database.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Taking out the debug code, we get:</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
-
-<span class="kn">import</span> <span class="nn">boto3</span>
-
-<span class="n">dynamodb</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;dynamodb&#39;</span><span class="p">)</span>
-<span class="n">table</span> <span class="o">=</span> <span class="n">dynamodb</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s1">&#39;visitcount&#39;</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
-
-    <span class="n">response</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">get_item</span><span class="p">(</span><span class="n">Key</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;appname&#39;</span> <span class="p">:</span> <span class="s1">&#39;ResumeApp&#39;</span><span class="p">}</span> <span class="p">)</span>
-    <span class="n">count</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;Item&quot;</span><span class="p">][</span><span class="s2">&quot;loadcount&quot;</span><span class="p">]</span>
-
-    <span class="c1"># increment string version of visit count</span>
-    <span class="n">new_count</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">count</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">update_item</span><span class="p">(</span>
-        <span class="n">Key</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;appname&#39;</span><span class="p">:</span> <span class="s1">&#39;ResumeApp&#39;</span><span class="p">},</span>
-        <span class="n">UpdateExpression</span><span class="o">=</span><span class="s1">&#39;set loadcount = :c&#39;</span><span class="p">,</span>
-        <span class="n">ExpressionAttributeValues</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;:c&#39;</span><span class="p">:</span> <span class="n">new_count</span><span class="p">},</span>
-        <span class="n">ReturnValues</span><span class="o">=</span><span class="s1">&#39;UPDATED_NEW&#39;</span>
-        <span class="p">)</span>
-
-    <span class="k">return</span> <span class="p">{</span>
-        <span class="s1">&#39;statusCode&#39;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
-        <span class="s1">&#39;body&#39;</span><span class="p">:</span> <span class="n">new_count</span>
-    <span class="p">}</span>
-<span class="c1">#end lambda_handler</span>
-</pre></div>
+<h3 id="Downsides">Downsides<a class="anchor-link" href="#Downsides">&#182;</a></h3><p>One gotcha I encountered in dealing with AWS SAM is that it is much better to do everything through SAM.  Performing AWS Cloud operations (like deleting a DynamoDB datatable) in the AWS Console can confuse SAM when it comes time to build the configuration again.  The official AWS advice for this case is "re-create every thing you deleted, and try again!".</p>
+<p>You do have to become familiar with CloudFormation terminology (as it is SAM terminolgy too).  The key concept is a <strong>Stack</strong>; a set of AWS capabilities that operate, and are linked, to achieve some task.</p>
 
 </div>
 </div>
@@ -1391,46 +1156,7 @@ Update Response =   {'Attributes': {'loadcount': '18'}, ...</code></pre>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <hr>
-<h2 id="Browser-Code">Browser Code<a class="anchor-link" href="#Browser-Code">&#182;</a></h2><p>To jump to the other end of the chain, the browser script that calls the Lambda function (strictly speaking, calls the AWS Gateway API that triggers the Lambda) is shown below:</p>
-<div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
-    <span class="kd">function</span> <span class="nx">getLoadCount</span><span class="p">(){</span>
-
-        <span class="c1">// call an AWS gateway API, that then calls an AWS Lambda</span>
-        <span class="c1">// to read and then update AWS DynamoDB item showing load count</span>
-
-        <span class="c1">// Note call is synchronous, delays should be minimal</span>
-        <span class="kd">var</span> <span class="nx">req</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>  
-        <span class="nx">req</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> 
-        <span class="s2">&quot;https://cimk9zx0ch.execute-api.ap-southeast-2.amazonaws.com/beta&quot;</span><span class="p">,</span> 
-        <span class="kc">false</span><span class="p">);</span>   
-        <span class="nx">req</span><span class="p">.</span><span class="nx">send</span><span class="p">();</span>  
-        <span class="k">if</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">status</span> <span class="o">==</span> <span class="mi">200</span><span class="p">)</span>
-            <span class="p">{</span>  
-                <span class="nx">len</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">responseText</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
-                <span class="c1">// response text has opening and closing double quotes</span>
-                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">responseText</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">len</span><span class="o">-</span><span class="mi">1</span><span class="p">));</span>
-                <span class="c1">// set field in footer</span>
-                <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;loadcount&quot;</span><span class="p">).</span><span class="nx">textContent</span> <span class="o">=</span> 
-                    <span class="nx">req</span><span class="p">.</span><span class="nx">responseText</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="nx">len</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span>
-            <span class="p">}</span>
-        <span class="k">else</span> <span class="p">{</span>
-            <span class="c1">// NOT OK response, so log in console</span>
-            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">status</span><span class="p">)</span>
-        <span class="p">}</span><span class="c1">//end if</span>
-    <span class="p">}</span><span class="c1">// end getLoadCount</span>
-
-    <span class="c1">// read and write visit count into footer, then increment count in DB</span>
-    <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
-
-            <span class="c1">// side effects</span>
-            <span class="c1">// getLoadCount() updates field in footer, increments count in DB</span>
-            <span class="nx">getLoadCount</span><span class="p">();</span>
-        <span class="p">};</span> <span class="c1">//end window.onload</span>
-
-
-
-<span class="o">&lt;</span><span class="err">/script&gt;</span>
-</pre></div>
+<h2 id="SAM-Configuration-Walkthrough">SAM Configuration Walkthrough<a class="anchor-link" href="#SAM-Configuration-Walkthrough">&#182;</a></h2><p>I found that it was best to incrementally learn SAM by creating parts of the processing chain in isolation.  First the DynamoDB database table, then the Lambda Function.  I won't go through all my interim steps, but just walk through my final result.</p>
 
 </div>
 </div>
@@ -1440,17 +1166,26 @@ Update Response =   {'Attributes': {'loadcount': '18'}, ...</code></pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The field where we display the download count is discretely in the footer of the webpage</p>
-<div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">footer</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>
-        Copyright © Don Cameron, 2020. www.net-analysis.com<span class="p">&lt;</span><span class="nt">br</span><span class="p">/&gt;</span> 
-        Page Load Count: <span class="p">&lt;</span><span class="nt">span</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;loadcount&quot;</span><span class="p">&gt;</span>Not Available<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;&lt;</span><span class="nt">br</span><span class="p">/&gt;</span>
+<p>Because I am a Windows user, I went very old-school, and have a <code>.bat</code> file to run my builds.</p>
+<p>Excluding the header comments, it looks like:</p>
 
-    <span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+<pre><code>ECHO ON
+ECHO Deleting previous stack
+call aws cloudformation delete-stack --stack-name loadcounter01
+call aws cloudformation wait stack-delete-complete --stack-name loadcounter01
+REM -----------------------------
+ECHO ON
+ECHO Starting SAM Build
+call sam build 
+ECHO Starting SAM Deploy
+call sam deploy --guided 
+ECHO Loading initial data
+call aws dynamodb batch-write-item --request-items file://initialloaddata.json</code></pre>
+<p>Note that I am hard-coding the name of my stack in this script (<code>loadcounter01</code>).</p>
+<p>To walk through each command:</p>
 
-    <span class="p">&lt;/</span><span class="nt">footer</span><span class="p">&gt;</span>
-</pre></div>
-<p>The <code>window.onload</code> function causes our <code>getLoadCount</code> function to be called.  This in turn call an AWS Gateway API, which will call our Lambda.  The response from the ASW Gateway API is a <code>"</code> enclosed string: we have to strip off these before writing it into out page footer field.</p>
+<pre><code>aws cloudformation delete-stack --stack-name loadcounter01</code></pre>
+<p>I expect to be running this script repeatably.  For this application I am happy to trash whatever state is stored in the database (the API Gateway instance, and the Lambda Function, have no state, by definition).  If I was concerned with maintaining my load-count across build, I would have to read the DynamoDB database, store the data, and reload it into the newly re-created database at the end of the script.</p>
 
 </div>
 </div>
@@ -1460,13 +1195,27 @@ Update Response =   {'Attributes': {'loadcount': '18'}, ...</code></pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>There is a <strong>huge</strong> gotcha that is hidden in the above.  In order to supress sneaky scripts, browsers will (by default) prevent a webpage loading any material via <code>XMLHttpRequest</code> from any other webpage in a different domain.  And since I am trying to allow the whole world access to the resume (or else what use is it?), this would prevent the webpage working as intended.</p>
-<p>Happily, there is a mechanism to allows what is called <strong>Cross-origin resource sharing</strong>  (see Wikipedia for a good explanation of CORS).  The site serving the requested page can indicate that it is open to the whole world accessing its  content by responding with HTTP Header of type <code>Access-Control-Allow-Origin</code>.  If the browser does an initial <code>OPTIONS</code> request, and the response includes the magic allow-all header, then the Javascript is allowed to run.</p>
-<p>There is another gotcha in that I have chosen to make my <code>XMLHttpRequest</code> call to be synchronous (wait till data returned).  I get dire warnings in the Browser Javascript console about how this is not best practice.</p>
+<p>It turns out that the <code>delete-stack</code> command doesn't actually delete the CloudFormation stack, it only initiates the delete operation.  You have to wait to is is complete, via:</p>
 
-<pre><code>[Deprecation] Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user's experience.</code></pre>
-<p>Because I am only performing minimal data processing, I feel free to ignore these warnings, as it makes the Javascript code so much simplier.</p>
-<p>And that brings us to the final part of the processing chain, the AWS API Gateway.</p>
+<pre><code>aws cloudformation wait stack-delete-complete --stack-name loadcounter01</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>So now we have a clean slate.  We build the CloudFormation configuration via the</p>
+
+<pre><code>sam build</code></pre>
+<p>Then we deploy it.  I have chosen to use the <code>--guided</code> option so I could see what was happening, but if you added the appropriate command line options, this could be completely automated.</p>
+
+<pre><code>sam deploy --guided</code></pre>
+<p>Finally, I load an initial dataset into the DynamoDB datatable</p>
+
+<pre><code>aws dynamodb batch-write-item --request-items file://initialloaddata.json</code></pre>
 
 </div>
 </div>
@@ -1477,13 +1226,22 @@ Update Response =   {'Attributes': {'loadcount': '18'}, ...</code></pre>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <hr>
-<h2 id="AWS-Gateway-API">AWS Gateway API<a class="anchor-link" href="#AWS-Gateway-API">&#182;</a></h2><p>I must admit that I had the most trouble with configuring up the API Gateway.  getting an API Gateway to trigger the Lambda was very easy; the harder part was getting CORS working.</p>
-<p>You can create an API Gateway instance in the AWS Console in at least two ways.  The first is the <code>Add Trigger</code> button on the Lambda main screen.</p>
-<p><img src="images/API-1.png" alt=""></p>
-<p><a href="images/API-1.png">Larger image of above</a></p>
-<p>followed by</p>
-<p><img src="images/API-2.png" alt="">
-<a href="images/API-2.png">Larger image of above</a></p>
+<h2 id="Script-Outputs">Script Outputs<a class="anchor-link" href="#Script-Outputs">&#182;</a></h2><h3 id="SAM-Build">SAM Build<a class="anchor-link" href="#SAM-Build">&#182;</a></h3><p>The results (in part) of running the script above are:</p>
+
+<pre><code>(ac5-py37) D:\AWS-SAM-Working\loadcounter01&gt;call sam build
+Building function 'ManageCounterFunction'
+Running PythonPipBuilder:ResolveDependencies
+Running PythonPipBuilder:CopySource
+
+Build Succeeded
+
+Built Artifacts  : .aws-sam\build
+Built Template   : .aws-sam\build\template.yaml
+
+Commands you can use next
+=========================
+[*] Invoke Function: sam local invoke
+[*] Deploy: sam deploy --guided</code></pre>
 
 </div>
 </div>
@@ -1493,12 +1251,42 @@ Update Response =   {'Attributes': {'loadcount': '18'}, ...</code></pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>However, try as I might, could not get the resulting API Gateway instance to return the correct CORS headers, even when I ticked all the boxes I could find that requested CORS being enabled.  There was some advice that it was up to the developer to return them in the response from the Lambda function, but my cut-and-paste code did not seem to do anything.</p>
-<p>The next attempt (eventually successful) was to create a API Gateway instance from scratch, and then link it to my Lambda function.</p>
-<p>When you ask to create an API Gateway instance from the console, you are presented with a number of choices, as below</p>
-<p><img src="images/API-3.png" alt=""></p>
-<p><a href="images/API-3.png">Larger image of above</a></p>
-<p>The choice I got to work was the REST API.</p>
+<h3 id="SAM-Deploy">SAM Deploy<a class="anchor-link" href="#SAM-Deploy">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The output from the SAM deployment looks in part like:</p>
+
+<pre><code>Configuring SAM deploy
+======================
+
+        Looking for samconfig.toml :  Found
+        Reading default arguments  :  Success
+
+        Setting default arguments for 'sam deploy'
+        =========================================
+        Stack Name [loadcounter01]:
+        AWS Region [ap-southeast-2]:
+        #Shows you resources changes to be deployed and require a 'Y' to initiate deploy
+        Confirm changes before deploy [Y/n]: y
+        #SAM needs permission to be able to create roles to connect to the resources in your template
+        Allow SAM CLI IAM role creation [Y/n]: y
+        ManageCounterFunction may not have authorization defined, Is this okay? [y/N]: y
+        Save arguments to samconfig.toml [Y/n]: y
+
+        Looking for resources needed for deployment: Found!
+
+                Managed S3 bucket: aws-sam-cli-managed-default-samclisourcebucket-1dgbnny6g7a0
+                A different default S3 bucket can be set in samconfig.toml
+
+        Saved arguments to config file
+        Running 'sam deploy' for future deployments will use the parameters saved above.</code></pre>
+<p>Note that I had run this SAM configuration file many time in my debugging / development effort, and the deployment process had remembered some state.  First, the <code>.toml</code> file that remembered my previous choices for the <code>guided</code> deployment.  Second, the S3 Bucket used for deployment already existed, and so didn't need to be rebuilt.  Now I think about it, I wonder why it didn't get deleted in the <code>delete-stack</code> operation?  One thing to consider in the cleanup process if you decide to not use a CloudFormation Stack ever again.</p>
 
 </div>
 </div>
@@ -1508,8 +1296,52 @@ Update Response =   {'Attributes': {'loadcount': '18'}, ...</code></pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="images/API-4.png" alt=""></p>
-<p><a href="images/API-4.png">Larger image of above</a></p>
+<p>Once the desired configuration is known, SAM works out what needs changing (in my case, everything)</p>
+<table>
+<thead><tr>
+<th>Operation</th>
+<th>LogicalResourceId</th>
+<th>ResourceType</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>+ Add</td>
+<td>LoadCounterTable</td>
+<td>AWS::DynamoDB::Table</td>
+</tr>
+<tr>
+<td>+ Add</td>
+<td>ManageCounterFunctionCounterAccessApiPermissionProd</td>
+<td>AWS::Lambda::Permission</td>
+</tr>
+<tr>
+<td>+ Add</td>
+<td>ManageCounterFunctionRole</td>
+<td>AWS::IAM::Role</td>
+</tr>
+<tr>
+<td>+ Add</td>
+<td>ManageCounterFunction</td>
+<td>AWS::Lambda::Function</td>
+</tr>
+<tr>
+<td>+ Add</td>
+<td>ServerlessRestApiDeployment4b9917be34</td>
+<td>AWS::ApiGateway::Deployment</td>
+</tr>
+<tr>
+<td>+ Add</td>
+<td>ServerlessRestApiProdStage</td>
+<td>AWS::ApiGateway::Stage</td>
+</tr>
+<tr>
+<td>+ Add</td>
+<td>ServerlessRestApi</td>
+<td>AWS::ApiGateway::RestApi</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 </div>
@@ -1519,9 +1351,20 @@ Update Response =   {'Attributes': {'loadcount': '18'}, ...</code></pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We can supply the ARN, or just the name of our Lambda function.</p>
-<p><img src="images/API-5.png" alt=""></p>
-<p><a href="images/API-5.png">Larger image of above</a></p>
+<p>You then get (because of <code>--guided</code>) to decide whether to proceed</p>
+
+<pre><code>Changeset created successfully. arn:aws:cloudformation:ap-southeast-2:261204630592:changeSet/samcli-deploy1598338401/94778c3f-f4cd-45c4-993a-21e4cd31b500
+
+
+Previewing CloudFormation changeset before deployment
+======================================================
+Deploy this changeset? [y/N]: y
+
+2020-08-25 16:53:39 - Waiting for stack create/update to complete</code></pre>
+<p>You then get a  number of CREATE_IN_PROGRESS and CREATE_COMPLETE messages, and finally:</p>
+
+<pre><code>Successfully created/updated stack - loadcounter01 in ap-southeast-2</code></pre>
+<p>The final DynamoDB <code>batch-write</code> is silent, but I guess would complain if the expected data table was not present.</p>
 
 </div>
 </div>
@@ -1531,9 +1374,23 @@ Update Response =   {'Attributes': {'loadcount': '18'}, ...</code></pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>AWS checks that we know what we are doing.</p>
-<p><img src="images/API-6.png" alt=""></p>
-<p><a href="images/API-6.png">Larger image of above</a></p>
+<p>Now, in order for our soon-to-be-constructed webpage to be able to use this Stack, we have to know the 
+endpoint by which we can access the API Gateway instance.  In my SAM configuration (described below), I create a <code>Stack Output</code>, that gives this endpoint.</p>
+<p>So by running a command as below, we can get this endpoint.</p>
+
+<pre><code>(ac5-py37) D:\AWS-SAM-Working\loadcounter01&gt;aws cloudformation describe-stacks --stack-name loadcounter01 --query Stacks[0].Outputs[?OutputKey==`CounterAccessApi`].OutputValue  --output text
+https://byhpjqrzn9.execute-api.ap-southeast-2.amazonaws.com/Prod/counter/</code></pre>
+<p>This says:</p>
+<ul>
+<li><p>get the first Stack in the list I am processing (and because I specified the stackname explicitly, there is only one Stack)</p>
+</li>
+<li><p>get the Output with the OutputKey equal to a key we have defined in the configuration file</p>
+</li>
+<li><p>get the OutputValue</p>
+</li>
+<li><p>show it as text (could be JSON, etc)</p>
+</li>
+</ul>
 
 </div>
 </div>
@@ -1543,9 +1400,8 @@ Update Response =   {'Attributes': {'loadcount': '18'}, ...</code></pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We now specify that we want to let browsers know that cross-site access is OK</p>
-<p><img src="images/API-7.png" alt=""></p>
-<p><a href="images/API-7.png">Larger image of above</a></p>
+<p>Now I have an endpoint (<code>https://byhpjqrzn9.execute-api.ap-southeast-2.amazonaws.com/Prod/counter/</code>) that I can use in my Javascript in my webpage.</p>
+<p>I cheated:  I manually edited the webpage Javascript in <code>resume.html</code>, and reloaded it into the S3 Bucket that AWS CloudFront is using as the source of my webpage.  But I could have automated this process, honest.</p>
 
 </div>
 </div>
@@ -1555,9 +1411,9 @@ Update Response =   {'Attributes': {'loadcount': '18'}, ...</code></pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>AWS gives us a summary of the API Gateway configuration.  It all looks OK</p>
-<p><img src="images/API-8.png" alt=""></p>
-<p><a href="images/API-8.png">Larger image of above</a></p>
+<p>This gives us:</p>
+<p><img src="images/loadcounter01-01.png" alt=""></p>
+<p><a href="images/loadcounter01-01.png">Larger image of above</a></p>
 
 </div>
 </div>
@@ -1567,80 +1423,7 @@ Update Response =   {'Attributes': {'loadcount': '18'}, ...</code></pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="images/API-9.png" alt=""></p>
-<p><a href="images/API-9.png">Larger image of above</a></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Now we come to deploying the configuration we have specified</p>
-<p><img src="images/API-10.png" alt=""></p>
-<p><a href="images/API-10.png">Larger image of above</a></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>We have to specify a stage for this deployment.</p>
-<p>A proper structure would be to have DEV, TEST, and PROD.  For this prototype, I run with <code>beta</code></p>
-<p><img src="images/API-11.png" alt=""></p>
-<p><a href="images/API-11.png">Larger image of above</a></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>We get a summary of the deployment.  If I was doing this for real, I would be vitally interested in the constraints on how to handle peak loads (and peak bills).  But this API is unlikely to get massive usage, and I have AWS Budget alerts to manage my budget, and performance is not really an issue.</p>
-<p><img src="images/API-12.png" alt=""></p>
-<p><a href="images/API-12.png">Larger image of above</a></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Bewlow we see the results of a test run, with the Page Load Counter being increment on a reload of my web-page</p>
-<p><img src="images/API-13-Load1.png" alt=""></p>
-<p><a href="images/API-13-Load1.png">Larger image of above</a></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="images/API-13-Load2.png" alt=""></p>
-<p><a href="images/API-13-Load2.png">Larger image of above</a></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Having tested the HTML with Javascript, I now upload it to the S3 Bucket</p>
-<p><img src="images/API-13-S3.png" alt=""></p>
-<p><a href="images/API-13-S3.png">Larger image of above</a></p>
+<p>Note again the warning about my (mis)use of the Synchronous XMLHttpRequest.  I have decided that it is acceptable in my circumstances, where back-end processing is minimal, and minimising page-load times are not a significant design issue.</p>
 
 </div>
 </div>
@@ -1651,17 +1434,7 @@ Update Response =   {'Attributes': {'loadcount': '18'}, ...</code></pre>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <hr>
-<h2 id="Conclusions">Conclusions<a class="anchor-link" href="#Conclusions">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>In the end, my implementation looks like</p>
-<p><img src="images/arch-04.svg" alt=""></p>
+<h2 id="SAM-Configuration-Walkthrough">SAM Configuration Walkthrough<a class="anchor-link" href="#SAM-Configuration-Walkthrough">&#182;</a></h2><p>What follows is a walkthrough of my SAM configuration YAML file.</p>
 
 </div>
 </div>
@@ -1671,8 +1444,396 @@ Update Response =   {'Attributes': {'loadcount': '18'}, ...</code></pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The biggest hurdle was in getting CORS working in the API Gateway.</p>
-<p>In general, I have neglected to design a process for developing and testing, and then pushing into production.  I will cover that in the next stage of the Challenge, <strong>Infrastrucure as Code</strong>.  I suspect that I will use AWS Serverless Application Model scripting to set this up.</p>
+<h3 id="Header-comments">Header comments<a class="anchor-link" href="#Header-comments">&#182;</a></h3>
+<pre><code># ----------------------------------------
+# ASW SAM YAML Template
+#
+# Purpose:
+# To create:
+#     a DynamoDB database, for page load count statistics
+#     a AWS Lambda function with HTTP endpoint
+#
+#     Lambda function will read and increment a counter, and update
+#     counter in database
+#
+# The API endpoint will be called via Javascript from a HTML page
+#
+# Notes:
+# - DynamoDB table name must match that used in the Lambda Function Python
+# - DynamoDB table primary key must match that used in Lambda Function Python
+# - The Lambda API endpoint must match that used in the Javascript of the Resume Web Page
+# - Initial data load script must define a secondary attribute 'loadcount'
+#    initialized to an integer value
+# - Initial data load must create row with 'appname'== 'ResumeApp'
+#
+#  - The Lambda function is granted full access to DynamoDB - may be excessive?
+#
+# Author - D Cameron  donrcameron@gmail.com
+# Date - 2020-08-24
+#</code></pre>
+<p>I was not able to find any SAM header comment standards or guidelines, so I invented my own.  In this header,
+I tried to define all the moving parts that had to mesh (and, of course, should be automated).</p>
+<p>For example, I could have defined the DynamoDB table name externally, and automatically ensured that
+it was the same the in the Lambda Python and in this configuration file</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The next two lines are mandatory  (I don't know if there are any other Transforms defined by Amazon or third parties)</p>
+
+<pre><code>AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I elected to have place-holders for all the SAM top-level sections I don't use.  The <code>Description</code> section briefly states the purpose of the SAM for display in the AWS Console</p>
+
+<pre><code>Description: Creates a HTTP API Function and DynamoDB datatable
+# end Description
+
+# Globals:
+#   No Globals defined
+
+# Metadata:
+#   No Metadata defined
+
+# Parameters:
+#   No Parameters defined
+
+# Mappings:
+#   No mappings defined
+
+# Conditions:
+#   No Conditions defined</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The main meat of the SAM is in the Resources section</p>
+
+<pre><code>Resources:</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Database-Specification">Database Specification<a class="anchor-link" href="#Database-Specification">&#182;</a></h4><p>The first resource we define is the DynamoDB table.  As an aside, I find it hard to track levels of indentation, so I like to show explicitly where sub-sections begin and end.  I usually choose to have all name and identifiers used across boundaries to be all lowercase, to reduce possible sources of error.</p>
+
+<pre><code>  # --------------------------------------
+  # define a DynamoDB table resource
+  LoadCounterTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      # Creates a DynamoDB table with a single attribute
+      # primary key. It is useful when data only needs to be
+      # accessed via a primary key.
+      TableName: loadcounter2
+      PrimaryKey:
+        Name: appname
+        Type: String
+      ProvisionedThroughput:
+        # 5 reads/writes per second before throttling should be ample
+        # expect access to be in 5 reads/writes a day
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      # Tags:
+      #   No Tags defined
+      # SSESpecification
+      #   No Server Side Encryption defined
+  #end LoadCounterTable:</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Lambda-Function">Lambda Function<a class="anchor-link" href="#Lambda-Function">&#182;</a></h4><p>The second resource is our Lambda Function.  We specify that our Lambda code is in Python 3.7, and is held in a file app.py held in the directory Lambda, and the function to be called to handle events is <code>lambda_handler</code>.  We know our Lambda function needs access to DynamoDB, so we define a policy (predefined by AWS) that allows this.</p>
+<p>About the only wrinkle here (and the main difference between this solution, and the previous AWS Console solutions), is that the API Gateway instance we create is implicit in the definition of the Events that will trigger this Lambda.</p>
+<p>This means that the Cross-Origin Resource Sharing (CORS) configuration to allow general browser access has to be done at run-time, in our Python Lamda code. This will be shown below.</p>
+
+<pre><code>  # --------------------------------------
+  # Define an HTTP API Lambda Function
+  ManageCounterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: Lambda/
+      Handler: app.lambda_handler
+      Runtime: python3.7
+      Policies:
+        # Give DynamoDB Full Access to the Lambda Function
+        AmazonDynamoDBFullAccess
+      Events:
+        CounterAccessApi:
+          Type: Api
+          Properties:
+            Path: /counter
+            Method: get
+  # end ManageCounterFunction
+  # --------------------------------------</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Finally we define an output for our Stack, that actually exposes the endpoint for the API Gateway instance.  In AWS SAM, the Stage used seems to be hardcoded to <code>Prod</code>, and the internal AWS documentation says <em>"This API defaults to a StageName called "Prod" that cannot be configured"</em></p>
+<p>The two expressions enclosed in <code>{</code> and <code>}</code> are either:</p>
+<ul>
+<li>CloudFormation resources generated By SAM (AWS::ApiGateway::RestApi -&gt; ServerlessRestApi), or</li>
+<li>Pseudo parameters, that are parameters  predefined by AWS CloudFormation (AWS::Region returns a string representing the AWS Region)</li>
+</ul>
+
+<pre><code>Outputs:
+  # --------------------------------------
+  # Define a AWS CloudFormation Stack Output,
+  # that will show the HTTP URL to access function
+  #
+  # This can be accessed by
+  # aws cloudformation describe-stacks \
+  # --stack-name loadcounter01 \
+  # --query Stacks[0].Outputs[?OutputKey==`CounterAccessApi`].OutputValue  \
+  # --output text
+  CounterAccessApi:
+    Description: "endpoint for api to python "
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/counter/"
+  # end CounterAccessApi
+# end Outputs -----------------------------</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<h2 id="Python-Business-Logic">Python Business Logic<a class="anchor-link" href="#Python-Business-Logic">&#182;</a></h2><p>The Python code is fairly simple:</p>
+<ul>
+<li>get current load count, held as string in DynamoDB </li>
+<li>increment value</li>
+<li>store updated counter back into DynamoDB</li>
+<li>return value to caller</li>
+</ul>
+<p>Note:</p>
+<ul>
+<li>there are two API's to write to the DynamoDB; I used the newer, preferred call (but it is slightly more complicated)</li>
+<li>in order for browser access to this function, I need CORS enabled.  This is done by explicitly writing back the HTTP
+headers that says we are prepared to accepts requests from any DNS domain.</li>
+</ul>
+
+<pre><code>import json
+
+import boto3
+
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table('loadcounter2')
+
+
+def lambda_handler(event, context):
+
+    response = table.get_item(Key={'appname': 'ResumeApp'})
+    count = response["Item"]["loadcount"]
+
+    # increment string version of visit count
+    new_count = str(int(count) + 1)
+    response = table.update_item(
+        Key={'appname': 'ResumeApp'},
+        UpdateExpression='set loadcount = :c',
+        ExpressionAttributeValues={':c': new_count},
+        ReturnValues='UPDATED_NEW',
+    )
+
+    return {
+        "statusCode": 200,
+        "headers": {
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+        },
+        "body": json.dumps(new_count),
+    }
+
+# end lambda_handler</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<h2 id="Javascript-Presentation-Logic">Javascript Presentation Logic<a class="anchor-link" href="#Javascript-Presentation-Logic">&#182;</a></h2><p>The presentation logic is straightforward.  When the resume page has loaded, make a XMLHttpRequest, extract the current counter, and store in a predefined field in the page.</p>
+
+<pre><code>    function getLoadCount(){
+
+        // call an AWS gateway API, that then calls an AWS Lambda
+        // to read and then update AWS DynamoDB item showing load count
+
+        // Note call is synchronous, delays should be minimal
+        var req = new XMLHttpRequest();  
+        req.open('GET', 
+        "https://byhpjqrzn9.execute-api.ap-southeast-2.amazonaws.com/Prod/counter/", 
+        false);   
+        req.send();  
+        if(req.status == 200)
+            {  
+                len = req.responseText.length;
+                // response text has opening and closing double quotes
+                console.log(req.responseText.substring(1, len-1));
+                // set field in footer
+                document.getElementById("loadcount").textContent = 
+                    req.responseText.substring(1, len-1);
+            }
+        else {
+            // NOT OK response, so log in console
+            console.log(req.status)
+        }//end if
+    }// end getLoadCount
+
+    // read and write visit count into footer, then increment count in DB
+    window.onload = function(){
+
+            // side effects
+            // getLoadCount() updates field in footer, increments count in DB
+            getLoadCount();
+        }; //end window.onload</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<h2 id="AWS-Console-View">AWS Console View<a class="anchor-link" href="#AWS-Console-View">&#182;</a></h2><p>We can view the results of the Stack deployment in the AWS Console.</p>
+<p>First the Stack we have created and deployed.</p>
+<p><img src="images/loadcounter01-02.png" alt=""></p>
+<p><a href="images/loadcounter01-02.png">Larger image of above</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Then the Resources created by  deploying this Stack.</p>
+<p><img src="images/loadcounter01-03.png" alt=""></p>
+<p><a href="images/loadcounter01-03.png">Larger image of above</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The datatable in DynamoDB.</p>
+<p><img src="images/loadcounter01-04.png" alt=""></p>
+<p><a href="images/loadcounter01-04.png">Larger image of above</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The API Gateway instance.</p>
+<p><img src="images/loadcounter01-05.png" alt=""></p>
+<p><a href="images/loadcounter01-05.png">Larger image of above</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The Lambda Function.</p>
+<p><img src="images/loadcounter01-06.png" alt=""></p>
+<p><a href="images/loadcounter01-06.png">Larger image of above</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<h2 id="Application-view">Application view<a class="anchor-link" href="#Application-view">&#182;</a></h2><p>When you view the Lambda Functuion via the AWS Console, the Console knows the Lambda Function is part of an application, and it offers a view of it.</p>
+<p><img src="images/loadcounter01-07.png" alt=""></p>
+<p><a href="images/loadcounter01-07.png">Larger image of above</a></p>
+<p>The view looks like:</p>
+<p><img src="images/loadcounter01-08.png" alt=""></p>
+<p><a href="images/loadcounter01-08.png">Larger image of above</a></p>
+<p>with deployment and monitoring views:</p>
+<h3 id="Deployment-view">Deployment view<a class="anchor-link" href="#Deployment-view">&#182;</a></h3><p><img src="images/loadcounter01-09.png" alt=""></p>
+<p><a href="images/loadcounter01-09.png">Larger image of above</a></p>
+<h3 id="Monitoring-view">Monitoring view<a class="anchor-link" href="#Monitoring-view">&#182;</a></h3><p><img src="images/loadcounter01-10.png" alt=""></p>
+<p><a href="images/loadcounter01-10.png">Larger image of above</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<h2 id="Conclusions">Conclusions<a class="anchor-link" href="#Conclusions">&#182;</a></h2><p>I must say that I feel very unsatisfied with my solution, for a number of reasons.  I feel like someone who has scratched out a "Hello World" app, but who knows there is much more to software engineering that that.</p>
+<p>First, I didn't explore any other approaches.  For example, I might have defined a Lambda Function that was triggered by down-loads from my S3 Bucket holding my HTML, to update the database, and another Function for the browser to call to read from the database.  As I said initially, I just wanted to automatically re-create a manually crafted solution.</p>
+<p>More importantly, I feel there are significant design questions that this toy example ignores.  For example:</p>
+<ul>
+<li><p>If I want to avoid Denial-of-Wallet attacks, how to I stop a malicious agent from running up huge bills for me?  I have attempted to control this by limiting database access, but I don't know if this works, or is best practice.  There is a "Throttle" button in the Lambda Console UI, but it seems to be a last-resort kill-switch.</p>
+</li>
+<li><p>What am I supposed to do with the Roles that have automatically been created?  I dimly suspect that I am supposed to use these to define Privilege Boundaries, and apply them to the Roles.  For example, the Lambda Function has access to all the database; I would like to limit it to one table, in case of code-injecting into my Lambda Function.</p>
+</li>
+<li><p>What security issues have I ignored?  For example, if a end-user disables Javascript, their download will not increment the download counter - in this case I don't care.  I suspect that I should have payed a lot more care in defining AWS Roles, and profiles to use in running SAM commands.</p>
+</li>
+<li><p>The full support for Staging (Development -&gt; Test -&gt; Production Beta -&gt; Full Production) doesn't seem to be supported by SAM.  I don't know how to achieve this.</p>
+</li>
+</ul>
+<p>Now clearly the questions (and many more) might be answered by a (years long)  structured study of AWS (rather than by my hobbyist Google / StackOverflow antics).</p>
+<p>Overall, I learned a lot about how AWS thinks you should compose applications, but I have a lot more to learn!</p>
 
 </div>
 </div>
@@ -1721,13 +1882,46 @@ Update Response =   {'Attributes': {'loadcount': '18'}, ...</code></pre>
 }
 </script>
  
-	<a class="btn btn-mini xsmall" href="../cloudresume2.html">
+	<a class="btn btn-mini xsmall" href="../cloudresume3.html">
           <i class="icon-comment"></i> Comment </a>
 	<hr />
       </div>
       
     </div>
     
+
+ 
+        
+
+
+
+    <div class='row-fluid'>
+      <div class='article-title span9'> 
+        <a href="../cloudresume2.html"><h1>Cloud Resume Challenge Part 2</h1></a>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span2">
+<p>Mon 17 August 2020 </p>
+
+<p style="text-align: left;">
+Filed under <a href="../category/cloud.html">Cloud</a>
+</p>
+<p style="text-align: left;">
+ 
+    Tags <a href="../tag/cloud-aws.html">cloud aws</a> </p>
+<p>
+</p>
+      </div>
+      <div class="summary span8">
+	<p>Second part of Cloud Resume Challenge</p> 
+	<a class="btn btn-mini xsmall" href="../cloudresume2.html">
+          <i class="icon-plus-sign"></i> Read More </a>
+	<hr />
+      </div>
+      
+    </div>
+      
 
  
         
