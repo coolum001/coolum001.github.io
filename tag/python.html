@@ -91,19 +91,19 @@
 
     <div class='row-fluid''>
         <div class="article-title span9">
-            <a href="../stringchallenges.html"><h1>Solving String Challenges in Python</h1></a>
+            <a href="../datetime.html"><h1>Python Date-Time Handling</h1></a>
         </div>
     </div>
     <div class="row-fluid">
       <div class="span2">
-<p>Wed 25 March 2020 </p>
+<p>Wed 21 February 2024 </p>
 
 <p style="text-align: left;">
 Filed under <a href="../category/python.html">Python</a>
 </p>
 <p style="text-align: left;">
  
-    Tags <a href="../tag/python.html">python</a> </p>
+    Tags <a href="../tag/python.html">python</a> <a href="../tag/datetime.html">datetime</a> </p>
 <p>
 </p>
       </div>
@@ -1085,7 +1085,7 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Python-String-Minatures">Python String Minatures<a class="anchor-link" href="#Python-String-Minatures">&#182;</a></h1>
+<h1 id="DateTime-gotcha-s">DateTime gotcha-s<a class="anchor-link" href="#DateTime-gotcha-s">&#182;</a></h1>
 </div>
 </div>
 </div>
@@ -1094,7 +1094,9 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>I was reading a blog post at <a href="http://beyondloom.com/blog/strings.html">http://beyondloom.com/blog/strings.html</a>, where a number of string manipulation challenges were posted.  They were supposed to be solved by <code>APL</code> style one-liners in K, but I deciced to redo them in Python</p>
+<p>This post will be reworking some examples from <a href="https://dev.arie.bovenberg.net/blog/python-datetime-pitfalls/">https://dev.arie.bovenberg.net/blog/python-datetime-pitfalls/</a>
+which show how counter-intuitive some of the default Python date-time handling is as the corner cases.</p>
+<p>I will also look at how Pandas handle date-times, as I do most of data wrangling with Pandas.</p>
 
 </div>
 </div>
@@ -1105,23 +1107,34 @@ h6:hover .anchor-link {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <hr>
-<h1 id="Define-the-Environment">Define the Environment<a class="anchor-link" href="#Define-the-Environment">&#182;</a></h1>
+<h2 id="Environment">Environment<a class="anchor-link" href="#Environment">&#182;</a></h2><p>Import the packages we use</p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">defaultdict</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">List</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">zoneinfo</span> <span class="k">import</span> <span class="n">ZoneInfo</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">UTC</span>
 
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">dateutil</span>
+</pre></div>
 
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">permutations</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">islice</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">compress</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">cycle</span>
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> watermark
 </pre></div>
 
 </div>
@@ -1135,23 +1148,28 @@ h6:hover .anchor-link {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <hr>
-<h3 id="Given-a-string-x-and-a-character-y,-how-many-times-does-y-occur-in-x?">Given a string x and a character y, how many times does y occur in x?<a class="anchor-link" href="#Given-a-string-x-and-a-character-y,-how-many-times-does-y-occur-in-x?">&#182;</a></h3>
+<h2 id="Time-jumps-due-to-daylight-saving">Time jumps due to daylight saving<a class="anchor-link" href="#Time-jumps-due-to-daylight-saving">&#182;</a></h2><p>Europe changes clocks forward on the last Sunday in March.  So if we go to bed at 10:00 pm, and wake up at 7:00, we have only really slept 8 hours.</p>
+<p>However the datetime library appears to ignore clock jumping.</p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">str_count</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">Counter</span><span class="p">:</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">paris</span> <span class="o">=</span> <span class="n">ZoneInfo</span><span class="p">(</span><span class="s1">&#39;Europe/Paris&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">Counter</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
-<span class="c1">#end str_count</span>
+<span class="c1"># last Sunday in March in Paris, so clock should jump forward</span>
+<span class="n">bedtime</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">25</span><span class="p">,</span><span class="mi">22</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">paris</span><span class="p">)</span>
+<span class="n">wake_up</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">paris</span><span class="p">)</span>
 
+<span class="n">sleep</span><span class="o">=</span> <span class="n">wake_up</span> <span class="o">-</span> <span class="n">bedtime</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{sleep=}&#39;</span><span class="p">)</span>
 
-<span class="n">c</span> <span class="o">=</span> <span class="n">str_count</span><span class="p">(</span><span class="s1">&#39;Australia&#39;</span><span class="p">)</span>
-<span class="n">c</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">],</span> <span class="n">c</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="n">c</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span>
+<span class="n">hours</span> <span class="o">=</span> <span class="n">sleep</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span><span class="o">/</span><span class="mi">3600</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Hours slept = </span><span class="si">{hours}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1163,14 +1181,13 @@ h6:hover .anchor-link {
 
 
 <div class="output_area">
-<div class="prompt output_prompt">Out[3]:</div>
+<div class="prompt"></div>
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(1, 2, 0)</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>sleep=datetime.timedelta(seconds=32400)
+Hours slept = 9.0
+</pre>
 </div>
-
 </div>
 
 </div>
@@ -1182,9 +1199,47 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Solved by using the Counter object from the <code>collections</code> package</p>
-<hr>
-<h3 id="Given-a-string-x,-is-it-identical-when-read-forwards-and-backwards?">Given a string x, is it identical when read forwards and backwards?<a class="anchor-link" href="#Given-a-string-x,-is-it-identical-when-read-forwards-and-backwards?">&#182;</a></h3>
+<p>If we  print out the two datetime variables in question, we can see that they have a different UTC offset.  This shows us that the clocks were changed while we  were sleeping.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39; {bedtime.utcoffset()=}, {wake_up.utcoffset()=}&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> bedtime.utcoffset()=datetime.timedelta(seconds=3600), wake_up.utcoffset()=datetime.timedelta(seconds=7200)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The change in offset is exactly one hour.</p>
+
 </div>
 </div>
 </div>
@@ -1193,11 +1248,7 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">is_palindrome</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">bool</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">string</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">string</span><span class="p">))</span>
-<span class="c1">#end is_palindrome</span>
-
-<span class="n">is_palindrome</span><span class="p">(</span><span class="s1">&#39;racecar&#39;</span><span class="p">),</span> <span class="n">is_palindrome</span><span class="p">(</span><span class="s1">&#39;palindrame&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">wake_up</span><span class="o">.</span><span class="n">utcoffset</span><span class="p">()</span> <span class="o">-</span> <span class="n">bedtime</span><span class="o">.</span><span class="n">utcoffset</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -1214,7 +1265,7 @@ h6:hover .anchor-link {
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(True, False)</pre>
+<pre>datetime.timedelta(seconds=3600)</pre>
 </div>
 
 </div>
@@ -1228,9 +1279,8 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In fact the concept of reversing a string gets very complicated in dealing with general Unicode strings (some languages have different shapes for the same letter at the end, middle, or front of words, for example)</p>
-<hr>
-<h3 id="Given-a-string-x,-produce-a-list-of-characters-which-appear-more-than-once-in-x.">Given a string x, produce a list of characters which appear more than once in x.<a class="anchor-link" href="#Given-a-string-x,-produce-a-list-of-characters-which-appear-more-than-once-in-x.">&#182;</a></h3>
+<p>So now we can correct our time calculation, by considering the change in UTC offset (if any)</p>
+
 </div>
 </div>
 </div>
@@ -1239,14 +1289,10 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">non_uniques2</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
-    <span class="n">cnt</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">cnt</span> <span class="k">if</span> <span class="n">cnt</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">res</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sleep</span><span class="o">=</span> <span class="n">wake_up</span> <span class="o">-</span> <span class="n">bedtime</span> <span class="o">-</span><span class="p">(</span><span class="n">wake_up</span><span class="o">.</span><span class="n">utcoffset</span><span class="p">()</span> <span class="o">-</span> <span class="n">bedtime</span><span class="o">.</span><span class="n">utcoffset</span><span class="p">())</span>
 
-<span class="c1">#end non_unique</span>
-
-<span class="n">non_uniques2</span><span class="p">(</span><span class="s1">&#39;applause&#39;</span><span class="p">)</span>
+<span class="n">hours</span> <span class="o">=</span> <span class="n">sleep</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span><span class="o">/</span><span class="mi">3600</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Hours slept = </span><span class="si">{hours}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1258,14 +1304,12 @@ h6:hover .anchor-link {
 
 
 <div class="output_area">
-<div class="prompt output_prompt">Out[5]:</div>
+<div class="prompt"></div>
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;a&#39;, &#39;p&#39;]</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Hours slept = 8.0
+</pre>
 </div>
-
 </div>
 
 </div>
@@ -1277,9 +1321,8 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a Counter dictionary, and iterate over all keys</p>
-<hr>
-<h3 id="Given-strings-x-and-y,-do-both-strings-contain-the-same-letters,-possibly-in-a-different-order?">Given strings x and y, do both strings contain the same letters, possibly in a different order?<a class="anchor-link" href="#Given-strings-x-and-y,-do-both-strings-contain-the-same-letters,-possibly-in-a-different-order?">&#182;</a></h3>
+<p>We also get the correct answer if there is no clock jumping involved</p>
+
 </div>
 </div>
 </div>
@@ -1288,12 +1331,13 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">same_chars</span><span class="p">(</span><span class="n">str1</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">str2</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">bool</span><span class="p">:</span>
-    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">str1</span><span class="p">)</span><span class="o">==</span><span class="nb">sorted</span><span class="p">(</span><span class="n">str2</span><span class="p">)</span>
-<span class="c1">#end same_chars</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bedtime</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">21</span><span class="p">,</span><span class="mi">22</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">paris</span><span class="p">)</span>
+<span class="n">wake_up</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">paris</span><span class="p">)</span>
 
-<span class="n">same_chars</span><span class="p">(</span><span class="s1">&#39;tab&#39;</span><span class="p">,</span> <span class="s1">&#39;bat&#39;</span><span class="p">),</span> <span class="n">same_chars</span><span class="p">(</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">)</span>
-    
+<span class="n">sleep</span><span class="o">=</span> <span class="n">wake_up</span> <span class="o">-</span> <span class="n">bedtime</span> <span class="o">-</span><span class="p">(</span><span class="n">wake_up</span><span class="o">.</span><span class="n">utcoffset</span><span class="p">()</span> <span class="o">-</span> <span class="n">bedtime</span><span class="o">.</span><span class="n">utcoffset</span><span class="p">())</span>
+
+<span class="n">hours</span> <span class="o">=</span> <span class="n">sleep</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span><span class="o">/</span><span class="mi">3600</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Hours slept = </span><span class="si">{hours}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1305,14 +1349,12 @@ h6:hover .anchor-link {
 
 
 <div class="output_area">
-<div class="prompt output_prompt">Out[6]:</div>
+<div class="prompt"></div>
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(True, False)</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Hours slept = 9.0
+</pre>
 </div>
-
 </div>
 
 </div>
@@ -1324,8 +1366,9 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<hr>
-<h3 id="Given-a-string-x,-find-all-the-characters-which-occur-exactly-once,-in-the-order-they-appear.">Given a string x, find all the characters which occur exactly once, in the order they appear.<a class="anchor-link" href="#Given-a-string-x,-find-all-the-characters-which-occur-exactly-once,-in-the-order-they-appear.">&#182;</a></h3>
+<h2 id="pandas-gets-it-right">pandas gets it right<a class="anchor-link" href="#pandas-gets-it-right">&#182;</a></h2><p>Pandas has extensive date-time support, and seems to get it right, with no coding from us required.</p>
+<p>First the case of a clock change while we sleep.</p>
+
 </div>
 </div>
 </div>
@@ -1334,13 +1377,14 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">uniques</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-    <span class="n">cnt</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
-    <span class="n">single</span> <span class="o">=</span>  <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">string</span> <span class="k">if</span> <span class="n">cnt</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">single</span>
-<span class="c1">#end non_unique</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bedtime</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">25</span><span class="p">,</span><span class="mi">22</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">paris</span><span class="p">))</span>
+<span class="n">wake_up</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">paris</span><span class="p">))</span>
 
-<span class="n">uniques</span><span class="p">(</span><span class="s1">&#39;applause&#39;</span><span class="p">)</span>
+<span class="n">sleep</span><span class="o">=</span> <span class="n">wake_up</span> <span class="o">-</span> <span class="n">bedtime</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{sleep=}&#39;</span><span class="p">)</span>
+
+<span class="n">hours</span> <span class="o">=</span> <span class="n">sleep</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span><span class="o">/</span><span class="mi">3600</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Hours slept = </span><span class="si">{hours}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1352,75 +1396,13 @@ h6:hover .anchor-link {
 
 
 <div class="output_area">
-<div class="prompt output_prompt">Out[7]:</div>
+<div class="prompt"></div>
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;l&#39;, &#39;u&#39;, &#39;s&#39;, &#39;e&#39;]</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>sleep=Timedelta(&#39;0 days 08:00:00&#39;)
+Hours slept = 8.0
+</pre>
 </div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<hr>
-<h3 id="Given-strings-x-and-y,-is-x-a-rotation-of-the-characters-in-y?">Given strings x and y, is x a rotation of the characters in y?<a class="anchor-link" href="#Given-strings-x-and-y,-is-x-a-rotation-of-the-characters-in-y?">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">is_rotation</span><span class="p">(</span><span class="n">str1</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">str2</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">bool</span><span class="p">:</span>
-    
-    <span class="k">if</span><span class="p">(</span> <span class="nb">len</span><span class="p">(</span><span class="n">str1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">str2</span><span class="p">)):</span>
-        <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">elif</span><span class="p">(</span> <span class="n">str1</span> <span class="o">==</span> <span class="n">str2</span><span class="p">):</span>
-        <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">elif</span><span class="p">(</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">str1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">str2</span><span class="p">)):</span>
-        <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">str1</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="n">str1</span> <span class="o">==</span><span class="n">str2</span><span class="p">[</span><span class="o">-</span><span class="n">i</span><span class="p">:]</span> <span class="o">+</span> <span class="n">str2</span><span class="p">[:</span><span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="p">:</span>
-                <span class="k">return</span> <span class="kc">True</span>
-            <span class="c1">#end if</span>
-        <span class="c1">#end for</span>
-        <span class="k">return</span> <span class="kc">False</span>
-    <span class="c1">#end if</span>
-<span class="c1">#end is_rotation</span>
-
-<span class="n">str1</span> <span class="o">=</span> <span class="s1">&#39;foobar&#39;</span>
-<span class="n">str2</span> <span class="o">=</span> <span class="s1">&#39;barfoo&#39;</span>
-<span class="n">is_rotation</span><span class="p">(</span><span class="s1">&#39;foobar&#39;</span><span class="p">,</span> <span class="s1">&#39;barfoo&#39;</span><span class="p">),</span><span class="n">is_rotation</span><span class="p">(</span><span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;bat&#39;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt output_prompt">Out[8]:</div>
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(True, False)</pre>
-</div>
-
 </div>
 
 </div>
@@ -1432,9 +1414,8 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>I use some cheap heuristic checks to short-circuit the test loop for strings that are certain to fail</p>
-<hr>
-<h3 id="Given-a-list-of-strings-x,-sort-the-strings-by-length,-ascending.">Given a list of strings x, sort the strings by length, ascending.<a class="anchor-link" href="#Given-a-list-of-strings-x,-sort-the-strings-by-length,-ascending.">&#182;</a></h3>
+<p>And now a case with no clock change:</p>
+
 </div>
 </div>
 </div>
@@ -1443,12 +1424,14 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">sort_by_len</span><span class="p">(</span><span class="n">str_list</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span><span class="o">-&gt;</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-    
-    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">str_list</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">)</span>
-<span class="c1">#end sort_by_len</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bedtime</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">21</span><span class="p">,</span><span class="mi">22</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">paris</span><span class="p">))</span>
+<span class="n">wake_up</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">paris</span><span class="p">))</span>
 
-<span class="n">sort_by_len</span><span class="p">([</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;bb&#39;</span><span class="p">,</span> <span class="s1">&#39;ccccccc&#39;</span><span class="p">,</span> <span class="s1">&#39;xxx&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">])</span>
+<span class="n">sleep</span><span class="o">=</span> <span class="n">wake_up</span> <span class="o">-</span> <span class="n">bedtime</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{sleep=}&#39;</span><span class="p">)</span>
+
+<span class="n">hours</span> <span class="o">=</span> <span class="n">sleep</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span><span class="o">/</span><span class="mi">3600</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Hours slept = </span><span class="si">{hours}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1460,12 +1443,220 @@ h6:hover .anchor-link {
 
 
 <div class="output_area">
-<div class="prompt output_prompt">Out[9]:</div>
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>sleep=Timedelta(&#39;0 days 09:00:00&#39;)
+Hours slept = 9.0
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<h2 id="Non-existent-times">Non-existent times<a class="anchor-link" href="#Non-existent-times">&#182;</a></h2><p>If we have a clock change where the clock is moved forward, then some times become non-existance.  For example consider the case where what would normally be 2:00 AM becomes 3:00 AM.</p>
+<p>This makes 2:30 AM an impossible wall-clock time.</p>
+<p>By default, Python will happily create these date-times!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[60]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># ⚠️ This time does not exist on this date</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">paris</span><span class="p">)</span>
+<span class="n">d</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[60]:</div>
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[&#39;&#39;, &#39;a&#39;, &#39;bb&#39;, &#39;xxx&#39;, &#39;ccccccc&#39;]</pre>
+<pre>datetime.datetime(2023, 3, 26, 2, 30, tzinfo=zoneinfo.ZoneInfo(key=&#39;Europe/Paris&#39;))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Converting this Python datetime to a Pandas Timestamp, results in a legal date-time, half an hour past what is now 3:00 AM.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[61]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[61]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Timestamp(&#39;2023-03-26 03:30:00+0200&#39;, tz=&#39;Europe/Paris&#39;)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Another way to handle this is to create in Python a date-time that has no TimeZone unspecified (naive), and then tell Pandas to convert this to the Time Zone required.  We can specify a behaviour if the date-time is non-existent, e.g. we can raise an exception if any such date-time is seen.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">26</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">30</span><span class="p">))</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="n">paris</span><span class="p">,</span> <span class="n">nonexistent</span><span class="o">=</span><span class="s1">&#39;raise&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
+<span class="ansi-red-intense-fg ansi-bold">NonExistentTimeError</span>                      Traceback (most recent call last)
+Cell <span class="ansi-green-intense-fg ansi-bold">In[13], line 1</span>
+<span class="ansi-green-intense-fg ansi-bold">----&gt; 1</span> <span class="ansi-yellow-bg">pd</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">to_datetime</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">datetime</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">2023</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">3</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">26</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">2</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">30</span><span class="ansi-yellow-bg">)</span><span class="ansi-yellow-bg">)</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">tz_localize</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">paris</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">nonexistent</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#39;</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">raise</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#39;</span><span class="ansi-yellow-bg">)</span>
+
+File <span class="ansi-green-intense-fg ansi-bold">timestamps.pyx:2327</span>, in <span class="ansi-cyan-fg">pandas._libs.tslibs.timestamps.Timestamp.tz_localize</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
+
+File <span class="ansi-green-intense-fg ansi-bold">tzconversion.pyx:180</span>, in <span class="ansi-cyan-fg">pandas._libs.tslibs.tzconversion.tz_localize_to_utc_single</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
+
+File <span class="ansi-green-intense-fg ansi-bold">tzconversion.pyx:426</span>, in <span class="ansi-cyan-fg">pandas._libs.tslibs.tzconversion.tz_localize_to_utc</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
+
+<span class="ansi-red-intense-fg ansi-bold">NonExistentTimeError</span>: 2023-03-26 02:30:00</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The other behavious are to slide the input date-time backwards or forwards to the closest legal time</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[65]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">26</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">30</span><span class="p">))</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="n">paris</span><span class="p">,</span> <span class="n">nonexistent</span><span class="o">=</span><span class="s1">&#39;shift_forward&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[65]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Timestamp(&#39;2023-03-26 03:00:00+0200&#39;, tz=&#39;Europe/Paris&#39;)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[67]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">26</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">30</span><span class="p">))</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="n">paris</span><span class="p">,</span> <span class="n">nonexistent</span><span class="o">=</span><span class="s1">&#39;shift_backward&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[67]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Timestamp(&#39;2023-03-26 01:59:59.999999999+0100&#39;, tz=&#39;Europe/Paris&#39;)</pre>
 </div>
 
 </div>
@@ -1480,7 +1671,214 @@ h6:hover .anchor-link {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <hr>
-<h3 id="Given-a-string-x,-identify-the-character-which-occurs-most-frequently">Given a string x, identify the character which occurs most frequently<a class="anchor-link" href="#Given-a-string-x,-identify-the-character-which-occurs-most-frequently">&#182;</a></h3>
+<h2 id="Duplicated-times">Duplicated times<a class="anchor-link" href="#Duplicated-times">&#182;</a></h2><p>Daylight saving where clocks go back can create a situation where a given wall clock time can occur twice in a 24 hour period.  Standard Python has a parameter <code>fold</code> that lets you specify the first or last such time.  The default is the first such wall clock time.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[71]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">29</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">paris</span><span class="p">)</span>
+<span class="n">d</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[71]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>datetime.datetime(2023, 10, 29, 2, 30, tzinfo=zoneinfo.ZoneInfo(key=&#39;Europe/Paris&#39;))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If we create an ambiguous date-time, by default we get the first one (larger of the two UTC Offsets)</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[72]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">utcoffset</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[72]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>datetime.timedelta(seconds=7200)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If we specify the seond wall-clock time we get the smaller UTC Offset.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[74]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">d2</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">29</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">paris</span><span class="p">,</span> <span class="n">fold</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="p">)</span>
+<span class="n">d2</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[74]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>datetime.datetime(2023, 10, 29, 2, 30, fold=1, tzinfo=zoneinfo.ZoneInfo(key=&#39;Europe/Paris&#39;))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[75]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">d2</span><span class="o">.</span><span class="n">utcoffset</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[75]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>datetime.timedelta(seconds=3600)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Again, with <code>pandas</code> we can specify the behaviour we want, including raisng an exception if such a date-time is seen.  The error message is little confusing?</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[77]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">29</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">30</span><span class="p">))</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="n">paris</span><span class="p">,</span> <span class="n">ambiguous</span><span class="o">=</span><span class="s1">&#39;raise&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-intense-fg ansi-bold">---------------------------------------------------------------------------</span>
+<span class="ansi-red-intense-fg ansi-bold">AmbiguousTimeError</span>                        Traceback (most recent call last)
+Cell <span class="ansi-green-intense-fg ansi-bold">In[77], line 1</span>
+<span class="ansi-green-intense-fg ansi-bold">----&gt; 1</span> <span class="ansi-yellow-bg">pd</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">to_datetime</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">datetime</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">2023</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">10</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">29</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">2</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">30</span><span class="ansi-yellow-bg">)</span><span class="ansi-yellow-bg">)</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">tz_localize</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">paris</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">ambiguous</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#39;</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">raise</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#39;</span><span class="ansi-yellow-bg">)</span>
+
+File <span class="ansi-green-intense-fg ansi-bold">timestamps.pyx:2327</span>, in <span class="ansi-cyan-fg">pandas._libs.tslibs.timestamps.Timestamp.tz_localize</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
+
+File <span class="ansi-green-intense-fg ansi-bold">tzconversion.pyx:180</span>, in <span class="ansi-cyan-fg">pandas._libs.tslibs.tzconversion.tz_localize_to_utc_single</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
+
+File <span class="ansi-green-intense-fg ansi-bold">tzconversion.pyx:371</span>, in <span class="ansi-cyan-fg">pandas._libs.tslibs.tzconversion.tz_localize_to_utc</span><span class="ansi-blue-intense-fg ansi-bold">()</span>
+
+<span class="ansi-red-intense-fg ansi-bold">AmbiguousTimeError</span>: Cannot infer dst time from 2023-10-29 02:30:00, try using the &#39;ambiguous&#39; argument</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can also specify a boolean value, that indicates if DST adjustment is to be applied.</p>
+
 </div>
 </div>
 </div>
@@ -1489,12 +1887,9 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">most_pop_char</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">str</span><span class="p">:</span>
-
-    <span class="k">return</span> <span class="n">Counter</span><span class="p">(</span><span class="n">string</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-<span class="c1">#end most_pop_char</span>
-
-<span class="n">most_pop_char</span><span class="p">(</span><span class="s1">&#39;a bb ccc dddd xxxx, yyyyyyy&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dst_bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">d1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">29</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">30</span><span class="p">))</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="n">paris</span><span class="p">,</span> <span class="n">ambiguous</span><span class="o">=</span><span class="n">dst_bool</span><span class="p">)</span>
+<span class="n">d1</span>
 </pre></div>
 
 </div>
@@ -1511,7 +1906,7 @@ h6:hover .anchor-link {
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;y&#39;</pre>
+<pre>Timestamp(&#39;2023-10-29 02:30:00+0100&#39;, tz=&#39;Europe/Paris&#39;)</pre>
 </div>
 
 </div>
@@ -1519,33 +1914,15 @@ h6:hover .anchor-link {
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<hr>
-<h3 id="Given-a-string-x-consisting-of-words-(one-or-more-non-space-characters)-which-are-separated-by-spaces,-reverse-the-order-of-the-characters-in-each-word.">Given a string x consisting of words (one or more non-space characters) which are separated by spaces, reverse the order of the characters in each word.<a class="anchor-link" href="#Given-a-string-x-consisting-of-words-(one-or-more-non-space-characters)-which-are-separated-by-spaces,-reverse-the-order-of-the-characters-in-each-word.">&#182;</a></h3>
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">reverse_words</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">str</span><span class="p">:</span>
-    <span class="n">words</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-
-    <span class="n">rev_words</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">w</span><span class="p">))</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">words</span><span class="p">]</span>
- 
-    <span class="n">rev_string</span> <span class="o">=</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rev_words</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">rev_string</span>                     
-    
-<span class="c1">#end reverse_words</span>
-
-<span class="n">reverse_words</span><span class="p">(</span><span class="s1">&#39;this is a very short sentance Hurray&#39;</span><span class="p">),</span> <span class="n">reverse_words</span><span class="p">(</span><span class="s1">&#39;zoop&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dst_bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">d2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">29</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">30</span><span class="p">))</span><span class="o">.</span><span class="n">tz_localize</span><span class="p">(</span><span class="n">paris</span><span class="p">,</span> <span class="n">ambiguous</span><span class="o">=</span><span class="n">dst_bool</span><span class="p">)</span>
+<span class="n">d2</span>
 </pre></div>
 
 </div>
@@ -1562,7 +1939,7 @@ h6:hover .anchor-link {
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(&#39;siht si a yrev trohs ecnatnes yarruH&#39;, &#39;pooz&#39;)</pre>
+<pre>Timestamp(&#39;2023-10-29 02:30:00+0200&#39;, tz=&#39;Europe/Paris&#39;)</pre>
 </div>
 
 </div>
@@ -1576,103 +1953,7 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<hr>
-<h3 id="Given-a-string-x-and-a-boolean-vector-y-of-the-same-length,-extract-the-characters-of-x-corresponding-to-a-1-in-y.">Given a string x and a boolean vector y of the same length, extract the characters of x corresponding to a 1 in y.<a class="anchor-link" href="#Given-a-string-x-and-a-boolean-vector-y-of-the-same-length,-extract-the-characters-of-x-corresponding-to-a-1-in-y.">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">])</span><span class="o">-&gt;</span><span class="nb">str</span><span class="p">:</span>
-    
-    <span class="n">res</span> <span class="o">=</span>  <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">m</span>  <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span> <span class="k">if</span> <span class="n">m</span><span class="p">]</span>
-    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
-<span class="c1">#end extract</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">extract</span><span class="p">(</span><span class="s1">&#39;abcdef&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]))</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">compress</span><span class="p">(</span><span class="s1">&#39;abcdef&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]))))</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>abe
-abe
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Python <code>Collections</code> has method to do just this, as shown above</p>
-<hr>
-<h3 id="Given-a-string-x-and-a-boolean-vector-y,-spread-the-characters-of-x-to-the-positions-of-1s-in-y,-filling-intervening-characters-with-underscores">Given a string x and a boolean vector y, spread the characters of x to the positions of 1s in y, filling intervening characters with underscores<a class="anchor-link" href="#Given-a-string-x-and-a-boolean-vector-y,-spread-the-characters-of-x-to-the-positions-of-1s-in-y,-filling-intervening-characters-with-underscores">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">spread2</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">])</span><span class="o">-&gt;</span><span class="nb">str</span><span class="p">:</span>
-    
-    <span class="n">chars</span> <span class="o">=</span> <span class="n">islice</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">next</span><span class="p">(</span><span class="n">chars</span><span class="p">)</span> <span class="k">if</span> <span class="n">m</span> <span class="k">else</span> <span class="s1">&#39;_&#39;</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mask</span><span class="p">]</span>
-    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
-<span class="c1">#end spread2</span>
-
-<span class="n">spread2</span><span class="p">(</span><span class="s1">&#39;abc&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]),</span> <span class="n">spread2</span><span class="p">(</span><span class="s1">&#39;abcdef&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]),</span> 
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt output_prompt">Out[13]:</div>
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(&#39;a__b__c&#39;, &#39;a_b__cd____e_f&#39;)</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>pandas</code> also repects the standard Python <code>fold</code> parameter.</p>
 
 </div>
 </div>
@@ -1682,14 +1963,8 @@ abe
 <div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">spread3</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">])</span><span class="o">-&gt;</span><span class="nb">str</span><span class="p">:</span>
-    
-    <span class="n">chars</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">next</span><span class="p">(</span><span class="n">chars</span><span class="p">)</span> <span class="k">if</span> <span class="n">m</span> <span class="k">else</span> <span class="s1">&#39;_&#39;</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mask</span><span class="p">]</span>
-    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
-<span class="c1">#end spread3</span>
-
-<span class="n">spread3</span><span class="p">(</span><span class="s1">&#39;abc&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">d1</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">29</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">paris</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">d1</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1706,7 +1981,7 @@ abe
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(&#39;a_b__cabca_&#39;,)</pre>
+<pre>Timestamp(&#39;2023-10-29 02:30:00+0200&#39;, tz=&#39;Europe/Paris&#39;)</pre>
 </div>
 
 </div>
@@ -1714,29 +1989,14 @@ abe
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>We have two solutions, the second one catering for the case where the input string is shorter than the mask.  We create iterators from the input string, to allow easier access from inside the list comprehension</p>
-<hr>
-<h3 id="Given-a-string-x,-remove-all-the-vowels-entirely.">Given a string x, remove all the vowels entirely.<a class="anchor-link" href="#Given-a-string-x,-remove-all-the-vowels-entirely.">&#182;</a></h3>
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">de_vowel</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">str</span><span class="p">:</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">string</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span> <span class="ow">in</span> <span class="s1">&#39;aeiou&#39;</span><span class="p">]</span>
-    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
-<span class="c1">#end de_vowel</span>
-
-<span class="n">de_vowel</span><span class="p">(</span><span class="s1">&#39;cat&#39;</span><span class="p">),</span> <span class="n">de_vowel</span><span class="p">(</span><span class="s1">&#39;A very short sentence&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">d2</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">29</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">paris</span><span class="p">,</span> <span class="n">fold</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">d2</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1753,7 +2013,7 @@ abe
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>(&#39;ct&#39;, &#39;A vry shrt sntnc&#39;)</pre>
+<pre>Timestamp(&#39;2023-10-29 02:30:00+0100&#39;, tz=&#39;Europe/Paris&#39;)</pre>
 </div>
 
 </div>
@@ -1768,53 +2028,8 @@ abe
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <hr>
-<h3 id="Given-a-string-x,-replace-all-the-vowels-(a,-e,-i,-o,-u,-or-y)-with-underscores.">Given a string x, replace all the vowels (a, e, i, o, u, or y) with underscores.<a class="anchor-link" href="#Given-a-string-x,-replace-all-the-vowels-(a,-e,-i,-o,-u,-or-y)-with-underscores.">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">de_vowel2</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">str</span><span class="p">:</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span> <span class="ow">in</span> <span class="s1">&#39;aeiouy&#39;</span> <span class="k">else</span> <span class="s1">&#39;_&#39;</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">string</span><span class="p">]</span>
-    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
-<span class="c1">#end de_vowel2</span>
+<h2 id="Comparisons">Comparisons<a class="anchor-link" href="#Comparisons">&#182;</a></h2><p>Comparison of date-times can be confusing.  As an example, below are six ways of asking "what is the date and time now" (one deprecated).</p>
 
-<span class="n">de_vowel2</span><span class="p">(</span><span class="s1">&#39;cat&#39;</span><span class="p">),</span> <span class="n">de_vowel2</span><span class="p">(</span><span class="s1">&#39;This is a short sentence&#39;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt output_prompt">Out[16]:</div>
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(&#39;c_t&#39;, &#39;Th_s _s _ sh_rt s_nt_nc_&#39;)</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<hr>
-<h3 id="Given-a-string-x-consisting-of-words-separated-by-spaces-(as-above),-and-a-string-y,-replace-all-words-in-x-which-are-the-same-as-y-with-a-series-of-xes.">Given a string x consisting of words separated by spaces (as above), and a string y, replace all words in x which are the same as y with a series of xes.<a class="anchor-link" href="#Given-a-string-x-consisting-of-words-separated-by-spaces-(as-above),-and-a-string-y,-replace-all-words-in-x-which-are-the-same-as-y-with-a-series-of-xes.">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -1823,17 +2038,12 @@ abe
 <div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">hide_words</span><span class="p">(</span><span class="n">string</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">secret</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">str</span><span class="p">:</span>
-    <span class="n">words</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-
-    <span class="n">new_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">w</span><span class="o">==</span><span class="n">secret</span> <span class="k">else</span> <span class="s1">&#39;*&#39;</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">words</span><span class="p">]</span>
- 
-    <span class="n">new_string</span> <span class="o">=</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_words</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">new_string</span>                     
-    
-<span class="c1">#end hide_words</span>
-
-<span class="n">hide_words</span><span class="p">(</span><span class="s1">&#39;this is a very short sentance, this is  Hurray&#39;</span><span class="p">,</span> <span class="s1">&#39;this&#39;</span><span class="p">),</span> <span class="n">hide_words</span><span class="p">(</span><span class="s1">&#39;zoop&#39;</span><span class="p">,</span> <span class="s1">&#39;cat&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{date.today()=}&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{datetime.today()=}&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{datetime.now()=}&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{datetime.utcnow()=}&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{datetime.now(timezone.utc)=}&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{datetime.now(UTC)=}&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1845,14 +2055,27 @@ abe
 
 
 <div class="output_area">
-<div class="prompt output_prompt">Out[17]:</div>
+<div class="prompt"></div>
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>(&#39;**** is a very short sentance, **** is Hurray&#39;, &#39;zoop&#39;)</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>date.today()=datetime.date(2024, 2, 19)
+datetime.today()=datetime.datetime(2024, 2, 19, 17, 24, 59, 687248)
+datetime.now()=datetime.datetime(2024, 2, 19, 17, 24, 59, 687248)
+datetime.utcnow()=datetime.datetime(2024, 2, 19, 7, 24, 59, 687248)
+datetime.now(timezone.utc)=datetime.datetime(2024, 2, 19, 7, 24, 59, 687248, tzinfo=datetime.timezone.utc)
+datetime.now(UTC)=datetime.datetime(2024, 2, 19, 7, 24, 59, 687248, tzinfo=datetime.timezone.utc)
+</pre>
+</div>
 </div>
 
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>C:\Users\donrc\AppData\Local\Temp\ipykernel_24512\1724687794.py:4: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  print(f&#39;{datetime.utcnow()=}&#39;)
+</pre>
+</div>
 </div>
 
 </div>
@@ -1864,22 +2087,21 @@ abe
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<hr>
-<h3 id="Given-a-string-x,-generate-a-list-of-all-possible-reorderings-of-the-characters-in-x">Given a string x, generate a list of all possible reorderings of the characters in x<a class="anchor-link" href="#Given-a-string-x,-generate-a-list-of-all-possible-reorderings-of-the-characters-in-x">&#182;</a></h3>
+<p>From Arie Bovenberg's blog post, below is an example where we create two apparently different date-times from an ambiguous date-time, only to find they test equal!  Apparantly, the test compares wall clock digits only.</p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[112]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">all_perms</span><span class="p">(</span><span class="n">word</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-    <span class="n">ps</span> <span class="o">=</span> <span class="n">permutations</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">ps</span><span class="p">]</span>
-<span class="c1">#end all_perms</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># two times one hour apart (due to DST transition)</span>
+<span class="n">earlier</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">paris</span><span class="p">,</span> <span class="n">fold</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">later</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">paris</span><span class="p">,</span> <span class="n">fold</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="n">all_perms</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">earlier</span><span class="p">,</span> <span class="n">later</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1891,12 +2113,284 @@ abe
 
 
 <div class="output_area">
-<div class="prompt output_prompt">Out[18]:</div>
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>2023-10-29 02:30:00+02:00 2023-10-29 02:30:00+01:00
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[114]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">earlier</span><span class="o">.</span><span class="n">timestamp</span><span class="p">(),</span> <span class="n">later</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[114]:</div>
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[&#39;xyz&#39;, &#39;xzy&#39;, &#39;yxz&#39;, &#39;yzx&#39;, &#39;zxy&#39;, &#39;zyx&#39;]</pre>
+<pre>(1698539400.0, 1698543000.0)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[115]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">earlier</span><span class="o">==</span><span class="n">later</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[115]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>True</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Once again, <code>pandas</code> does the expected thing (no, these date-time are <strong>not</strong> equal)</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[125]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">t1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">earlier</span><span class="p">)</span>
+<span class="n">t2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">later</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[120]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">t1</span> <span class="o">==</span> <span class="n">t2</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[120]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>False</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Note that if we change the time zone information, even if to an equivalent set of information, the date-times will test not-equal!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[122]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">later2</span> <span class="o">=</span> <span class="n">later</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">gettz</span><span class="p">(</span><span class="s2">&quot;Europe/Paris&quot;</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[123]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">later</span> <span class="o">==</span> <span class="n">later2</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[123]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>False</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>pandas</code> again seems to do the correct thing, even if the time zone information came from two different typed objects.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[126]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">t3</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">later</span><span class="p">)</span>
+<span class="n">t4</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">later2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t3</span><span class="p">,</span><span class="n">t4</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>2023-10-29 02:30:00+01:00 2023-10-29 02:30:00+01:00
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[127]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">t3</span><span class="o">==</span><span class="n">t4</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[127]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>True</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[130]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">t3</span><span class="o">.</span><span class="n">tzinfo</span><span class="p">,</span> <span class="n">t4</span><span class="o">.</span><span class="n">tzinfo</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[130]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(zoneinfo.ZoneInfo(key=&#39;Europe/Paris&#39;), tzfile(&#39;Europe/Paris&#39;))</pre>
 </div>
 
 </div>
@@ -1911,7 +2405,130 @@ abe
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <hr>
-<h1 id="Conclusions">Conclusions<a class="anchor-link" href="#Conclusions">&#182;</a></h1><p>Most of the above could be compressed even more, with the loss of some readibility.  I would claim that most are very close to one-liners</p>
+<h2 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion">&#182;</a></h2><p>The various datetime pitfalls are certainly something to be aware of, and should be considered in any code reviews of Python apps that deal with dates or times.</p>
+<p>It is slightly reassuring the <code>pandas</code> seems to be more reliable in this regard.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<h2 id="Reproducability">Reproducability<a class="anchor-link" href="#Reproducability">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">watermark</span> -co
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>conda environment: c:\Users\donrc\Documents\VisualCodeProjects\DateTimeProject\.conda
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">watermark</span> -iv
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>dateutil: 2.8.2
+pandas  : 2.1.4
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">watermark</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Last updated: 2024-02-19T17:39:41.908759+10:00
+
+Python implementation: CPython
+Python version       : 3.12.1
+IPython version      : 8.21.0
+
+Compiler    : MSC v.1916 64 bit (AMD64)
+OS          : Windows
+Release     : 11
+Machine     : AMD64
+Processor   : Intel64 Family 6 Model 140 Stepping 1, GenuineIntel
+CPU cores   : 8
+Architecture: 64bit
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 
 </div>
 </div>
@@ -1947,13 +2564,46 @@ abe
 }
 </script>
  
-	<a class="btn btn-mini xsmall" href="../stringchallenges.html">
+	<a class="btn btn-mini xsmall" href="../datetime.html">
           <i class="icon-comment"></i> Comment </a>
 	<hr />
       </div>
       
     </div>
     
+
+ 
+        
+
+
+
+    <div class='row-fluid'>
+      <div class='article-title span9'> 
+        <a href="../stringchallenges.html"><h1>Solving String Challenges in Python</h1></a>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span2">
+<p>Wed 25 March 2020 </p>
+
+<p style="text-align: left;">
+Filed under <a href="../category/python.html">Python</a>
+</p>
+<p style="text-align: left;">
+ 
+    Tags <a href="../tag/python.html">python</a> </p>
+<p>
+</p>
+      </div>
+      <div class="summary span8">
+	<p>Solving string challenges in Python, with almost one-liners</p> 
+	<a class="btn btn-mini xsmall" href="../stringchallenges.html">
+          <i class="icon-plus-sign"></i> Read More </a>
+	<hr />
+      </div>
+      
+    </div>
+      
 
  
         
@@ -2020,39 +2670,6 @@ Filed under <a href="../category/cartopy.html">Cartopy</a>
       
     </div>
       
-
- 
-        
-
-
-
-    <div class='row-fluid'>
-      <div class='article-title span9'> 
-        <a href="../communities.html"><h1>OSMNX and Identifying Communities</h1></a>
-      </div>
-    </div>
-    <div class="row-fluid">
-      <div class="span2">
-<p>Thu 02 August 2018 </p>
-
-<p style="text-align: left;">
-Filed under <a href="../category/osmnx.html">OSMNX</a>
-</p>
-<p style="text-align: left;">
- 
-    Tags <a href="../tag/python.html">python</a> <a href="../tag/geopandas.html">geopandas</a> <a href="../tag/cartopy.html">cartopy</a> <a href="../tag/osmnx.html">osmnx</a> <a href="../tag/networkx.html">networkx</a> </p>
-<p>
-</p>
-      </div>
-      <div class="summary span8">
-	<p>Visualization of communities identified via the road network</p> 
-	<a class="btn btn-mini xsmall" href="../communities.html">
-          <i class="icon-plus-sign"></i> Read More </a>
-	<hr />
-      </div>
-      
-    </div>
-      
 <div class="pagination">
 <ul>
     <li class="prev disabled"><a href="#">&larr; Previous</a></li>
@@ -2062,6 +2679,7 @@ Filed under <a href="../category/osmnx.html">OSMNX</a>
     <li class=""><a href="../tag/python3.html">3</a></li>
     <li class=""><a href="../tag/python4.html">4</a></li>
     <li class=""><a href="../tag/python5.html">5</a></li>
+    <li class=""><a href="../tag/python6.html">6</a></li>
 
     <li class="next"><a href="../tag/python2.html">Next &rarr;</a></li>
 
