@@ -108,8 +108,8 @@ Filed under <a href="../category/cartopy.html">Cartopy</a>
 </p>
       </div>
       <div class="article-content span8">
-	<h1>Cartopy and MultiLine Geometries</h1>
-<h2>Introduction</h2>
+	<h1 id="cartopy-and-multiline-geometries">Cartopy and MultiLine Geometries</h1>
+<h2 id="introduction">Introduction</h2>
 <p>So, I set myself the challenge of visualizing Australia's oil and gas fields, and associated pipelines, as an exercise
 in learning Cartopy.  I wound up learning more that I had anticipated.</p>
 <p>The Australia Government  provides shapefiles for <a href="https://data.gov.au/dataset/oil-and-gas-field-locations">oil and gas field locations</a>,
@@ -118,40 +118,38 @@ and for  <a href="https://data.gov.au/dataset/oil-and-gas-pipelines-of-australia
 visualization looked weird.  A little poking around showed that the pipeline shapefile contained data that Shapely interpreted
 as a MultiLine geometry.  Essentially, Shapely knows about Points, Lines, MultilinesStrings, Polygons, and MultiPolygons, and this was my
 first brush with Multilines.</p>
-<h2>The Problem</h2>
+<h2 id="the-problem">The Problem</h2>
 <p>It turns out that Cartopy has decided that multi-point lines are really polygons in disguise.  An example program that illustrates
 the problem is below.</p>
-<div class="highlight"><pre><span></span>    <span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">MultiLineString</span>
+<pre><code>    from shapely.geometry import MultiLineString
 
-    <span class="n">lines</span> <span class="o">=</span> <span class="n">MultiLineString</span><span class="p">([((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>  <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">))])</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+    lines = MultiLineString([((0, 0), (10, 10)), ((0, 20),  (10, 15), (15, 10), (20, 0))])
+    print(lines)
 
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
-    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">(</span><span class="n">central_longitude</span><span class="o">=</span><span class="mi">140</span><span class="p">))</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_extent</span><span class="p">((</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">))</span>
+    fig = plt.figure(figsize=(10,10))
+    ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=140))
+    ax.set_extent((-10, 20, -10, 30))
 
-    <span class="n">ax</span><span class="o">.</span><span class="n">add_feature</span><span class="p">(</span><span class="n">cartopy</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">LAND</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">add_feature</span><span class="p">(</span><span class="n">cartopy</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">OCEAN</span><span class="p">)</span>
+    ax.add_feature(cartopy.feature.LAND)
+    ax.add_feature(cartopy.feature.OCEAN)
 
-    <span class="n">ax</span><span class="o">.</span><span class="n">add_geometries</span><span class="p">([</span><span class="n">lines</span><span class="p">],</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">(),</span>\
-                              <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    ax.add_geometries([lines], ccrs.PlateCarree(),\
+                              edgecolor='green', facecolor=None, alpha = 0.8, linewidth=2)
 
-    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-
-
+    plt.show()
+</code></pre>
 <p>In this trivial example, we create a MultiLine (called MultiLineString by Shapely), that has two parts.
 The first part is a simple Start Point to End Point line (<code>((0, 0), (10, 10))</code>).  The second part is a line with
 four points (i.e. a Start Point, and End Point, and two points in the middle - <code>((0, 20),  (10, 15), (15, 10), (20, 0))</code>).</p>
 <p>We then crank up a Cartopy-aware Axes object, add Cartopy Land and Ocean features, and add the line geometry.  The limits
 of the Axes are set to the area around the (0,0) point in lat/lon space where our lines are defined:  i.e. near the west coast of Africa.</p>
 <p>This results in:</p>
-<p><img alt="Cartopy MultiPoint Line Bug Example" src="../images/ml01.png"></p>
+<p><img alt="Cartopy MultiPoint Line Bug Example" src="../images/ml01.png" /></p>
 <p>As you can see, the simple line was drawn just fine, but the multipoint line was filled in!  And try as I might,
 I could not find the magic combination of parameters to instruct Cartopy not to fill this geometry.</p>
 <p>So then I turned to Plan B.  Here, I created a new geometry, based upon that read from the shapefile, but with simple
 lines replacing the multipoint lines.  The relevant code fragment loooks like:</p>
-<div class="highlight"><pre><span></span>    # turn multipoint lines into simple start-end lines
+<pre><code>    # turn multipoint lines into simple start-end lines
     line_good=[]
     for l in lines:
         start_pt = list(l.coords)[0]
@@ -166,66 +164,60 @@ lines replacing the multipoint lines.  The relevant code fragment loooks like:</
     lines = MultiLineString(line_good)
     for l in lines:
         ax.add_geometries([l], ccrs.PlateCarree(),\
-                                  edgecolor=&#39;green&#39;, facecolor=None, alpha = 0.8, linewidth=2)
+                                  edgecolor='green', facecolor=None, alpha = 0.8, linewidth=2)
     #end for
 
     plt.show()
-</pre></div>
-
-
+</code></pre>
 <p>Here, in the outer <code>for</code> loop, we run through all Lines in our MultiLineString geometry.  For each point in the Line, starting at the second,
 we create a simple two point line, where the start point is the end point of the last simple line  (i.e. all the simple two-point lines join up,
 nose to tail, to recreate the multi-point line).  We then create a new Shapely MultiLineString, and add it to the Cartopy-aware Axes object.</p>
 <p>And voila!</p>
-<p><img alt="Cartopy Workaround Example" src="../images/ml02.png"></p>
+<p><img alt="Cartopy Workaround Example" src="../images/ml02.png" /></p>
 <p>Now my lines are drawn as lines, not polygons.  By the way, Google-ing around seems to indicate that some people think this Cartopy behaviour is by design, and
 is not a bug.  I have lodged an issue on GitHub.</p>
-<h2>Back to my Map</h2>
+<h2 id="back-to-my-map">Back to my Map</h2>
 <p>So now I know how to draw lines from shapefiles, we return the to the original job.</p>
-<h3>Geographic data sources</h3>
+<h3 id="geographic-data-sources">Geographic data sources</h3>
 <p>First, we want a high quality map (and we do want a high quality map, because oil fields are quite small compared to the extent of Australia,
 so we will want to zoom in some.  Accordingly we define some high quality mapping data, to be loaded from Natural Earth.  In this case, 'high quality'
 mean using 1:10Million (not 1:100Million) data.</p>
-<div class="highlight"><pre><span></span>    BORDERS_10m = cartopy.feature.NaturalEarthFeature(&#39;cultural&#39;, &#39;admin_0_boundary_lines_land&#39;,
-                                  &#39;10m&#39;, edgecolor=&#39;black&#39;, facecolor=&#39;none&#39;)
-    &quot;&quot;&quot;country boundaries.&quot;&quot;&quot;
+<pre><code>    BORDERS_10m = cartopy.feature.NaturalEarthFeature('cultural', 'admin_0_boundary_lines_land',
+                                  '10m', edgecolor='black', facecolor='none')
+    """country boundaries."""
 
-    COASTLINE_10m = cartopy.feature.NaturalEarthFeature(&#39;physical&#39;, &#39;coastline&#39;, &#39;10m&#39;,
-                                    edgecolor=&#39;black&#39;, facecolor=&#39;none&#39;)
-    &quot;&quot;&quot;coastline, including major islands.&quot;&quot;&quot;
+    COASTLINE_10m = cartopy.feature.NaturalEarthFeature('physical', 'coastline', '10m',
+                                    edgecolor='black', facecolor='none')
+    """coastline, including major islands."""
 
-    LAKES_10m = cartopy.feature.NaturalEarthFeature(&#39;physical&#39;, &#39;lakes&#39;, &#39;10m&#39;,
-                                edgecolor=&#39;face&#39;,
-                                facecolor=cartopy.feature.COLORS[&#39;water&#39;])
-    &quot;&quot;&quot; natural and artificial lakes.&quot;&quot;&quot;
+    LAKES_10m = cartopy.feature.NaturalEarthFeature('physical', 'lakes', '10m',
+                                edgecolor='face',
+                                facecolor=cartopy.feature.COLORS['water'])
+    """ natural and artificial lakes."""
 
-    LAND_10m = cartopy.feature.NaturalEarthFeature(&#39;physical&#39;, &#39;land&#39;, &#39;10m&#39;,
-                               edgecolor=&#39;face&#39;,
-                               facecolor=cartopy.feature.COLORS[&#39;land&#39;])
-    &quot;&quot;&quot;land polygons, including major islands.&quot;&quot;&quot;
+    LAND_10m = cartopy.feature.NaturalEarthFeature('physical', 'land', '10m',
+                               edgecolor='face',
+                               facecolor=cartopy.feature.COLORS['land'])
+    """land polygons, including major islands."""
 
-    OCEAN_10m = cartopy.feature.NaturalEarthFeature(&#39;physical&#39;, &#39;ocean&#39;, &#39;10m&#39;,
-                                edgecolor=&#39;face&#39;,
-                                facecolor=cartopy.feature.COLORS[&#39;water&#39;])
-    &quot;&quot;&quot;Small scale (1:110m) ocean polygons.&quot;&quot;&quot;
+    OCEAN_10m = cartopy.feature.NaturalEarthFeature('physical', 'ocean', '10m',
+                                edgecolor='face',
+                                facecolor=cartopy.feature.COLORS['water'])
+    """Small scale (1:110m) ocean polygons."""
 
-    RIVERS_10m = cartopy.feature.NaturalEarthFeature(&#39;physical&#39;, &#39;rivers_lake_centerlines&#39;, &#39;10m&#39;,
-                                 edgecolor=cartopy.feature.COLORS[&#39;water&#39;],
-                                 facecolor=&#39;none&#39;)
-    &quot;&quot;&quot;single-line drainages, including lake centerlines.&quot;&quot;&quot;
-</pre></div>
-
-
+    RIVERS_10m = cartopy.feature.NaturalEarthFeature('physical', 'rivers_lake_centerlines', '10m',
+                                 edgecolor=cartopy.feature.COLORS['water'],
+                                 facecolor='none')
+    """single-line drainages, including lake centerlines."""
+</code></pre>
 <p>Cartopy will download this data on first use, and cache it. The first time you use a feature that triggers a download, you get a warning:</p>
-<div class="highlight"><pre><span></span>    D:\Anaconda3\lib\site-packages\cartopy\io\__init__.py:264: DownloadWarning: 
+<pre><code>    D:\Anaconda3\lib\site-packages\cartopy\io\__init__.py:264: DownloadWarning: 
     Downloading: http://naciscdn.org/naturalearth/10m/cultural/ne_10m_admin_0_boundary_lines_land.zip
-      warnings.warn(&#39;Downloading: {}&#39;.format(url), DownloadWarning)
-</pre></div>
-
-
-<h3>Create the map background</h3>
+      warnings.warn('Downloading: {}'.format(url), DownloadWarning)
+</code></pre>
+<h3 id="create-the-map-background">Create the map background</h3>
 <p>Then we create the fancy map, upon which our visualization will be drawn.</p>
-<div class="highlight"><pre><span></span>    fig = plt.figure(figsize=(10,10))
+<pre><code>    fig = plt.figure(figsize=(10,10))
     ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=140))
     #ax.set_extent((110, 155, -45, -5))  # whole of Australia
     ax.set_extent((120, 132, -18, -6))   # NE Australia to E Timor
@@ -237,16 +229,14 @@ mean using 1:10Million (not 1:100Million) data.</p>
     ax.add_feature(COASTLINE_10m)
     ax.add_feature(RIVERS_10m )
     ax.add_feature(BORDERS_10m )
-</pre></div>
-
-
+</code></pre>
 <p>First, we create a matplotlib figure, and then a Cartopy-aware Axes object.  We choose to constrain our map to just around
 North West Australia (the sharing of oil and gas resources with East Timor is currently an on-going dispute with East Timor).
 We draw gridlines, and add the geographical features to provide context for our visualization.  We decided not to use the 
 <code>LAKES_10m</code> feature.</p>
-<h3>Read the oil field shapefile</h3>
-<div class="highlight"><pre><span></span>    print(&#39;Adding gas fields ...&#39;)
-    add_shp = &#39;../data/fields&#39;
+<h3 id="read-the-oil-field-shapefile">Read the oil field shapefile</h3>
+<pre><code>    print('Adding gas fields ...')
+    add_shp = '../data/fields'
 
     shp = shapereader.Reader(add_shp)
     add_s = shp.records()
@@ -258,19 +248,17 @@ We draw gridlines, and add the geographical features to provide context for our 
             pass
         else:
             ax.add_geometries([add.geometry], ccrs.PlateCarree(),\
-                              edgecolor=&#39;red&#39;,  facecolor=&#39;tan&#39;, alpha = ADD_alpha)        
+                              edgecolor='red',  facecolor='tan', alpha = ADD_alpha)        
         #end if
 
     #end for
-</pre></div>
-
-
+</code></pre>
 <p>We create an instance the Cartopy shapereader, and use it to access the records in the shapefile.  For each shape,
 we check to see if the record geometry is None (the equivalent of missing data); if not, we add it to the Cartopy map,
 with our chosen color.  We set <code>alpha</code> to be close to 1.0, so that they show out.</p>
-<h3>Read the pipeline shapefile</h3>
-<div class="highlight"><pre><span></span>    print(&#39;Adding pipelines ...&#39;)
-    add_shp = &#39;../data/pipelines&#39;
+<h3 id="read-the-pipeline-shapefile">Read the pipeline shapefile</h3>
+<pre><code>    print('Adding pipelines ...')
+    add_shp = '../data/pipelines'
 
     shp = shapereader.Reader(add_shp)
     add_s = shp.records()
@@ -295,60 +283,56 @@ with our chosen color.  We set <code>alpha</code> to be close to 1.0, so that th
             lines = MultiLineString(line_good)
 
             ax.add_geometries([lines], ccrs.PlateCarree(),\
-                              edgecolor=&#39;green&#39;, facecolor=None, alpha = ADD_alpha)    
+                              edgecolor='green', facecolor=None, alpha = ADD_alpha)    
         #end if
 
     #end for
 
     plt.show()
-</pre></div>
-
-
+</code></pre>
 <p>This code matches the previous example, except for the the trick of unravelling the multi-point lines into
 simple nose-to-tail lines.  We add this newly created geometry to the underlying map, giving the line a distinctive color. </p>
-<h3>The Result</h3>
+<h3 id="the-result">The Result</h3>
 <p>The result of this is shown below.</p>
-<p><img alt="Cartopy High Quality Example" src="../images/ml03.png"></p>
+<p><img alt="Cartopy High Quality Example" src="../images/ml03.png" /></p>
 <p>It would be interesting to show the edge of the continental shelf, and Australia's Economic Zone border.  I have downloaded a shapefile
 of the world tectonic plates, but it might be more illuminating to use a digital elevation model to show underwater topography.
 These are all extensions for another day (and blog post).</p>
 <p>To make this a finished product, I should add a title, a legend, provide attribution for data sources, and supply reproducibility fine-print
 (and maybe throw in a Copyright claim).  However, it's not bad for a start.</p>
-<h2>The Imports</h2>
+<h2 id="the-imports">The Imports</h2>
 <p>Just for completeness, here are the imports for the Notebook that holds all the code above
 (not all are by the code fragments above, and some are used only to support print-outs that define the environment for reproducibility purposes) :</p>
-<div class="highlight"><pre><span></span>    <span class="c1"># all imports should go here</span>
+<pre><code>    # all imports should go here
 
-    <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-    <span class="kn">import</span> <span class="nn">sys</span>
-    <span class="kn">import</span> <span class="nn">os</span>
-    <span class="kn">import</span> <span class="nn">subprocess</span>
-    <span class="kn">import</span> <span class="nn">datetime</span>
-    <span class="kn">import</span> <span class="nn">platform</span>
-    <span class="kn">import</span> <span class="nn">datetime</span>
+    import pandas as pd
+    import sys
+    import os
+    import subprocess
+    import datetime
+    import platform
+    import datetime
 
-    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-    <span class="c1">#import seaborn as sb</span>
+    import matplotlib.pyplot as plt
+    #import seaborn as sb
 
-    <span class="kn">import</span>  <span class="nn">cartopy</span>
-    <span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="kn">as</span> <span class="nn">ccrs</span>
-    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">OSM</span>
-    <span class="kn">import</span> <span class="nn">cartopy.feature</span> <span class="kn">as</span> <span class="nn">cfeature</span>
-    <span class="kn">from</span> <span class="nn">cartopy.io</span> <span class="kn">import</span> <span class="n">shapereader</span>
-    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">StamenTerrain</span>
-    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">GoogleTiles</span>
-    <span class="kn">from</span> <span class="nn">owslib.wmts</span> <span class="kn">import</span> <span class="n">WebMapTileService</span>
+    import  cartopy
+    import cartopy.crs as ccrs
+    from cartopy.io.img_tiles import OSM
+    import cartopy.feature as cfeature
+    from cartopy.io import shapereader
+    from cartopy.io.img_tiles import StamenTerrain
+    from cartopy.io.img_tiles import GoogleTiles
+    from owslib.wmts import WebMapTileService
 
-    <span class="kn">from</span> <span class="nn">matplotlib.path</span> <span class="kn">import</span> <span class="n">Path</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.patheffects</span> <span class="kn">as</span> <span class="nn">PathEffects</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="kn">as</span> <span class="nn">mpatches</span>
+    from matplotlib.path import Path
+    import matplotlib.patheffects as PathEffects
+    import matplotlib.patches as mpatches
 
-    <span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">MultiLineString</span>
+    from shapely.geometry import MultiLineString
 
-    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-</pre></div>
-
-
+    import numpy as np
+</code></pre>
 <p>The link to notebook that has all the code is will be coming soon.</p> 
 	<a class="btn btn-mini xsmall" href="../cartopymultiline.html">
           <i class="icon-comment"></i> Comment </a>

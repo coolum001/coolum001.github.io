@@ -108,22 +108,22 @@ Filed under <a href="../category/introduction.html">Introduction</a>
 </p>
       </div>
       <div class="article-content span8">
-	<h1>Introduction</h1>
+	<h1 id="introduction">Introduction</h1>
 <p>This the first of a set of blogs posts about the experience of learning about the current crop of Python visualization
  and mapping tools. These tools include:</p>
-<h3>Mapping tools</h3>
+<h3 id="mapping-tools">Mapping tools</h3>
 <ul>
 <li>Basemap</li>
 <li>Cartopy</li>
 <li>Geopandas</li>
 </ul>
-<h3>Visualization tools</h3>
+<h3 id="visualization-tools">Visualization tools</h3>
 <ul>
 <li>Bokeh</li>
 <li>Seaborn</li>
 <li>ggplot</li>
 </ul>
-<h3>Data management tools</h3>
+<h3 id="data-management-tools">Data management tools</h3>
 <ul>
 <li>pandas</li>
 <li>numpy</li>
@@ -150,20 +150,18 @@ and to be fair, I did try to display mots of the globe, whicjh is probably not i
 When I was in Sweden, I learned about one of their projections, which was "run a line North-South through the middle of Sweden to give Y, and then measure X as distance from the line".
 Fair enough, for a very long thin country near the North Pole.</p>
 <p>Anyhow, a typical code fragment looks like:</p>
-<div class="highlight"><pre><span></span>    # lon_0 is central longitude of projection.
-    # resolution = &#39;c&#39; means use crude resolution coastlines.
-    my_map = Basemap(projection=&#39;kav7&#39;,lon_0=140,resolution=&#39;c&#39;)
+<pre><code>    # lon_0 is central longitude of projection.
+    # resolution = 'c' means use crude resolution coastlines.
+    my_map = Basemap(projection='kav7',lon_0=140,resolution='c')
 
     my_map.drawcoastlines()
     my_map.drawparallels(np.arange(-80.,81.,20.))
     my_map.drawmeridians(np.arange(-180.,181.,20 )) 
-    plt.title(&#39;kav7 Kavrayskiy VII&#39;)
+    plt.title('kav7 Kavrayskiy VII')
     plt.show()
-</pre></div>
-
-
+</code></pre>
 <p>This yields a map that looks like:</p>
-<p><img alt="Kavrayskiy Projection" src="../images/Kavrayskiy.png"></p>
+<p><img alt="Kavrayskiy Projection" src="../images/Kavrayskiy.png" /></p>
 <p>As a spoiler alert for a subsequent post, I later discovered that Basemap is not so good at showing polygons and lines
  that wrap around the latitude 180 East / 180 West line.  Sometimes it becomes necessary to have the map display
  centred on London (latitude 0).  One set of Shapefiles I read in (tectonic plate boundaries) in fact split its Polygon

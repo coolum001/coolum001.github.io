@@ -106,7 +106,7 @@ Filed under <a href="./category/basemap.html">Basemap</a>
       </div>
       
       <div class="span8">
-	<h1>Global Choropleth</h1>
+	<h1 id="global-choropleth">Global Choropleth</h1>
 <p>So having mastered the art of drawing a global map in any projection I want, I then decided to try and create a global choropleth map.
 A choropleth is a map where the geographic regions are color-coded to indicate the value of some attribute of interest.</p>
 <p>The first issue that arises is how to specify the areas of interest.  The linga franca of geometry appears to be <em>shapefiles</em>; 
@@ -133,7 +133,7 @@ I will be using the estimated population of a country as my variable of interest
 </li>
 <li>
 <p>Use an instance method of the map to read the shapefile, and optionally draw the boundaries spatial entities. When you read the shapefile,
-you supply a string that is now the 'name' of an attribute of the map object, that can be used to access the shapefile spatial data;<br>
+you supply a string that is now the 'name' of an attribute of the map object, that can be used to access the shapefile spatial data;<br />
 'name_info' can be used to access the associated attribute data.</p>
 <p>I must admit I blinked a bit at this building of object instance variables on the fly (being a ex-Java guy), but it is one example of Python's extremely dynamic programming style.</p>
 </li>
@@ -156,112 +156,98 @@ is a little non-intuitive to me - but maybe set_array_used_to_compute_color() is
 (because we are using log10 of the origianl, we manually set tickmarks and tick labels)</p>
 </li>
 </ul>
-<h3>Import needed modules</h3>
+<h3 id="import-needed-modules">Import needed modules</h3>
 <p>The <code>math</code> and <code>numbers</code> modules are imported in the data cleaning below, but these are the plotting related modules needed.</p>
-<div class="highlight"><pre><span></span>    <span class="kn">from</span> <span class="nn">mpl_toolkits.basemap</span> <span class="kn">import</span> <span class="n">Basemap</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<pre><code>    from mpl_toolkits.basemap import Basemap
+    import matplotlib.pyplot as plt
+    import numpy as np
 
-    <span class="c1"># these are needed for shapefile mgt </span>
-    <span class="kn">from</span> <span class="nn">matplotlib.patches</span> <span class="kn">import</span> <span class="n">Polygon</span>
-    <span class="kn">from</span> <span class="nn">matplotlib.collections</span> <span class="kn">import</span> <span class="n">PatchCollection</span>
-    <span class="kn">from</span> <span class="nn">matplotlib.patches</span> <span class="kn">import</span> <span class="n">PathPatch</span>
-</pre></div>
-
-
-<h3>Create a Basemap map</h3>
+    # these are needed for shapefile mgt 
+    from matplotlib.patches import Polygon
+    from matplotlib.collections import PatchCollection
+    from matplotlib.patches import PathPatch
+</code></pre>
+<h3 id="create-a-basemap-map">Create a Basemap map</h3>
 <p>A typical code fragment to create the underlying map looks like that below.  One point to note is that in some of my examples (to come)
 I don't fill the whole continent, so uncomment the <code>m.fillcontinents(color='tan')</code> line to fill in the areas not covered by your polygons.  Also be sure to set an appropriate zorder for your polygons, or the continent fill may hide them.</p>
-<p>I am unsure as to the idiom of creating a figure  by <code>plt.figure()</code>, and then adding a single subplot by <code>fig.add_subplot(111)</code>;<br>
+<p>I am unsure as to the idiom of creating a figure  by <code>plt.figure()</code>, and then adding a single subplot by <code>fig.add_subplot(111)</code>;<br />
 I think it is to get a handle for the mapplotlib Axes object, that has some useful methods that we use below.  Note that the <code>111</code> means:
  "a grid of subplots one row by one column, and this is subplot one".  There may be other ways of getting the figure <code>Axes</code> object, but I am too lazy to research them.</p>
-<div class="highlight"><pre><span></span>    fig = plt.figure()
+<pre><code>    fig = plt.figure()
     ax = fig.add_subplot(111)
-    m = Basemap(projection=&#39;gall&#39;,llcrnrlat=-70,urcrnrlat=90,\
-                llcrnrlon=-180,urcrnrlon=180,resolution=&#39;c&#39;)
+    m = Basemap(projection='gall',llcrnrlat=-70,urcrnrlat=90,\
+                llcrnrlon=-180,urcrnrlon=180,resolution='c')
 
-    #m.fillcontinents(color=&#39;tan&#39;)
+    #m.fillcontinents(color='tan')
     m.drawmapboundary()
 
     m.drawparallels(np.arange(-80.,81.,20.))
     m.drawmeridians(np.arange(-180.,181.,20.))
-</pre></div>
-
-
-<h3>Reading the shapefile</h3>
+</code></pre>
+<h3 id="reading-the-shapefile">Reading the shapefile</h3>
 <p>Simple code:</p>
-<div class="highlight"><pre><span></span>    m.readshapefile(&#39;shapefiles/ne_10m_admin_0_countries&#39;, 
-                    name=&#39;world&#39;, 
+<pre><code>    m.readshapefile('shapefiles/ne_10m_admin_0_countries', 
+                    name='world', 
                     drawbounds=True, 
-                    color=&#39;gray&#39;)
-</pre></div>
-
-
+                    color='gray')
+</code></pre>
 <p>The file name translates to "Natural Earth, 1:10Million scale, administration boundaries at top level".  Be warned that the <code>drawbounds=True</code>
 can cause problems if the shapefile ploygons span the Longitude 180 East / 180 West line.  The <code>name=world</code> means that we can subsequently refer
 to <code>m.world</code> and <code>m.world_info</code> to get access to the shapefile data. </p>
-<h3>Processing the shapefile</h3>
+<h3 id="processing-the-shapefile">Processing the shapefile</h3>
 <p>The code below mixes data cleaning with spatial processing.  I probably should have used pandas/ geopandas to clean the data, but in this case,
 this was the easiest approach.  I know by poking in the shapefile (and reading the Natural Earth site) that <code>POP_EST</code>  is the <code>info</code> attribute I want.
 The main problems was the estimated population was not always a number, and not always &gt; 0.   There may be a easier way to turn a shape into an array, but numpy is an automatic import to most of my code.
 The end result of all this is to have two lists, <code>patches</code> and <code>population</code>.</p>
 <p>I know the comments that end code blocks (<code>#end for</code>, etc)
 are un-Pythonic, but they work for me. </p>
-<div class="highlight"><pre><span></span>    <span class="kn">import</span> <span class="nn">math</span>   
-    <span class="kn">import</span> <span class="nn">numbers</span>
-    <span class="n">patches</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">population</span>  <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">info</span><span class="p">,</span><span class="n">shape</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">world_info</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">world</span><span class="p">):</span>
-        <span class="n">patches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Polygon</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">shape</span><span class="p">),</span> <span class="bp">True</span><span class="p">))</span>
-        <span class="k">if</span><span class="p">(</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;POP_EST&#39;</span><span class="p">],</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Number</span><span class="p">)</span>  <span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">z</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;POP_EST&#39;</span><span class="p">]</span><span class="o">+</span><span class="mf">1.0</span><span class="p">)</span>
-            <span class="k">except</span><span class="p">:</span>
-                <span class="n">z</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="c1">#end try</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">z</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="c1">#end if</span>
-       <span class="n">population</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<pre><code>    import math   
+    import numbers
+    patches = []
+    population  = []
+    for info,shape in zip(m.world_info, m.world):
+        patches.append(Polygon(np.array(shape), True))
+        if( isinstance(info['POP_EST'], numbers.Number)  ):
+            try:
+                z = math.log10(info['POP_EST']+1.0)
+            except:
+                z = 0
+            #end try
+        else:
+            z = 0.0
+        #end if
+       population.append(z)
 
-    <span class="c1">#end for</span>
-</pre></div>
-
-
-<h3>Add polygons to matplotlib figure</h3>
+    #end for
+</code></pre>
+<h3 id="add-polygons-to-matplotlib-figure">Add polygons to matplotlib figure</h3>
 <p>We now add all this to the Axes object (one and one only) of our figure by:</p>
-<div class="highlight"><pre><span></span>    p = PatchCollection(patches, alpha=0.5,  zorder=3, cmap=&#39;rainbow&#39;)
+<pre><code>    p = PatchCollection(patches, alpha=0.5,  zorder=3, cmap='rainbow')
     p.set_array(np.array(population))
 
     ax.add_collection(p)
-</pre></div>
-
-
+</code></pre>
 <p>Note we set a <code>zorder</code> that is probably higher than it needs to be (but must be greater than the continent fill <code>zorder</code>, if used), and that we pick <code>rainbow</code> as our color map.
 Color map choice is a very thorny problem, but in my eyes, it works here.  The <code>set_array()</code> defines the value used to set the color of a
 given patch (in this case log base 10 of the estimated population).</p>
-<h3>Create a color bar</h3>
+<h3 id="create-a-color-bar">Create a color bar</h3>
 <p>The main detail with the color bar is that we have used log base 10 of the real number we are using as a color code.
 So we manually set the color bar ticks, and manually set the labels at each tick (with some pleasing commas to separate the thousands).
 My mental model is that the color bar creation makes a new Axes object,
 and we can set the x-axis and y-axis of this Axes object independently of the main plot (rather than changing some attributes of the color bar).</p>
 <p>We shrink the color bar so it doesn't overshadow the map.</p>
-<div class="highlight"><pre><span></span>    cb = fig.colorbar(p, ax=ax, shrink=0.6, ticks = range(0,10))
-    tick_labels = [&quot;{:,}&quot;.format(10**i) for i in range(0,10)]
+<pre><code>    cb = fig.colorbar(p, ax=ax, shrink=0.6, ticks = range(0,10))
+    tick_labels = ["{:,}".format(10**i) for i in range(0,10)]
     cb.ax.set_yticklabels(tick_labels) 
-    cb.ax.set_xlabel(&#39;Country Population&#39;, size = 8)
-</pre></div>
-
-
-<h3>Finish the figure</h3>
+    cb.ax.set_xlabel('Country Population', size = 8)
+</code></pre>
+<h3 id="finish-the-figure">Finish the figure</h3>
 <p>Put on a title, and we are done!</p>
-<div class="highlight"><pre><span></span>    plt.title(&#39;World Choropleth&#39;)
+<pre><code>    plt.title('World Choropleth')
     plt.show()
-</pre></div>
-
-
+</code></pre>
 <p>All this yields a map that looks like:</p>
-<p><img alt="Gloabal Population Choropleth" src="./images/choropleth01.png"></p>
+<p><img alt="Gloabal Population Choropleth" src="./images/choropleth01.png" /></p>
 <p>The notebook that has all the code is <a href="./notebooks/WorldChoroplethNotebook.html">here</a></p>
 	<hr />
       </div>

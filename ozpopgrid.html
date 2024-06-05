@@ -106,65 +106,62 @@ Filed under <a href="./category/cartopy.html">Cartopy</a>
       </div>
       
       <div class="span8">
-	<h1>Visualizations of Australia's Population Grid</h1>
-<h2>Introduction</h2>
+	<h1 id="visualizations-of-australias-population-grid">Visualizations of Australia's Population Grid</h1>
+<h2 id="introduction">Introduction</h2>
 <p>The Australian Bureau of Statistics (ABS) make available a population grid.  Essentially, they estimate the population living in each 1 kilometre grid cell, and make this available as a GeoTIFF (amongst other formats).  There is a lot of tricky estimating to go from the usual Census data to a mesh grid, that is explained in the website.  I thought it might be fun to look at visualizing this in different ways.</p>
 <p>I found myself chasing down some interesting cartographic rabbit holes, and learnt a useful Pandas trick.</p>
-<h2>Data Sources</h2>
+<h2 id="data-sources">Data Sources</h2>
 <p>You can find the population grid GeoTIFF at http://www.abs.gov.au/ausstats/abs@.nsf/mf/1270.0.55.007</p>
-<h2>Data Exploration</h2>
+<h2 id="data-exploration">Data Exploration</h2>
 <p>The first thing I did was to read the GeoTIFF, and work out what projection was used.</p>
-<div class="highlight"><pre><span></span><span class="n">pop</span> <span class="o">=</span> <span class="n">gdal</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="s1">&#39;d:</span><span class="se">\\</span><span class="s1">qml</span><span class="se">\\</span><span class="s1">Australian_Population_Grid_2011.tif&#39;</span><span class="p">)</span>
-<span class="n">data</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">ReadAsArray</span><span class="p">()</span>
-<span class="n">gt</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">GetGeoTransform</span><span class="p">()</span>
-<span class="n">proj</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">GetProjection</span><span class="p">()</span>
+<pre><code>:::python3
+pop = gdal.Open('d:\\qml\\Australian_Population_Grid_2011.tif')
+data = pop.ReadAsArray()
+gt = pop.GetGeoTransform()
+proj = pop.GetProjection()
 
-<span class="n">inproj</span> <span class="o">=</span> <span class="n">osr</span><span class="o">.</span><span class="n">SpatialReference</span><span class="p">()</span>
-<span class="n">inproj</span><span class="o">.</span><span class="n">ImportFromWkt</span><span class="p">(</span><span class="n">proj</span><span class="p">)</span>
+inproj = osr.SpatialReference()
+inproj.ImportFromWkt(proj)
 
-<span class="nb">print</span><span class="p">(</span> <span class="s2">&quot;[ RASTER BAND COUNT ]: &quot;</span><span class="p">,</span> <span class="n">pop</span><span class="o">.</span><span class="n">RasterCount</span><span class="p">)</span>
-<span class="n">cols</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">RasterXSize</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;cols = &#39;</span><span class="p">,</span><span class="n">cols</span><span class="p">)</span>
-<span class="n">rows</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">RasterYSize</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39; rows = &#39;</span><span class="p">,</span> <span class="n">rows</span><span class="p">)</span>
-<span class="n">bands</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">RasterCount</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;bands = &#39;</span><span class="p">,</span> <span class="n">bands</span><span class="p">)</span>
-<span class="n">driver</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">GetDriver</span><span class="p">()</span><span class="o">.</span><span class="n">LongName</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;driver =&#39;</span><span class="p">,</span> <span class="n">driver</span><span class="p">)</span>
+print( "[ RASTER BAND COUNT ]: ", pop.RasterCount)
+cols = pop.RasterXSize
+print('cols = ',cols)
+rows = pop.RasterYSize
+print(' rows = ', rows)
+bands = pop.RasterCount
+print('bands = ', bands)
+driver = pop.GetDriver().LongName
+print('driver =', driver)
 
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;MetaData = &#39;</span><span class="p">,</span><span class="n">pop</span><span class="o">.</span><span class="n">GetMetadata</span><span class="p">())</span>
+print('MetaData = ',pop.GetMetadata())
 
-<span class="nb">print</span><span class="p">(</span><span class="n">inproj</span><span class="p">)</span>
-</pre></div>
-
-
+print(inproj)
+</code></pre>
 <p>giving the following output.</p>
-<div class="highlight"><pre><span></span>[ RASTER BAND COUNT ]:  1
+<pre><code>[ RASTER BAND COUNT ]:  1
 cols =  6382
 rows =  3821
 bands =  1
 driver = GeoTIFF
-MetaData =  {&#39;AREA_OR_POINT&#39;: &#39;Area&#39;, &#39;DataType&#39;: &#39;Generic&#39;}
-PROJCS[&quot;GDA_1994_Albers&quot;,
-    GEOGCS[&quot;GCS_GDA_1994&quot;,
-        DATUM[&quot;Geocentric_Datum_of_Australia_1994&quot;,
-            SPHEROID[&quot;GRS_1980&quot;,6378137,298.257222101,
-                AUTHORITY[&quot;EPSG&quot;,&quot;7019&quot;]],
-            AUTHORITY[&quot;EPSG&quot;,&quot;6283&quot;]],
-        PRIMEM[&quot;Greenwich&quot;,0],
-        UNIT[&quot;degree&quot;,0.0174532925199433]],
-    PROJECTION[&quot;Albers_Conic_Equal_Area&quot;],
-    PARAMETER[&quot;standard_parallel_1&quot;,-18],
-    PARAMETER[&quot;standard_parallel_2&quot;,-36],
-    PARAMETER[&quot;latitude_of_center&quot;,0],
-    PARAMETER[&quot;longitude_of_center&quot;,132],
-    PARAMETER[&quot;false_easting&quot;,0],
-    PARAMETER[&quot;false_northing&quot;,0],
-    UNIT[&quot;metre&quot;,1,
-    AUTHORITY[&quot;EPSG&quot;,&quot;9001
-</pre></div>
-
-
+MetaData =  {'AREA_OR_POINT': 'Area', 'DataType': 'Generic'}
+PROJCS["GDA_1994_Albers",
+    GEOGCS["GCS_GDA_1994",
+        DATUM["Geocentric_Datum_of_Australia_1994",
+            SPHEROID["GRS_1980",6378137,298.257222101,
+                AUTHORITY["EPSG","7019"]],
+            AUTHORITY["EPSG","6283"]],
+        PRIMEM["Greenwich",0],
+        UNIT["degree",0.0174532925199433]],
+    PROJECTION["Albers_Conic_Equal_Area"],
+    PARAMETER["standard_parallel_1",-18],
+    PARAMETER["standard_parallel_2",-36],
+    PARAMETER["latitude_of_center",0],
+    PARAMETER["longitude_of_center",132],
+    PARAMETER["false_easting",0],
+    PARAMETER["false_northing",0],
+    UNIT["metre",1,
+    AUTHORITY["EPSG","9001
+</code></pre>
 <p>A couple of things jumped out at me.  </p>
 <ul>
 <li>
@@ -183,57 +180,51 @@ explains that </p>
 </li>
 </ul>
 <p>It appears that the Spheroid used is almost exactly the same as WGS84, which is a relief.  We can use the default <code>Globe</code> provided by Cartopy.</p>
-<h2>Map Time!</h2>
-<h3>Global Albers</h3>
+<h2 id="map-time">Map Time!</h2>
+<h3 id="global-albers">Global Albers</h3>
 <p>The first thing is to create a Cartopy Coordinate Reference System (CRS) to match the GeoTIFF:</p>
-<div class="highlight"><pre><span></span><span class="n">albo</span> <span class="o">=</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">AlbersEqualArea</span><span class="p">(</span><span class="n">central_latitude</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
- <span class="n">false_easting</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
- <span class="n">false_northing</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
- <span class="n">central_longitude</span><span class="o">=</span><span class="mi">132</span><span class="p">,</span> 
- <span class="n">standard_parallels</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">18</span><span class="p">,</span> <span class="o">-</span><span class="mi">36</span><span class="p">)</span> <span class="p">)</span>
-</pre></div>
-
-
+<pre><code>:::python
+albo = ccrs.AlbersEqualArea(central_latitude=0,
+ false_easting=0, 
+ false_northing=0, 
+ central_longitude=132, 
+ standard_parallels=(-18, -36) )
+</code></pre>
 <p>and then see what the world looks like in this projection.</p>
-<div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">))</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span> <span class="n">albo</span> <span class="p">)</span>
+<pre><code>:::python
+fig = plt.figure(figsize=(20,20))
+ax = fig.add_subplot(1, 1, 1, projection= albo )
 
-<span class="n">ax</span><span class="o">.</span><span class="n">set_global</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">coastlines</span><span class="p">()</span>
+ax.set_global()
+ax.coastlines()
 
-<span class="c1">#plt.imshow(data, extent=extent_tif, transform=albo)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;World in Albers Equal Area (centered on Australia)&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;fontsize&#39;</span><span class="p">:</span><span class="mi">30</span><span class="p">},</span> <span class="n">pad</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+#plt.imshow(data, extent=extent_tif, transform=albo)
+plt.title('World in Albers Equal Area (centered on Australia)', {'fontsize':30}, pad=40)
 
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-
-
+plt.show()
+</code></pre>
 <p>This gives us:</p>
-<p><img alt="AlbersMap" src="./images/ozpop01.png"></p>
+<p><img alt="AlbersMap" src="./images/ozpop01.png" /></p>
 <p>A larger version is <a href="images/ozpop01.png">here</a></p>
-<h3>Zoom in to Australia</h3>
+<h3 id="zoom-in-to-australia">Zoom in to Australia</h3>
 <p>We can calculate the extent of the GeoTIFF by:</p>
-<div class="highlight"><pre><span></span>extent_tif = (gt[0], gt[0] + pop.RasterXSize * gt[1],
+<pre><code>extent_tif = (gt[0], gt[0] + pop.RasterXSize * gt[1],
         gt[3] + pop.RasterYSize * gt[5], gt[3])
-</pre></div>
-
-
+</code></pre>
 <p>So let us use that extent (in the <code>albo</code> projection units) to zoom into Australia, show the TIFF file, and plot some coastlines.  The TIFF file is a single band, and we use the default color map to map population density to a color.</p>
-<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+<pre><code>fig = plt.figure(figsize=(20,20))
 ax = fig.add_subplot(1, 1, 1, projection= albo )
 
 ax.set_extent(extent_tif, crs=albo)
-ax.coastlines(color=&#39;white&#39;, zorder=5)
+ax.coastlines(color='white', zorder=5)
 
 plt.imshow(data, extent=extent_tif, transform=albo,  )
-plt.title(&#39;Australian Population Grid, Albers Equal Area&#39;, {&#39;fontsize&#39;:30}, pad=40)
+plt.title('Australian Population Grid, Albers Equal Area', {'fontsize':30}, pad=40)
 
 plt.show()
-</pre></div>
-
-
+</code></pre>
 <p>This gives us:</p>
-<p><img alt="AlbersMap" src="./images/ozpop02.png"></p>
+<p><img alt="AlbersMap" src="./images/ozpop02.png" /></p>
 <p>A larger version is <a href="images/ozpop02.png">here</a></p>
 <p>As this stage it started to dawn on me that:</p>
 <ul>
@@ -244,47 +235,41 @@ plt.show()
 <p>You have to look very hard to see the odd pixel that has a non-zero value</p>
 </li>
 </ul>
-<h3>In a Global Context</h3>
+<h3 id="in-a-global-context">In a Global Context</h3>
 <p>The code:</p>
-<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+<pre><code>fig = plt.figure(figsize=(20,20))
 ax = fig.add_subplot(1, 1, 1, projection= albo )
 
 #ax.set_extent(extent_tif, crs=albo)
 ax.set_global()
-ax.coastlines(color=&#39;blue&#39;, zorder=5)
+ax.coastlines(color='blue', zorder=5)
 
 plt.imshow(data, extent=extent_tif, transform=albo,  )
 
-plt.title(&#39;Australian Population Grid in World Context\nAlbers Equal Area&#39;, {&#39;fontsize&#39;:30}, pad=40)
+plt.title('Australian Population Grid in World Context\nAlbers Equal Area', {'fontsize':30}, pad=40)
 plt.show()
-</pre></div>
-
-
+</code></pre>
 <p>shows Australia in a global context, and reinforces the fact that our grid is rectangular (but only in the <code>albo</code> projection);  we will come back to this later.  At this scale, Australia's centres of population are so small you can't see them.</p>
-<p><img alt="AlbersMap" src="./images/ozpop03.png"></p>
+<p><img alt="AlbersMap" src="./images/ozpop03.png" /></p>
 <p>A larger version is <a href="images/ozpop03.png">here</a></p>
-<h3>In a Local Context</h3>
+<h3 id="in-a-local-context">In a Local Context</h3>
 <p>My local patch (that I use quite often for examples) can be defined by:</p>
-<div class="highlight"><pre><span></span>local = ( 153, 153.2, -26.6, -26.4)
-</pre></div>
-
-
+<pre><code>local = ( 153, 153.2, -26.6, -26.4)
+</code></pre>
 <p>This defines the minimum and maximum longitude, followed by minimum and maximum latitude.</p>
 <p>We  display the Open Street Map tiles that cover this region, and then overlay the population grid over this.  I use a trick with <code>matplotlib</code> color-maps;  I define the color of the pixels that are under a (to be defined) value to be white, with <code>alpha=0</code>;  effectively, I set these pixels to be transparent.  Then when I call <code>imshow</code>, I set that value to 60 (<code>vmin=60</code>).  This gives me a map with areas under 60 people per square kilometre to be clear, and rest to have a color-coded shading applied (<code>alpha=0.5</code>).  </p>
-<p><img alt="LocalMap" src="./images/ozpop04.png"></p>
+<p><img alt="LocalMap" src="./images/ozpop04.png" /></p>
 <p>A larger version is <a href="images/ozpop04.png">here</a></p>
 <p>To pursue this theme a little, in the next example we set the <strong>over</strong> value behaviour to be fully transparent, and the <strong>under</strong> value behaviour to be black, almost opaque <code>alpha=0.8</code>.</p>
-<div class="highlight"><pre><span></span>my_cmap.set_over(&#39;white&#39;, alpha=0)
-my_cmap.set_under(&#39;black&#39;, alpha=0.8)
-</pre></div>
-
-
+<pre><code>my_cmap.set_over('white', alpha=0)
+my_cmap.set_under('black', alpha=0.8)
+</code></pre>
 <p>This serves to hide relatively unpopulated areas, and highlight those more densely populated areas.  The <code>imshow</code> call sets the value to be 100 (people per square kilometre)</p>
-<p><img alt="LocalMap" src="./images/ozpop05.png"></p>
+<p><img alt="LocalMap" src="./images/ozpop05.png" /></p>
 <p>A larger version is <a href="images/ozpop05.png">here</a></p>
-<h3>In a Continental Context</h3>
+<h3 id="in-a-continental-context">In a Continental Context</h3>
 <p>The following code plots each pixel of the GeoTIFF (except zero population cells are left transparent), and again, while it shows the emptiness of Australia, it does not really let you see where the majority of the population are to be found.</p>
-<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+<pre><code>fig = plt.figure(figsize=(20,20))
 ax = fig.add_subplot(1, 1, 1, projection= albo )
 
 #ax.set_extent(extent_tif, crs=albo)
@@ -292,23 +277,21 @@ ax.set_extent(extent_tif, crs=albo )
 ax.coastlines(zorder=9)
 
 
-my_cmap = plt.cm.get_cmap(&#39;magma&#39;)
+my_cmap = plt.cm.get_cmap('magma')
 
-my_cmap.set_under(&#39;white&#39;, alpha=0)
+my_cmap.set_under('white', alpha=0)
 
 
 
 plt.imshow(data, extent=extent_tif, transform=albo, cmap=my_cmap, vmin=1, vmax=20000, zorder=8)
-plt.title(&#39;Australian Population Grid\n Linear Scale. Albers Equal Area&#39;, {&#39;fontsize&#39;:20}, pad=40)
+plt.title('Australian Population Grid\n Linear Scale. Albers Equal Area', {'fontsize':20}, pad=40)
 
 plt.show()
-</pre></div>
-
-
-<p><img alt="AustraliaMap" src="./images/ozpop06.png"></p>
+</code></pre>
+<p><img alt="AustraliaMap" src="./images/ozpop06.png" /></p>
 <p>A larger version is <a href="images/ozpop06.png">here</a></p>
 <p>If we use a Log scale (<code>norm=colors.LogNorm(vmin=data.min()+1, vmax=data.max())</code> )for our mapping to a color from our color map, we get, via:</p>
-<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+<pre><code>fig = plt.figure(figsize=(20,20))
 ax = fig.add_subplot(1, 1, 1, projection= albo )
 
 #ax.set_extent(extent_tif, crs=albo)
@@ -316,130 +299,117 @@ ax.set_extent(extent_tif, crs=albo )
 ax.coastlines(zorder=9)
 ax.gridlines()
 
-my_cmap = plt.cm.get_cmap(&#39;magma&#39;)
-my_cmap.set_under(&#39;white&#39;, alpha=1)
+my_cmap = plt.cm.get_cmap('magma')
+my_cmap.set_under('white', alpha=1)
 
 
 
 pcm = plt.imshow(data, extent=extent_tif, transform=albo, cmap=my_cmap,norm=colors.LogNorm(vmin=data.min()+1, vmax=data.max()), zorder=8)
-cbar = fig.colorbar(pcm, ax=ax,  shrink=0.5, pad=0.1, extend=&#39;min&#39;)
-cbar.ax.set_ylabel(&#39;Population density (people per sq km): Log Scale&#39;, rotation=270, labelpad=20)
-cbar.ax.set_title(&#39;Population Density Legend&#39;)
+cbar = fig.colorbar(pcm, ax=ax,  shrink=0.5, pad=0.1, extend='min')
+cbar.ax.set_ylabel('Population density (people per sq km): Log Scale', rotation=270, labelpad=20)
+cbar.ax.set_title('Population Density Legend')
 
-plt.title(&#39;Australian Population Grid\nLog Scale. Albers Equal Area&#39;, {&#39;fontsize&#39;:20}, pad=40)
+plt.title('Australian Population Grid\nLog Scale. Albers Equal Area', {'fontsize':20}, pad=40)
 
 plt.show()
-</pre></div>
-
-
+</code></pre>
 <p>a more useful display.</p>
-<p><img alt="AustraliaMap" src="./images/ozpop09.png"></p>
+<p><img alt="AustraliaMap" src="./images/ozpop09.png" /></p>
 <p>A larger version is <a href="images/ozpop09.png">here</a></p>
-<h2>Hitting the data with a rebin hammer</h2>
+<h2 id="hitting-the-data-with-a-rebin-hammer">Hitting the data with a rebin hammer</h2>
 <p>Suppose we have a numpy array that looks like:</p>
-<div class="highlight"><pre><span></span>a = np.array([[ 1, 2, 3, 4, 5, 6],
+<pre><code>a = np.array([[ 1, 2, 3, 4, 5, 6],
             [ 5 ,6, 7, 8, 7, 8],
             [ 9,10,11,12, 13, 14],
             [13,14,15,16, 17, 18]])
-</pre></div>
-
-
+</code></pre>
 <p>and we define a function that look like:</p>
-<div class="highlight"><pre><span></span>def shrink(data, rows, cols):
+<pre><code>def shrink(data, rows, cols):
     return data.reshape(rows, data.shape[0]//rows, cols, data.shape[1]//cols).sum(axis=1).sum(axis=2)
-</pre></div>
-
-
+</code></pre>
 <p>then </p>
-<div class="highlight"><pre><span></span>print(shrink(a, 2, 3))
-</pre></div>
-
-
+<pre><code>print(shrink(a, 2, 3))
+</code></pre>
 <p>gives us:</p>
-<div class="highlight"><pre><span></span><span class="k">[[14 22 26]</span>
-<span class="k">[46 54 62]]</span>
-</pre></div>
-
-
+<pre><code>[[14 22 26]
+[46 54 62]]
+</code></pre>
 <p>That is, we have taken our original 4 row, 6 column array, and reduced it to a 2 row, 3 column array, with each element holding the sum of the sub-array that has been collapsed.</p>
 <p>We have <code>data.shape</code> gives <code>(3821, 6382)</code>, so we take a chunk that is a multiple of 100 in row and column directions.</p>
 <p>We then shrink our data by <code>data3 = shrink(data2, 38, 63)</code>.</p>
 <p>Now the simplest possible display shows some non-zero values.</p>
-<div class="highlight"><pre><span></span>plt.imshow(data3)
-</pre></div>
-
-
-<p><img alt="AustraliaMap" src="./images/ozpop07.png"></p>
+<pre><code>plt.imshow(data3)
+</code></pre>
+<p><img alt="AustraliaMap" src="./images/ozpop07.png" /></p>
 <p>A larger version is <a href="images/ozpop07.png">here</a></p>
-<h2>Bubble Plot</h2>
+<h2 id="bubble-plot">Bubble Plot</h2>
 <p>In the next example, we plot a red bubble at each zon-zero cell of the grid.  We also draw the grid itself (very faintly, <code>alpha=0.2</code>).</p>
-<div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">))</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>  <span class="n">projection</span><span class="o">=</span><span class="n">albo</span><span class="p">)</span>
+<pre><code>:::python
+fig = plt.figure(figsize=(20,20))
+ax = fig.add_subplot(1, 1, 1,  projection=albo)
 
-<span class="n">ax</span><span class="o">.</span><span class="n">set_extent</span><span class="p">(</span><span class="n">extent_tif</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="n">albo</span> <span class="p">)</span>
+ax.set_extent(extent_tif, crs=albo )
 
-<span class="n">mksize_min</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">mksize_max</span> <span class="o">=</span> <span class="mi">200</span>
-<span class="n">data_min</span> <span class="o">=</span> <span class="n">data3</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
-<span class="n">data_max</span> <span class="o">=</span> <span class="n">data3</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+mksize_min = 0
+mksize_max = 200
+data_min = data3.min()
+data_max = data3.max()
 
-<span class="n">down_scale_factor</span> <span class="o">=</span> <span class="mi">100</span>
+down_scale_factor = 100
 
-<span class="c1">#extent_tif = (gt[0], gt[0] + pop.RasterXSize * gt[1],</span>
-<span class="c1">#          gt[3] + pop.RasterYSize * gt[5], gt[3])</span>
+#extent_tif = (gt[0], gt[0] + pop.RasterXSize * gt[1],
+#          gt[3] + pop.RasterYSize * gt[5], gt[3])
 
-<span class="n">x_step</span> <span class="o">=</span> <span class="n">gt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">y_step</span> <span class="o">=</span> <span class="n">gt</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+x_step = gt[1]
+y_step = gt[5]
 
-<span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data3</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-    <span class="k">for</span> <span class="n">iy</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data3</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-        <span class="n">row</span> <span class="o">=</span> <span class="n">data3</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">iy</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="n">col</span> <span class="o">=</span> <span class="n">ix</span>
+for ix in range(data3.shape[1]):
+    for iy in range(data3.shape[0]):
+        row = data3.shape[0] - iy -1
+        col = ix
 
-        <span class="n">albo_x</span> <span class="o">=</span> <span class="n">extent_tif</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_step</span><span class="o">*</span><span class="p">(</span><span class="n">ix</span><span class="o">+</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">down_scale_factor</span>
-        <span class="n">albo_y</span> <span class="o">=</span> <span class="n">extent_tif</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">y_step</span><span class="p">)</span><span class="o">*</span> <span class="p">(</span><span class="n">iy</span><span class="o">+</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">down_scale_factor</span>
+        albo_x = extent_tif[0] + x_step*(ix+0.5) * down_scale_factor
+        albo_y = extent_tif[2] + abs(y_step)* (iy+0.5) * down_scale_factor
 
-        <span class="n">markersize</span><span class="o">=</span><span class="n">mksize_min</span> <span class="o">+</span> <span class="p">(</span><span class="n">mksize_max</span><span class="o">-</span><span class="n">mksize_min</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">data3</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span><span class="o">-</span><span class="n">data_min</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">data_max</span><span class="o">-</span><span class="n">data_min</span><span class="p">)</span>
+        markersize=mksize_min + (mksize_max-mksize_min)*(data3[row, col]-data_min)/(data_max-data_min)
 
-        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">albo_x</span><span class="p">,</span> <span class="n">albo_y</span> <span class="p">,</span>
-                <span class="n">markersize</span><span class="o">=</span><span class="n">markersize</span><span class="p">,</span> 
-                <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> 
-                <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> 
-                <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
-
-
-    <span class="c1">#end for</span>
-<span class="c1">#end for</span>
-
-<span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data3</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-    <span class="n">albo_x</span> <span class="o">=</span> <span class="n">extent_tif</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_step</span><span class="o">*</span><span class="n">ix</span> <span class="o">*</span> <span class="n">down_scale_factor</span>       
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">albo_x</span><span class="p">,</span> <span class="n">albo_x</span><span class="p">]</span> <span class="p">,</span> <span class="p">[</span><span class="n">extent_tif</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">extent_tif</span><span class="p">[</span><span class="mi">3</span><span class="p">]],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;lightgrey&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
-<span class="c1">#end for</span>
-
-<span class="k">for</span> <span class="n">iy</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data3</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-    <span class="n">albo_y</span> <span class="o">=</span> <span class="n">extent_tif</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">y_step</span><span class="p">)</span><span class="o">*</span> <span class="n">iy</span> <span class="o">*</span> <span class="n">down_scale_factor</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">extent_tif</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">extent_tif</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">]</span> <span class="p">,</span> <span class="p">[</span><span class="n">albo_y</span><span class="p">,</span> <span class="n">albo_y</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;lightgrey&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
-<span class="c1">#end for</span>
+        plt.plot(albo_x, albo_y ,
+                markersize=markersize, 
+                marker='o', 
+                color='red', 
+                alpha=0.25, zorder=9)
 
 
+    #end for
+#end for
 
-<span class="n">ax</span><span class="o">.</span><span class="n">coastlines</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">gridlines</span><span class="p">()</span>
+for ix in range(data3.shape[1]):
+    albo_x = extent_tif[0] + x_step*ix * down_scale_factor       
+    plt.plot([albo_x, albo_x] , [extent_tif[2], extent_tif[3]], linestyle='-', color='lightgrey', alpha=0.2)
+#end for
 
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Australian Population Grid</span><span class="se">\n</span><span class="s1"> Binned over 100km Grid. Albers Equal Area&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;fontsize&#39;</span><span class="p">:</span><span class="mi">20</span><span class="p">},</span> <span class="n">pad</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+for iy in range(data3.shape[0]):
+    albo_y = extent_tif[2] + abs(y_step)* iy * down_scale_factor
+    plt.plot([extent_tif[0], extent_tif[1] ] , [albo_y, albo_y], linestyle='-', color='lightgrey', alpha=0.2)
+#end for
 
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
 
 
-<p><img alt="BubbleMap" src="./images/ozpop08.png"></p>
+ax.coastlines()
+ax.gridlines()
+
+plt.title('Australian Population Grid\n Binned over 100km Grid. Albers Equal Area', {'fontsize':20}, pad=40)
+
+plt.show()
+</code></pre>
+<p><img alt="BubbleMap" src="./images/ozpop08.png" /></p>
 <p>A larger version is <a href="images/ozpop08.png">here</a></p>
-<h3>Cell Plot</h3>
+<h3 id="cell-plot">Cell Plot</h3>
 <p>Now, when we plot the value of each cell, using a Log scale, we get a more understandable graphic.  You can see Australians for the most part hugging the coastline; you can see the big mining towns like Mount Isa and Broken Hill.</p>
-<p><img alt="BubbleMap" src="./images/ozpop10.png"></p>
+<p><img alt="BubbleMap" src="./images/ozpop10.png" /></p>
 <p>A larger version is <a href="images/ozpop10.png">here</a></p>
 <p>The code that produced this is below: as before, we plot the grid lines faintly (straight lines in this projection).</p>
-<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+<pre><code>fig = plt.figure(figsize=(20,20))
 ax = fig.add_subplot(1, 1, 1,  projection=albo)
 
 
@@ -448,8 +418,8 @@ data3_ext = [extent_tif[0], extent_tif[0]+ x_step*data3.shape[1]*down_scale_fact
 #ax.set_global()
 ax.set_extent(data3_ext, crs=albo )
 
-my_cmap = plt.cm.get_cmap(&#39;gist_earth&#39;)
-#my_cmap.set_under(&#39;grey&#39;, alpha=0.1)
+my_cmap = plt.cm.get_cmap('gist_earth')
+#my_cmap.set_under('grey', alpha=0.1)
 
 ax.coastlines( zorder=9)
 
@@ -459,65 +429,57 @@ pcm = plt.imshow(data3,
                 vmin=100, 
                 cmap=my_cmap, 
                 zorder=1, 
-                origin=&#39;top&#39;, 
+                origin='top', 
                 norm=colors.LogNorm( ), #vmin=data3.min()+1, vmax=data3.max()),
                 )
 
-cbar = fig.colorbar(pcm, ax=ax,  shrink=0.5, pad=0.1, extend=&#39;min&#39;)
-cbar.ax.set_ylabel(&#39;Population density (people per 10,000 sq km): Log scale&#39;, rotation=270, labelpad=20)
-cbar.ax.set_title(&#39;Population Density Legend&#39;)
+cbar = fig.colorbar(pcm, ax=ax,  shrink=0.5, pad=0.1, extend='min')
+cbar.ax.set_ylabel('Population density (people per 10,000 sq km): Log scale', rotation=270, labelpad=20)
+cbar.ax.set_title('Population Density Legend')
 
 for ix in range(data3.shape[1]):
     albo_x = extent_tif[0] + x_step*ix * down_scale_factor       
-    plt.plot([albo_x, albo_x] , [extent_tif[2], extent_tif[3]], linestyle=&#39;-&#39;, color=&#39;lightgrey&#39;, alpha=0.2)
+    plt.plot([albo_x, albo_x] , [extent_tif[2], extent_tif[3]], linestyle='-', color='lightgrey', alpha=0.2)
 #end for
 
 for iy in range(data3.shape[0]):
     albo_y = extent_tif[2] + abs(y_step)* iy * down_scale_factor
-    plt.plot([extent_tif[0], extent_tif[1] ] , [albo_y, albo_y], linestyle=&#39;-&#39;, color=&#39;lightgrey&#39;, alpha=0.2)
+    plt.plot([extent_tif[0], extent_tif[1] ] , [albo_y, albo_y], linestyle='-', color='lightgrey', alpha=0.2)
 #end for
 
 ax.gridlines()
 
-plt.title(&#39;Australian Population Grid\n Binned over 100 km Grid. Albers Equal Area&#39;, {&#39;fontsize&#39;:20}, pad=40)
+plt.title('Australian Population Grid\n Binned over 100 km Grid. Albers Equal Area', {'fontsize':20}, pad=40)
 
 plt.show()
-</pre></div>
-
-
-<h2>Plate Carree Map</h2>
+</code></pre>
+<h2 id="plate-carree-map">Plate Carree Map</h2>
 <p>Finally, just for fun, I plot the map in the Plate Carree projection.  This makes the population grid look curved, but thtis to be expected.  I also decided that I wanted to distinguish between a population count of zero because there is nobody there on land, and because it is out to sea.</p>
 <p>I learned a few things, because I decided to draw the non-rectangular patches myself  (<code>imshow</code> seems to be very slow in reshaping an image).</p>
 <p>First, we calculate the extent of the GeoTiff in longitude, latitude units.</p>
-<div class="highlight"><pre><span></span>x1, y1 = ccrs.PlateCarree().transform_point(-3853000.0,  -4835000.0, albo)
+<pre><code>x1, y1 = ccrs.PlateCarree().transform_point(-3853000.0,  -4835000.0, albo)
 
 x2, y2 = ccrs.PlateCarree().transform_point(2529000.0,  -1014000.0, albo)
-</pre></div>
-
-
+</code></pre>
 <p>Then the usual preamble to set up the Figure, and the Cartopy aware Axes objects.  Note we go down an extra 3 degree of latitude, because the Albers grid sinks down below the lines of constant latitude.</p>
-<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+<pre><code>fig = plt.figure(figsize=(20,20))
 
 pc_proj = ccrs.PlateCarree()
 ax = fig.add_subplot(1, 1, 1, projection= pc_proj )
 
 ax.set_extent((x1, x2, y1-3.0, y2), crs=ccrs.Geodetic())
 
-ax.coastlines(color=&#39;blue&#39;, zorder=5)
-</pre></div>
-
-
+ax.coastlines(color='blue', zorder=5)
+</code></pre>
 <p>We define the limits of our data values:</p>
-<div class="highlight"><pre><span></span>dmax = data3.max()
+<pre><code>dmax = data3.max()
 dmin = 0
-</pre></div>
-
-
+</code></pre>
 <p>We now use GeoPandas to read the Australian coastline, and fill the interior with light grey.</p>
-<div class="highlight"><pre><span></span># get country borders
-resolution = &#39;10m&#39;
-category = &#39;cultural&#39;
-name = &#39;admin_0_countries&#39;
+<pre><code># get country borders
+resolution = '10m'
+category = 'cultural'
+name = 'admin_0_countries'
 
 shpfilename = shapereader.natural_earth(resolution, category, name)
 
@@ -525,22 +487,20 @@ shpfilename = shapereader.natural_earth(resolution, category, name)
 df = gpd.read_file(shpfilename)
 
 # read the borders
-poly = df.loc[df[&#39;ADMIN&#39;] == &#39;Australia&#39;][&#39;geometry&#39;].values[0]
+poly = df.loc[df['ADMIN'] == 'Australia']['geometry'].values[0]
 ax.add_geometries(poly, 
                 crs=ccrs.PlateCarree(), 
-                facecolor=&#39;lightgrey&#39;, 
-                edgecolor=&#39;blue&#39;, zorder=1, alpha=0.75)
+                facecolor='lightgrey', 
+                edgecolor='blue', zorder=1, alpha=0.75)
 ax.add_geometries(poly, 
                 crs=ccrs.PlateCarree(), 
-                facecolor=&#39;none&#39;, 
-                edgecolor=&#39;blue&#39;, zorder=15, alpha=0.75)
-</pre></div>
-
-
+                facecolor='none', 
+                edgecolor='blue', zorder=15, alpha=0.75)
+</code></pre>
 <p>We then cycle through all the cells of the 100 km grid, transforming the Albers coordinated into Plate Carree coordinates (longitude and latitude), and draw the grid faintly (<code>alpha=0.2</code>). Then if there is anybody at all living in this 100 km grid cell, we create a patch, and remember its color.  We use the <code>terrain</code> color map.</p>
 <p>At the end we create a PatchCollection, set the colors, and add them to the Axes object.</p>
 <p>We then draw lat/lon gridlines, and set a title.</p>
-<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20,20))
+<pre><code>fig = plt.figure(figsize=(20,20))
 
 pc_proj = ccrs.PlateCarree()
 ax = fig.add_subplot(1, 1, 1, projection= pc_proj )
@@ -548,9 +508,9 @@ ax = fig.add_subplot(1, 1, 1, projection= pc_proj )
 ax.set_extent((x1, x2, y1-3.0, y2), crs=ccrs.Geodetic())
 
 # get country borders
-resolution = &#39;10m&#39;
-category = &#39;cultural&#39;
-name = &#39;admin_0_countries&#39;
+resolution = '10m'
+category = 'cultural'
+name = 'admin_0_countries'
 
 shpfilename = shapereader.natural_earth(resolution, category, name)
 
@@ -558,15 +518,15 @@ shpfilename = shapereader.natural_earth(resolution, category, name)
 df = gpd.read_file(shpfilename)
 
 # read the german borders
-poly = df.loc[df[&#39;ADMIN&#39;] == &#39;Australia&#39;][&#39;geometry&#39;].values[0]
+poly = df.loc[df['ADMIN'] == 'Australia']['geometry'].values[0]
 ax.add_geometries(poly, 
                 crs=ccrs.PlateCarree(), 
-                facecolor=&#39;lightgrey&#39;, 
-                edgecolor=&#39;blue&#39;, zorder=1, alpha=0.75)
+                facecolor='lightgrey', 
+                edgecolor='blue', zorder=1, alpha=0.75)
 ax.add_geometries(poly, 
                 crs=ccrs.PlateCarree(), 
-                facecolor=&#39;none&#39;, 
-                edgecolor=&#39;blue&#39;, zorder=15, alpha=0.75)
+                facecolor='none', 
+                edgecolor='blue', zorder=15, alpha=0.75)
 
 dmax = data3.max()
 dmin = 0
@@ -587,8 +547,8 @@ for ix in range(data3.shape[1]):
         gx4, gy4 = pc_proj.transform_point(albo_x2, albo_y1, albo)
 
         plt.plot([gx1, gx2, gx3, gx4, gx1], [gy1, gy2, gy3, gy4, gy1], 
-                linestyle=&#39;-&#39;, 
-                color=&#39;lightgrey&#39;, 
+                linestyle='-', 
+                color='lightgrey', 
                 alpha=0.2, 
                 zorder=15,
                 )
@@ -603,7 +563,7 @@ for ix in range(data3.shape[1]):
 
 p = PatchCollection(patches)
 p.set_color(colors)
-p.set_edgecolor(&#39;lightblue&#39;, )
+p.set_edgecolor('lightblue', )
 p.set_zorder(9)
 ax.add_collection(p,)
 
@@ -612,48 +572,46 @@ gl = ax.gridlines(draw_labels=True)
 gl.xformatter = LONGITUDE_FORMATTER
 gl.yformatter = LATITUDE_FORMATTER
 
-plt.title(&#39;Australian Population Grid\nRebinned to 100 km Grid - Log Scale. Plate Carree&#39;, {&#39;fontsize&#39;:20}, pad=40)
+plt.title('Australian Population Grid\nRebinned to 100 km Grid - Log Scale. Plate Carree', {'fontsize':20}, pad=40)
 
 plt.show()
-</pre></div>
-
-
+</code></pre>
 <p>We get a map like:</p>
-<p><img alt="PlateCarreeMap" src="./images/ozpop12.png"></p>
+<p><img alt="PlateCarreeMap" src="./images/ozpop12.png" /></p>
 <p>A larger version is <a href="images/ozpop12.png">here</a></p>
-<h2>Conclusion</h2>
+<h2 id="conclusion">Conclusion</h2>
 <p>For completeness, here are the imports for this Jupyter Notebook 
 (not all are used in the code fragments above, as some are for producing output to support reproducability).</p>
-<div class="highlight"><pre><span></span><span class="c1"># all imports should go here</span>
+<pre><code># all imports should go here
 
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">import</span> <span class="nn">platform</span>
-<span class="kn">import</span> <span class="nn">datetime</span>
+import pandas as pd
+import sys
+import os
+import subprocess
+import datetime
+import platform
+import datetime
 
-<span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="kn">as</span> <span class="nn">ccrs</span>
-<span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">GoogleTiles</span>
-<span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">OSM</span>
-<span class="kn">import</span> <span class="nn">cartopy.feature</span> <span class="kn">as</span> <span class="nn">cfeature</span>
-<span class="kn">from</span> <span class="nn">cartopy.mpl.gridliner</span> <span class="kn">import</span> <span class="n">LONGITUDE_FORMATTER</span><span class="p">,</span> <span class="n">LATITUDE_FORMATTER</span>
-<span class="kn">from</span> <span class="nn">cartopy.io</span> <span class="kn">import</span> <span class="n">shapereader</span>
+import cartopy.crs as ccrs
+from cartopy.io.img_tiles import GoogleTiles
+from cartopy.io.img_tiles import OSM
+import cartopy.feature as cfeature
+from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
+from cartopy.io import shapereader
 
-<span class="kn">from</span> <span class="nn">osgeo</span> <span class="kn">import</span> <span class="n">gdal</span><span class="p">,</span> <span class="n">osr</span>
+from osgeo import gdal, osr
 
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">matplotlib.colors</span> <span class="kn">as</span> <span class="nn">colors</span>
-<span class="kn">from</span> <span class="nn">matplotlib.patches</span> <span class="kn">import</span> <span class="n">Polygon</span>
-<span class="kn">from</span> <span class="nn">matplotlib.collections</span> <span class="kn">import</span> <span class="n">PatchCollection</span>
-<span class="kn">import</span> <span class="nn">matplotlib.cm</span> <span class="kn">as</span> <span class="nn">cm</span>
+import matplotlib.pyplot as plt
+import matplotlib.colors as colors
+from matplotlib.patches import Polygon
+from matplotlib.collections import PatchCollection
+import matplotlib.cm as cm
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">math</span>
+import numpy as np
+import math
 
-<span class="kn">import</span> <span class="nn">geopandas</span> <span class="kn">as</span> <span class="nn">gpd</span>
-</pre></div>
+import geopandas as gpd
+</code></pre>
 	<hr />
       </div>
     </div>

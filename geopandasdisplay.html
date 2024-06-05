@@ -106,13 +106,13 @@ Filed under <a href="./category/geopandas.html">GeoPandas</a>
       </div>
       
       <div class="span8">
-	<h1>GeoPanda and Data Display</h1>
-<h2>Introduction</h2>
+	<h1 id="geopanda-and-data-display">GeoPanda and Data Display</h1>
+<h2 id="introduction">Introduction</h2>
 <p>This is a short note to provide some examples of creating maps, with associated display of data.  </p>
 <p>Some of the complexity comes from the use of map projections.  If we use Cartopy, then we get support for different map projections out-of-box.</p>
-<h3>Cartopy Example</h3>
+<h3 id="cartopy-example">Cartopy Example</h3>
 <p>For example, if we run the code below, we can see that Cartopy has stretched the <code>stock_img</code>, and the gridlines to accomodate the Mercator projection.</p>
-<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(8, 8))
+<pre><code>fig = plt.figure(figsize=(8, 8))
 ax = fig.add_subplot(1, 1, 1, projection=ccrs.Mercator())
 
 # make the map global rather than have it zoom in to
@@ -127,80 +127,74 @@ gl.xformatter = LONGITUDE_FORMATTER
 gl.yformatter = LATITUDE_FORMATTER
 
 plt.show()
-</pre></div>
-
-
-<p><img alt="Cartopy Mercator Map" src="./images/geopandasdata01.png"></p>
-<h2>GeoPandas Example</h2>
-<h3>using PlateCarree</h3>
+</code></pre>
+<p><img alt="Cartopy Mercator Map" src="./images/geopandasdata01.png" /></p>
+<h2 id="geopandas-example">GeoPandas Example</h2>
+<h3 id="using-platecarree">using PlateCarree</h3>
 <p>As an example, we are going to use the Geopandas <code>naturalearth_lowres</code> dataset, place a marker at the centre of each country, and draw a bounding box around Australia.</p>
 <p>The code looks like:</p>
-<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(12, 12))
+<pre><code>fig = plt.figure(figsize=(12, 12))
 ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
 
-path=gpd.datasets.get_path(&#39;naturalearth_lowres&#39;)
+path=gpd.datasets.get_path('naturalearth_lowres')
 
 world = gpd.read_file(path)
 print(world.crs)
 
-box_oz = world[world[&#39;name&#39;]==&#39;Australia&#39;].copy().envelope
+box_oz = world[world['name']=='Australia'].copy().envelope
 
 world.plot(ax=ax)
-box_oz.plot(ax=ax, edgecolor=&#39;red&#39;, facecolor=&#39;none&#39;)
-world.centroid.plot(ax=ax, color=&#39;red&#39;)
+box_oz.plot(ax=ax, edgecolor='red', facecolor='none')
+world.centroid.plot(ax=ax, color='red')
 
 plt.show()
-</pre></div>
-
-
+</code></pre>
 <p>This gives us:</p>
-<p><img alt="Spatial Markers Map" src="./images/geopandasdata02.png"></p>
+<p><img alt="Spatial Markers Map" src="./images/geopandasdata02.png" /></p>
 <p>Note that the printout of the dataset Coordinate Reference System (CRS) gives us <code>{'init': 'epsg:4326'}</code>;  i.e., it is our old friend PlateCarree (the projection we have chosen for the whole map.</p>
-<h3>Using Mollweide</h3>
+<h3 id="using-mollweide">Using Mollweide</h3>
 <p>If we wish to use a different projection for the map, we must use the Geopands <code>to_crs()</code> method, to convert the geometery attributes to the new projection coordinates.</p>
 <p>The code looks like:</p>
-<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(12, 12))
+<pre><code>fig = plt.figure(figsize=(12, 12))
 
 mol = ccrs.Mollweide()
 ax = fig.add_subplot(1, 1, 1, projection=mol)
 
-path=gpd.datasets.get_path(&#39;naturalearth_lowres&#39;)
+path=gpd.datasets.get_path('naturalearth_lowres')
 
 world = gpd.read_file(path)
 print(world.crs)
 
 world_mol = world.to_crs(mol.proj4_init)
 
-box_oz = world[world[&#39;name&#39;]==&#39;Australia&#39;].copy().envelope
+box_oz = world[world['name']=='Australia'].copy().envelope
 box_oz_mol = box_oz.to_crs(mol.proj4_init)
 
 world_mol.plot(ax=ax)
-box_oz_mol.plot(ax=ax, edgecolor=&#39;red&#39;, facecolor=&#39;none&#39;,  )
-world_mol.centroid.plot(ax=ax, color=&#39;red&#39;)
+box_oz_mol.plot(ax=ax, edgecolor='red', facecolor='none',  )
+world_mol.centroid.plot(ax=ax, color='red')
 
 plt.show()
-</pre></div>
-
-
+</code></pre>
 <p>This gives us:</p>
-<p><img alt="Spatial Markers Mollweide Map" src="./images/geopandasdata03.png"></p>
+<p><img alt="Spatial Markers Mollweide Map" src="./images/geopandasdata03.png" /></p>
 <p>We can see that the centroids of the countries have been translated to the correct places, but sadly, the bounding box for Australia is wrong!  This is because the <code>box_oz_mol.plot()</code> method we used, asks for straight lines in the Mollweide projection (which is not what we want).</p>
 <p>We can fix this by get the latitude, longitude pairs for the corners of the box, and asking Cartopy to draw great circle by use of the <code>transform=ccrs.Geodetic()</code> parameter to the <code>plot()</code> call.</p>
 <p>The code looks like:</p>
-<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(12, 12))
+<pre><code>fig = plt.figure(figsize=(12, 12))
 
 # specify a non-PlateCarree projection for map Axes
 mol = ccrs.Mollweide()
 ax = fig.add_subplot(1, 1, 1, projection=mol)
 
 # read the datset we wish to display
-path=gpd.datasets.get_path(&#39;naturalearth_lowres&#39;)
+path=gpd.datasets.get_path('naturalearth_lowres')
 
 world = gpd.read_file(path)
 print(world.crs)
 
 # get the lat, lons of the Australia bounding box
-box_oz = world[world[&#39;name&#39;]==&#39;Australia&#39;].copy().envelope
+box_oz = world[world['name']=='Australia'].copy().envelope
 for t in box_oz.exterior:
     corners = list(t.coords)
     c_x = [xy[0] for xy in corners]
@@ -214,42 +208,40 @@ world_mol = world.to_crs(mol.proj4_init)
 world_mol.plot(ax=ax)
 
 # Plot the bounding box, asking Matplotlib / Cartopy to use Great Circles for the bounding box lines
-plt.plot(c_x, c_y,  linewidth=2, transform=ccrs.Geodetic() , color=&#39;green&#39;)
-world_mol.centroid.plot(ax=ax, color=&#39;red&#39;)
+plt.plot(c_x, c_y,  linewidth=2, transform=ccrs.Geodetic() , color='green')
+world_mol.centroid.plot(ax=ax, color='red')
 
 plt.show()
-</pre></div>
-
-
+</code></pre>
 <p>This gives us the following map, where indeed the green bounding box just touches Australia.</p>
-<p><img alt="Correct Lines on Mollweide Map" src="./images/geopandasdata04.png"></p>
-<h2>Markers with Meaning</h2>
-<h3>Default Projection</h3>
-<p>Now we move on to making the markers carry more information than just their location.<br>
+<p><img alt="Correct Lines on Mollweide Map" src="./images/geopandasdata04.png" /></p>
+<h2 id="markers-with-meaning">Markers with Meaning</h2>
+<h3 id="default-projection">Default Projection</h3>
+<p>Now we move on to making the markers carry more information than just their location.<br />
 Suppose we want to display GDP for each country. 
-The code below will achieve this is shown below.<br>
+The code below will achieve this is shown below.<br />
 One caveat: the whole concept of encoding a value into a circle is a little contentious - should the radius or the area be proportional to the value? I have chosen to encode the radius.  I have used the GeoPandas <code>iterrows()</code> method to access each row (country) of the GeoPandas dataframe one by one, zipped up with the geometric centroid of each country.</p>
-<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(12, 12))
+<pre><code>fig = plt.figure(figsize=(12, 12))
 ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
 
-path=gpd.datasets.get_path(&#39;naturalearth_lowres&#39;)
+path=gpd.datasets.get_path('naturalearth_lowres')
 
 world = gpd.read_file(path)
-gdp_max = world[&#39;gdp_md_est&#39;].max()
-gdp_min = world[&#39;gdp_md_est&#39;].min()
+gdp_max = world['gdp_md_est'].max()
+gdp_min = world['gdp_md_est'].min()
 
-world.plot(ax=ax, facecolor=&#39;lightgrey&#39;, edgecolor=&#39;grey&#39;, )
+world.plot(ax=ax, facecolor='lightgrey', edgecolor='grey', )
 
 max_size = 40
 min_size = 1
 
-#world.centroid.plot(ax=ax, color=&#39;red&#39;)
+#world.centroid.plot(ax=ax, color='red')
 for (idx, country), cd in zip(world.iterrows(), world.centroid):
 
-    gdp = country[&#39;gdp_md_est&#39;]
+    gdp = country['gdp_md_est']
     plt.plot(cd.xy[0], cd.xy[1], 
-             marker=&#39;o&#39;, 
-             color=&#39;red&#39;, 
+             marker='o', 
+             color='red', 
              markersize=min_size+(max_size-min_size)*(gdp/gdp_max), 
              transform=ccrs.Geodetic(),
             alpha=0.75,
@@ -257,88 +249,76 @@ for (idx, country), cd in zip(world.iterrows(), world.centroid):
 
 #end for
 plt.show()
-</pre></div>
-
-
+</code></pre>
 <p>This gives us:</p>
-<p><img alt="Data Markers on PlateCarree" src="./images/geopandasdata05.png"></p>
-<h3>Mollweide Projection</h3>
+<p><img alt="Data Markers on PlateCarree" src="./images/geopandasdata05.png" /></p>
+<h3 id="mollweide-projection">Mollweide Projection</h3>
 <p>If we want to display the same data, but on the Mollweide Projection, then the code looks very similar.  We read the dataset, and convert the geometery to coordinates in the desired projection by <code>world_mol = world.to_crs(mol.proj4_init)</code>.</p>
 <p>We then use GeoPandas to plot the map outlines by <code>world_mol.plot(ax=ax)</code>.</p>
 <p>We then plot the markers via Matplotlib / Cartopy, getting the original lat/lon values, and asking Cartopy to transform these from a Geodetic projection, to the current map projection.</p>
-<div class="highlight"><pre><span></span># set range of marker size
+<pre><code># set range of marker size
 max_size = 40
 min_size = 1
 for (idx, country), cd in zip(world.iterrows(), world.centroid):
-    gdp = country[&#39;gdp_md_est&#39;]
+    gdp = country['gdp_md_est']
     plt.plot(cd.xy[0], cd.xy[1], 
-             marker=&#39;o&#39;, 
-             color=&#39;red&#39;, 
+             marker='o', 
+             color='red', 
              markersize=min_size+(max_size-min_size)*(gdp/gdp_max), 
              transform=ccrs.Geodetic(),
             alpha=0.75,
             )
 
 #end for
-</pre></div>
-
-
-<p><img alt="Data Markers on Mollweide" src="./images/geopandasdata06.png"></p>
-<h2>GeoPandas Continuous Shading and Discrete Markers</h2>
+</code></pre>
+<p><img alt="Data Markers on Mollweide" src="./images/geopandasdata06.png" /></p>
+<h2 id="geopandas-continuous-shading-and-discrete-markers">GeoPandas Continuous Shading and Discrete Markers</h2>
 <p>GeoPandas comes with capability to display data in spatial context, by the color of the polygons it plots.  We can combine this with our markers, as below:</p>
 <p>First, we define our figure, and get a Cartopy-aware Axes object.</p>
-<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20, 20))
+<pre><code>fig = plt.figure(figsize=(20, 20))
 ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
 
 # set aspect to equal. This is done automatically
-# when using *geopandas* plot on it&#39;s own, but not when
+# when using *geopandas* plot on it's own, but not when
 # working with pyplot directly.
-ax.set_aspect(&#39;equal&#39;)
-</pre></div>
-
-
+ax.set_aspect('equal')
+</code></pre>
 <p>Then we load our dataset.</p>
-<div class="highlight"><pre><span></span>path=gpd.datasets.get_path(&#39;naturalearth_lowres&#39;)
+<pre><code>path=gpd.datasets.get_path('naturalearth_lowres')
 
 world = gpd.read_file(path)
-gdp_max = world[&#39;gdp_md_est&#39;].max()
-gdp_min = world[&#39;gdp_md_est&#39;].min()
-</pre></div>
-
-
+gdp_max = world['gdp_md_est'].max()
+gdp_min = world['gdp_md_est'].min()
+</code></pre>
 <p>Then we tell GeoPandas to plot the country polygons, coloring each one according to the estimated population (the <code>pop_est</code> column of our dataframe).</p>
-<div class="highlight"><pre><span></span>p = world.plot(ax=ax, facecolor=&#39;lightgrey&#39;, edgecolor=&#39;grey&#39;, column=&#39;pop_est&#39;, 
+<pre><code>p = world.plot(ax=ax, facecolor='lightgrey', edgecolor='grey', column='pop_est', 
            legend=True,
           )
-</pre></div>
-
-
+</code></pre>
 <p>Then we define our marker sizes, and for each row (country) in our dataframe, get the longtitude / latitude of the geometric centroid, and get the GDP (estimated).  We then place a marker at that position, sized according to the GDP value.</p>
-<div class="highlight"><pre><span></span>max_size = 40
+<pre><code>max_size = 40
 min_size = 1
 
 
 for (idx, country), cd in zip(world.iterrows(), world.centroid):
 
-    gdp = country[&#39;gdp_md_est&#39;]
+    gdp = country['gdp_md_est']
     plt.plot(cd.xy[0], cd.xy[1], 
-             marker=&#39;o&#39;, 
-             color=&#39;red&#39;, 
+             marker='o', 
+             color='red', 
              markersize=min_size+(max_size-min_size)*(gdp/gdp_max), 
              transform=ccrs.Geodetic(),
             alpha=0.75,
             )
 
 #end for
-</pre></div>
-
-
+</code></pre>
 <p>Now for some hackery:  GeoPandas defaults to a color bar that runs from near the bottom of the figure to near the top, embedded in its own Axes object.  Because we have a map projection that is twice as wide as high (360 degrees vs 180 degrees), 
 and because we have asked for a square figure <code>fig = plt.figure(figsize=(20, 20))</code>
 this gives us whitespace above and below the map.  The color bar is out of proportion.</p>
 <p>So we get the Axes objects for map and legend (colorbar), and force the color bar Axes to be the same height as the map Axes.</p>
 <p>Then we set a title in each axis, and show the result.</p>
-<div class="highlight"><pre><span></span>map_ax = fig.axes[0]
+<pre><code>map_ax = fig.axes[0]
 leg_ax = fig.axes[1]
 
 map_box = map_ax.get_position()
@@ -346,39 +326,35 @@ leg_box = leg_ax.get_position()
 
 leg_ax.set_position([leg_box.x0, map_box.y0, leg_box.width, map_box.height])
 
-leg_ax.set_title(&#39;Population&#39;, pad=40)
-map_ax.set_title(&#39;Country GDP&#39;, pad=50)
+leg_ax.set_title('Population', pad=40)
+map_ax.set_title('Country GDP', pad=50)
 
 plt.show()
-</pre></div>
-
-
+</code></pre>
 <p>This gives us:</p>
-<p><img alt="Combined Data Visualization" src="./images/geopandasdata07.png"></p>
-<h2>Imports</h2>
+<p><img alt="Combined Data Visualization" src="./images/geopandasdata07.png" /></p>
+<h2 id="imports">Imports</h2>
 <p>Just for completeness, here are the imports from the Notebook that contains the code above
 (some are used only to support print-outs that define the environment for reproducibility purposes) </p>
-<div class="highlight"><pre><span></span><span class="c1"># all imports should go here</span>
+<pre><code># all imports should go here
 
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">import</span> <span class="nn">platform</span>
-<span class="kn">import</span> <span class="nn">datetime</span>
+import pandas as pd
+import sys
+import os
+import subprocess
+import datetime
+import platform
+import datetime
 
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+import matplotlib.pyplot as plt
 
-<span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="kn">as</span> <span class="nn">ccrs</span>
-<span class="kn">from</span> <span class="nn">cartopy.mpl.gridliner</span> <span class="kn">import</span> <span class="n">LONGITUDE_FORMATTER</span><span class="p">,</span> <span class="n">LATITUDE_FORMATTER</span>
+import cartopy.crs as ccrs
+from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 
-<span class="kn">import</span> <span class="nn">geopandas</span> <span class="kn">as</span> <span class="nn">gpd</span>
-<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Polygon</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-</pre></div>
-
-
+import geopandas as gpd
+from shapely.geometry import Polygon
+import numpy as np
+</code></pre>
 <p>The link to the Notebook that has all the code is coming soon.</p>
 	<hr />
       </div>

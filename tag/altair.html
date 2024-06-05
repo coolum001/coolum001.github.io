@@ -108,8 +108,8 @@ Filed under <a href="../category/geopandas.html">GeoPandas</a>
 </p>
       </div>
       <div class="article-content span8">
-	<h1>Wireless Coverage in North Queensland</h1>
-<h2>Introduction</h2>
+	<h1 id="wireless-coverage-in-north-queensland">Wireless Coverage in North Queensland</h1>
+<h2 id="introduction">Introduction</h2>
 <p>I recently did a road trip from south Queensland to the top of Queensland, all the way to the tip of Cape York, 
 with side trips to Weipa and Thursday Island.  One of the facts of life in travelling by road
 in Australia, is that you quickly run out of 4G / 3G wireless coverage.</p>
@@ -122,7 +122,7 @@ and because I carry an Android phone, Google has been tracking my location, and 
 So, if I am at a location, and Google <strong>doesn't</strong> record it, it's probably because the Wireless coverage wasn't
 available.</p>
 <p>One of the guesses Google makes is whether I am in a vehicle; good enough for me.</p>
-<h2>Processing Google's Location Data</h2>
+<h2 id="processing-googles-location-data">Processing Google's Location Data</h2>
 <p>Google allows you to retrieve the data it has been collecting about you (just google "google takeout").
 You requests the data type (in this case, location data), and it will mail you a link to a Zip file
 holding the data.</p>
@@ -131,188 +131,154 @@ so there are lots of incremental steps that could be collapsed.  I also perform 
 processing stage as I have been annoyed by the "can't process a slice" error message, 
 and the datasets here are relatively small.)</p>
 <p>First, load the data from the Google file, into a Pandas DataFrame.</p>
-<div class="highlight"><pre><span></span>            loc_data = 
-            &#39;D:\\GoogleLocnData\\Takeout\\Location History\\Location History.json&#39;
+<pre><code>            loc_data = 
+            'D:\\GoogleLocnData\\Takeout\\Location History\\Location History.json'
 
-            with open(loc_data, &#39;r&#39;) as fh:
+            with open(loc_data, 'r') as fh:
                 raw = json.loads(fh.read())
             #end with
-            ld = pd.DataFrame(raw[&#39;locations&#39;])
-</pre></div>
-
-
+            ld = pd.DataFrame(raw['locations'])
+</code></pre>
 <p>Exclude all records that are missing data.</p>
-<div class="highlight"><pre><span></span>            ld = ld[ld[&#39;activity&#39;].notnull()].copy()
-</pre></div>
-
-
+<pre><code>            ld = ld[ld['activity'].notnull()].copy()
+</code></pre>
 <p>The Google ActivityType is a List, the first item of which is a Dict; the 'activity' key of this Dict
 gives you a List, the first item of which is a Dict, in which the key 'type' gives us Google's
 guess as to what we are doing.  I only look at the first item in each record.</p>
-<div class="highlight"><pre><span></span>            ld[&#39;ActivityType&#39;] = [ x[0][&#39;activity&#39;][0][&#39;type&#39;] for x in ld[&#39;activity&#39;] ]
-</pre></div>
-
-
+<pre><code>            ld['ActivityType'] = [ x[0]['activity'][0]['type'] for x in ld['activity'] ]
+</code></pre>
 <p>Convert the high precision latitude and longitude integer values to floats.</p>
-<div class="highlight"><pre><span></span>            ld[&#39;latitude&#39;] = ld[&#39;latitudeE7&#39;]/float(1e7)
-            ld[&#39;longtitude&#39;] = ld[&#39;longitudeE7&#39;]/float(1e7)
-</pre></div>
-
-
+<pre><code>            ld['latitude'] = ld['latitudeE7']/float(1e7)
+            ld['longtitude'] = ld['longitudeE7']/float(1e7)
+</code></pre>
 <p>Convert millisecond timestamps to date-time values.</p>
-<div class="highlight"><pre><span></span>            ld[&#39;timestampMsFl&#39;] = ld[&#39;timestampMs&#39;].astype(float)
+<pre><code>            ld['timestampMsFl'] = ld['timestampMs'].astype(float)
 
-            ld[&#39;timestamp&#39;] = ld[&#39;timestampMsFl&#39;]/1000.0
+            ld['timestamp'] = ld['timestampMsFl']/1000.0
 
-            ld[&#39;datetime&#39;] = ld[&#39;timestamp&#39;].map(datetime.datetime.fromtimestamp)
-</pre></div>
-
-
+            ld['datetime'] = ld['timestamp'].map(datetime.datetime.fromtimestamp)
+</code></pre>
 <p>Filter in just those records that cover the road trip.</p>
-<div class="highlight"><pre><span></span>            ld = ld[ld[&#39;timestamp&#39;]&gt;datetime.datetime(2018, 5, 31).timestamp()].copy()
+<pre><code>            ld = ld[ld['timestamp']&gt;datetime.datetime(2018, 5, 31).timestamp()].copy()
 
-            ld = ld[ld[&#39;timestamp&#39;]&lt;datetime.datetime(2018, 6, 19).timestamp()].copy()
-</pre></div>
-
-
+            ld = ld[ld['timestamp']&lt;datetime.datetime(2018, 6, 19).timestamp()].copy()
+</code></pre>
 <p>Filter in just those records for travelling in a vehicle.</p>
-<div class="highlight"><pre><span></span>            ld = ld[ld[&#39;ActivityType&#39;]==&#39;IN_VEHICLE&#39;].copy()
-</pre></div>
-
-
+<pre><code>            ld = ld[ld['ActivityType']=='IN_VEHICLE'].copy()
+</code></pre>
 <p>Create a DayNo column that records the days since the trip started.</p>
-<div class="highlight"><pre><span></span>            ld[&#39;DayNo&#39;] = [x.dayofyear for x in ld[&#39;datetime&#39;] ]
+<pre><code>            ld['DayNo'] = [x.dayofyear for x in ld['datetime'] ]
 
-            ld[&#39;DayNo&#39;] = ld[&#39;DayNo&#39;] - 150
-</pre></div>
-
-
-<h2>Conversion to GeoPandas</h2>
+            ld['DayNo'] = ld['DayNo'] - 150
+</code></pre>
+<h2 id="conversion-to-geopandas">Conversion to GeoPandas</h2>
 <p>GeoDataFrame need a 'geometry' column, so create one from a Shapely call.</p>
-<div class="highlight"><pre><span></span>            geometry = [Point(xy) for xy in zip(ld[&#39;longtitude&#39;], ld[&#39;latitude&#39;])]
-</pre></div>
-
-
+<pre><code>            geometry = [Point(xy) for xy in zip(ld['longtitude'], ld['latitude'])]
+</code></pre>
 <p>Now we can create a GeoPandas dataframe; we have to specify the coordinate system we are using,
 which is Plate Carree (also called Equirectangular).</p>
-<div class="highlight"><pre><span></span>            crs = {&#39;init&#39;: &#39;epsg:4326&#39;}
+<pre><code>            crs = {'init': 'epsg:4326'}
             gld = gpd.GeoDataFrame(ld, crs=crs, geometry=geometry)
-</pre></div>
-
-
-<h2>Background Map</h2>
+</code></pre>
+<h2 id="background-map">Background Map</h2>
 <p>Now, we need a nice looking Cartopy map.</p>
-<div class="highlight"><pre><span></span>            fig = plt.figure(figsize=(10,10))
-</pre></div>
-
-
+<pre><code>            fig = plt.figure(figsize=(10,10))
+</code></pre>
 <p>Set the map projection, and the area of the world we want displayed.</p>
-<div class="highlight"><pre><span></span>            ax = plt.axes(projection=ccrs.PlateCarree())
+<pre><code>            ax = plt.axes(projection=ccrs.PlateCarree())
             ax.set_extent((140, 155, -30, -10))
-</pre></div>
-
-
+</code></pre>
 <p>Add the land and water fills.</p>
-<div class="highlight"><pre><span></span>            ax.add_feature(cartopy.feature.LAND)
+<pre><code>            ax.add_feature(cartopy.feature.LAND)
             ax.add_feature(cartopy.feature.OCEAN)
-</pre></div>
-
-
+</code></pre>
 <p>Add state boundaries and rivers.</p>
-<div class="highlight"><pre><span></span>            # Create a feature for States/Admin 1 regions at 1:10m from Natural Earth
+<pre><code>            # Create a feature for States/Admin 1 regions at 1:10m from Natural Earth
             states_provinces = cfeature.NaturalEarthFeature(
-                category=&#39;cultural&#39;,
-                name=&#39;admin_1_states_provinces_lines&#39;,
-                scale=&#39;10m&#39;,
-                facecolor=&#39;none&#39;)
+                category='cultural',
+                name='admin_1_states_provinces_lines',
+                scale='10m',
+                facecolor='none')
 
             rivers = cfeature.NaturalEarthFeature(
-               category=&#39;physical&#39;,
-               name=&#39;rivers_lake_centerlines&#39;,
-               scale=&#39;10m&#39;,
-               facecolor=&#39;none&#39;)
+               category='physical',
+               name='rivers_lake_centerlines',
+               scale='10m',
+               facecolor='none')
 
-            ax.add_feature(states_provinces, edgecolor=&#39;gray&#39;)
-            ax.add_feature(rivers, edgecolor=&#39;blue&#39;)
-</pre></div>
-
-
+            ax.add_feature(states_provinces, edgecolor='gray')
+            ax.add_feature(rivers, edgecolor='blue')
+</code></pre>
 <p>Add coastlines and gridlines.</p>
-<div class="highlight"><pre><span></span>            ax.coastlines(resolution=&#39;10m&#39;,)
+<pre><code>            ax.coastlines(resolution='10m',)
             ax.gridlines(draw_labels=True, xlocs=[140, 145, 150, 155])
-</pre></div>
-
-
+</code></pre>
 <p>This gives us:</p>
-<p><img alt="QLDMap" src="../images/qld.png"></p>
-<h2>Plot the Road Trip</h2>
+<p><img alt="QLDMap" src="../images/qld.png" /></p>
+<h2 id="plot-the-road-trip">Plot the Road Trip</h2>
 <p>Now, plot the road trip, with a point for each location, where I was in a vehicle, color coded by day of trip.</p>
-<div class="highlight"><pre><span></span>            gld.plot(ax=ax, 
-                     marker=&#39;o&#39;, 
-                    column=&#39;DayNo&#39;, 
-                    cmap=&#39;rainbow&#39;, 
+<pre><code>            gld.plot(ax=ax, 
+                     marker='o', 
+                    column='DayNo', 
+                    cmap='rainbow', 
                     markersize=20, 
                     zorder=5, 
                     legend=True,
                     categorical=True,
             )
 
-            ax.set_title(label=&#39;Cape York Road Trip: Wireless Coverage&#39;, loc=&#39;center&#39;, pad=20, )
-</pre></div>
-
-
+            ax.set_title(label='Cape York Road Trip: Wireless Coverage', loc='center', pad=20, )
+</code></pre>
 <p>As you can see, the coverage is quite good in South East Queensland, but gets very spotty once you get north.
 The Thursday Island markers record the bus tour of the island, and you can see the side trip to Weipa.</p>
-<p><img alt="CoverageMap" src="../images/coveragemap.png"></p>
+<p><img alt="CoverageMap" src="../images/coveragemap.png" /></p>
 <p>If we zoom into the Cape, we get:</p>
-<p><img alt="NorthQldMap" src="../images/nthqld.png"></p>
-<h2>Drawing Lines with GeoPandas</h2>
+<p><img alt="NorthQldMap" src="../images/nthqld.png" /></p>
+<h2 id="drawing-lines-with-geopandas">Drawing Lines with GeoPandas</h2>
 <p>GeoPandas knows about geometry, so to draw a line show the road trip with GeoPanda, we can't just say 
 'draw a line between these points'.  What we can do is convert the Shapely Points into <strong>LineString</strong>
 objects, that GeoPandas does know how to draw.  We use the features of Pandas to group the Points for each day
 of the trip, and make a new GeoDataFrame with this new geometry.  We create a 'DayNum' column so we can filter
 in only those days in the return trip.</p>
-<div class="highlight"><pre><span></span>            # Aggregate each days points into a line
-            gld2 = gld.groupby([&#39;DayNo&#39;])[&#39;geometry&#39;].apply(lambda x: LineString(x.tolist()))
-            gld2 = gpd.GeoDataFrame(gld2, geometry=&#39;geometry&#39;)
-            gld2[&#39;DayNum&#39;] = gld2.index
+<pre><code>            # Aggregate each days points into a line
+            gld2 = gld.groupby(['DayNo'])['geometry'].apply(lambda x: LineString(x.tolist()))
+            gld2 = gpd.GeoDataFrame(gld2, geometry='geometry')
+            gld2['DayNum'] = gld2.index
 
-            gld2[gld2[&#39;DayNum&#39;]&gt;9].plot(ax=ax,
-                      column=&#39;DayNum&#39;,
-                      cmap=&#39;rainbow&#39;,
+            gld2[gld2['DayNum']&gt;9].plot(ax=ax,
+                      column='DayNum',
+                      cmap='rainbow',
                       legend=True,
                       categorical=True,
                       linewidth=5,
                      )
-            ax.set_title(label=&#39;Cape York Road Trip: Homeward Bound&#39;, loc=&#39;left&#39;)
-</pre></div>
-
-
-<p><img alt="HomewardMap" src="../images/homeward.png"></p>
-<h2>Conclusion</h2>
+            ax.set_title(label='Cape York Road Trip: Homeward Bound', loc='left')
+</code></pre>
+<p><img alt="HomewardMap" src="../images/homeward.png" /></p>
+<h2 id="conclusion">Conclusion</h2>
 <p>For completeness, here are the imports for this Jupyter Notebook 
 (not all are used in the code fragments above, as some as for producing output to support reproducability).</p>
-<div class="highlight"><pre><span></span>            <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-            <span class="kn">import</span> <span class="nn">sys</span>
-            <span class="kn">import</span> <span class="nn">os</span>
-            <span class="kn">import</span> <span class="nn">subprocess</span>
-            <span class="kn">import</span> <span class="nn">datetime</span>
-            <span class="kn">import</span> <span class="nn">platform</span>
-            <span class="kn">import</span> <span class="nn">datetime</span>
+<pre><code>            import pandas as pd
+            import sys
+            import os
+            import subprocess
+            import datetime
+            import platform
+            import datetime
 
-            <span class="kn">import</span> <span class="nn">json</span>
+            import json
 
-            <span class="kn">import</span> <span class="nn">geopandas</span> <span class="kn">as</span> <span class="nn">gpd</span>
-            <span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Point</span><span class="p">,</span> <span class="n">LineString</span>
+            import geopandas as gpd
+            from shapely.geometry import Point, LineString
 
-            <span class="kn">import</span> <span class="nn">matplotlib</span>
-            <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-            <span class="c1">#import seaborn as sb</span>
+            import matplotlib
+            import matplotlib.pyplot as plt
+            #import seaborn as sb
 
-            <span class="kn">import</span>  <span class="nn">cartopy</span>
-            <span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="kn">as</span> <span class="nn">ccrs</span>
-            <span class="kn">import</span> <span class="nn">cartopy.feature</span> <span class="kn">as</span> <span class="nn">cfeature</span>
-</pre></div> 
+            import  cartopy
+            import cartopy.crs as ccrs
+            import cartopy.feature as cfeature
+</code></pre> 
 	<a class="btn btn-mini xsmall" href="../roadtrip.html">
           <i class="icon-comment"></i> Comment </a>
 	<hr />

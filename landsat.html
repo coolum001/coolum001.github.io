@@ -106,8 +106,8 @@ Filed under <a href="./category/landsat.html">LANDSAT</a>
       </div>
       
       <div class="span8">
-	<h1>LANDSAT Image Mapping</h1>
-<h2>Introduction</h2>
+	<h1 id="landsat-image-mapping">LANDSAT Image Mapping</h1>
+<h2 id="introduction">Introduction</h2>
 <p>So I thought I would document the process of incorprating LANDSAT images into maps.  I have already covered the 
 use of MODIS images in maps, but LANDSAT offers images with a finer resolution,
 even if they are not almost-real-time.</p>
@@ -116,7 +116,7 @@ The AWS data repository also comes with an index that allows you to select image
 and downloaded the .CSV file, and read it with Excel to do the filtering to get the candidate images.  Given the
 index .CSV file is almost 200 Megabytes, perhaps I should have used <code>pandas</code> instead, but hey, path of least resistence.</p>
 <p>So I picked a couple of images to work with, downloaded the files from AWS, and elected to work with Cartopy.</p>
-<h2>GeoTIFF Images</h2>
+<h2 id="geotiff-images">GeoTIFF Images</h2>
 <p>The LANDSAT images are what is called GeoTIFF format;  basically TIFF images, with additional metadata that describe
 the spatial contxet of the image.  In this case, the metadata includes:</p>
 <ul>
@@ -135,115 +135,101 @@ the spatial contxet of the image.  In this case, the metadata includes:</p>
 </ul>
 <p>Each image is generated from a single LANDSAT band;  our first image will be of Band 5, recording the near Infrared,
 which is strongly reflected by vegetation.</p>
-<h2>Displaying the GeoTIFF Metadata</h2>
+<h2 id="displaying-the-geotiff-metadata">Displaying the GeoTIFF Metadata</h2>
 <p>The two libraries you will need are <code>gdal</code>, and <code>osr</code>.  GDAL stands for Geospatial Data Abstraction Library, and OSR stands for OGR Spatial Reference, where OGR
 stands for  Open Source Geospatial.</p>
-<div class="highlight"><pre><span></span>    <span class="c1"># support for TIFF input</span>
-    <span class="kn">import</span> <span class="nn">gdal</span>
-    <span class="kn">import</span> <span class="nn">osr</span>
-</pre></div>
-
-
+<pre><code>    # support for TIFF input
+    import gdal
+    import osr
+</code></pre>
 <p>To examine the metadata for a LANDSAT</p>
-<div class="highlight"><pre><span></span>    #  enable gdal exceptions (instead of the silent failure which is gdal default)
+<pre><code>    #  enable gdal exceptions (instead of the silent failure which is gdal default)
     gdal.UseExceptions()
 
-    fname = &#39;../data/LC80890792016366LGN00_B5.tif&#39;
+    fname = '../data/LC80890792016366LGN00_B5.tif'
     ds = gdal.Open(fname)
 
-    print( &quot;[ RASTER BAND COUNT ]: &quot;, ds.RasterCount)
+    print( "[ RASTER BAND COUNT ]: ", ds.RasterCount)
     cols = ds.RasterXSize
-    print(&#39;cols = &#39;,cols)
+    print('cols = ',cols)
     rows = ds.RasterYSize
-    print(&#39; rows = &#39;, rows)
+    print(' rows = ', rows)
     bands = ds.RasterCount
-    print(&#39;bands = &#39;, bands)
+    print('bands = ', bands)
     driver = ds.GetDriver().LongName
-    print(&#39;driver =&#39;, driver)
+    print('driver =', driver)
 
-    print(&#39;MetaData = &#39;,ds.GetMetadata())
-</pre></div>
-
-
+    print('MetaData = ',ds.GetMetadata())
+</code></pre>
 <p>which gives us:</p>
-<div class="highlight"><pre><span></span>    [ RASTER BAND COUNT ]:  1
+<pre><code>    [ RASTER BAND COUNT ]:  1
     cols =  7711
      rows =  7811
     bands =  1
     driver = GeoTIFF
-    MetaData =  {&#39;AREA_OR_POINT&#39;: &#39;Point&#39;}
-</pre></div>
-
-
+    MetaData =  {'AREA_OR_POINT': 'Point'}
+</code></pre>
 <p>which is pretty much as expected: big images, a single band, a GeoTIFF driver used to read the file, and
 each pixel corresponds to a notional point.</p>
 <p>Note that <code>gdal</code> by default will not raise exceptions if errors are encountered in reading the TIFF; we have to
 specify that we do want exceptions by the line <code>gdal.UseExceptions()</code>.</p>
 <p>Now to display some more spatial information:</p>
-<div class="highlight"><pre><span></span>    # print various metadata for the image
+<pre><code>    # print various metadata for the image
     geotransform = ds.GetGeoTransform()
     if not geotransform is None:
-        print (&#39;Origin = (&#39;,geotransform[0], &#39;,&#39;,geotransform[3],&#39;)&#39;)
-        print (&#39;Pixel Size = (&#39;,geotransform[1], &#39;,&#39;,geotransform[5],&#39;)&#39;)
+        print ('Origin = (',geotransform[0], ',',geotransform[3],')')
+        print ('Pixel Size = (',geotransform[1], ',',geotransform[5],')')
     #end if
-</pre></div>
-
-
+</code></pre>
 <p>which gives us:</p>
-<div class="highlight"><pre><span></span>    Origin = ( 413685.0 , -2917485.0 )
+<pre><code>    Origin = ( 413685.0 , -2917485.0 )
     Pixel Size = ( 30.0 , -30.0 )
-</pre></div>
-
-
+</code></pre>
 <p>Note the -ve Y pixel size;  the origin of the image is at the top left, so increasing pixel row number moves south.
 Note also the units of the image origin are clearly not lat/lon.  To determine the projection for this units we use:</p>
-<div class="highlight"><pre><span></span>    proj = ds.GetProjection()
+<pre><code>    proj = ds.GetProjection()
 
     inproj = osr.SpatialReference()
     inproj.ImportFromWkt(proj)
 
-    print(&#39;inproj = \n&#39;, inproj)
-</pre></div>
-
-
+    print('inproj = \n', inproj)
+</code></pre>
 <p><code>proj</code> is a text encoding of the projection; we use the <code>osr</code> module to create an SpatialReference object,
 and parse <code>proj</code>  (<code>Wkt</code> stand for 'Well Known Text').</p>
 <p>This gives us:</p>
-<div class="highlight"><pre><span></span>    inproj = 
-     PROJCS[&quot;WGS 84 / UTM zone 56N&quot;,
-        GEOGCS[&quot;WGS 84&quot;,
-            DATUM[&quot;WGS_1984&quot;,
-                SPHEROID[&quot;WGS 84&quot;,6378137,298.257223563,
-                    AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]],
-                AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]],
-            PRIMEM[&quot;Greenwich&quot;,0],
-           UNIT[&quot;degree&quot;,0.0174532925199433],
-           AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]],
-        PROJECTION[&quot;Transverse_Mercator&quot;],
-        PARAMETER[&quot;latitude_of_origin&quot;,0],
-        PARAMETER[&quot;central_meridian&quot;,153],
-        PARAMETER[&quot;scale_factor&quot;,0.9996],
-        PARAMETER[&quot;false_easting&quot;,500000],
-        PARAMETER[&quot;false_northing&quot;,0],
-        UNIT[&quot;metre&quot;,1,
-            AUTHORITY[&quot;EPSG&quot;,&quot;9001&quot;]],
-        AUTHORITY[&quot;EPSG&quot;,&quot;32656&quot;]]
-</pre></div>
-
-
+<pre><code>    inproj = 
+     PROJCS["WGS 84 / UTM zone 56N",
+        GEOGCS["WGS 84",
+            DATUM["WGS_1984",
+                SPHEROID["WGS 84",6378137,298.257223563,
+                    AUTHORITY["EPSG","7030"]],
+                AUTHORITY["EPSG","6326"]],
+            PRIMEM["Greenwich",0],
+           UNIT["degree",0.0174532925199433],
+           AUTHORITY["EPSG","4326"]],
+        PROJECTION["Transverse_Mercator"],
+        PARAMETER["latitude_of_origin",0],
+        PARAMETER["central_meridian",153],
+        PARAMETER["scale_factor",0.9996],
+        PARAMETER["false_easting",500000],
+        PARAMETER["false_northing",0],
+        UNIT["metre",1,
+            AUTHORITY["EPSG","9001"]],
+        AUTHORITY["EPSG","32656"]]
+</code></pre>
 <p>This tells us the the image projection is UTM, with a zone that covers the area of the image.  On curious
 point is that it is the Northern Hemisphere UTM, while this is a Southern Hemisphere scene.  At the time,
 I shrugged my shoulders and moved on, but it came back to bite me later (see below).  The coordinates of the
 image origin seem plausible.</p>
 <p>By the way, EPSG stands for European Petroleum Survey Group, who act as a curator for the different projections
 used by industry and governments around the world  (and I hadn't heard of them before I started this exercise).</p>
-<h2>Mapping the Image</h2>
+<h2 id="mapping-the-image">Mapping the Image</h2>
 <p>Now the first thing that you must do in using Cartopy is to work out what projections you are going to use
 for the map to be created, and instantiating Coordinate Reference System objects for the map,
 and the data to be overlayed on the map.</p>
 <p>However, there are two ways to create a UTM projection;  one is to use the Cartopy internal projection call to UTM,
 the other is to call out to EPSG by the <code>epsg</code> method.  The two methods yield two different objects, as below:</p>
-<div class="highlight"><pre><span></span>    # get projection EPSG:32656. WGS 84 / UTM zone 56N in two ways
+<pre><code>    # get projection EPSG:32656. WGS 84 / UTM zone 56N in two ways
 
     zone = 56
     projection = ccrs.UTM(zone, southern_hemisphere=False)
@@ -253,36 +239,30 @@ the other is to call out to EPSG by the <code>epsg</code> method.  The two metho
     print(projection.y_limits)
 
 
-    projection = ccrs.epsg(&#39;32656&#39;)
+    projection = ccrs.epsg('32656')
 
     print(projection)
     print(projection.x_limits)
     print(projection.y_limits)
-</pre></div>
-
-
+</code></pre>
 <p>This gives us:</p>
-<div class="highlight"><pre><span></span>    &lt;cartopy.crs.UTM object at 0x0000023C1366E570&gt;
+<pre><code>    &lt;cartopy.crs.UTM object at 0x0000023C1366E570&gt;
     (-250000.0, 1250000.0)
     (-10000000.0, 25000000.0)
     _EPSGProjection(32656)
     (166021.44308054051, 833978.55691945949)
     (0.0, 9329005.1824474372)
-</pre></div>
-
-
+</code></pre>
 <p>Note that the latter projection (<code>epsg('32656')</code>) allows only postive Y values;  This clashes with the fact that
 NASA have given us data with negative Y values. So we must use a UTM object (which does allow negative Y values) in creating our map.</p>
-<h2>Displaying the first image</h2>
+<h2 id="displaying-the-first-image">Displaying the first image</h2>
 <p>First, we read the image data.</p>
-<div class="highlight"><pre><span></span>    # read the image into a data array
+<pre><code>    # read the image into a data array
     data = ds.ReadAsArray()
-</pre></div>
-
-
+</code></pre>
 <p>To display our first image, we work out how big it is, size an Axes object to that size, show the image, and add some
 example map content (coastlines, location of home).</p>
-<div class="highlight"><pre><span></span>    #  create image projection
+<pre><code>    #  create image projection
     zone = 56
     projection = ccrs.UTM(zone, southern_hemisphere=False)
 
@@ -301,28 +281,26 @@ example map content (coastlines, location of home).</p>
     # show the image (specifying the image origin as being the top of the image),
     #   and using a blue color map
     img = ax.imshow(data, extent=extent,
-                    origin=&#39;upper&#39;, cmap=&#39;Blues_r&#39;)
+                    origin='upper', cmap='Blues_r')
 
     # draw coastlines, and gridlines  (grid line labels not supported for hand crafted UTM projection)
-    ax.coastlines(resolution=&#39;10m&#39;,zorder=4)
+    ax.coastlines(resolution='10m',zorder=4)
     ax.gridlines( draw_labels=False)
 
     #  plot a marker for home, just to how how lat/lon data can be superimposed
-    ax.plot(153.09, -26.53, marker=&#39;o&#39;, markersize=10, color=&#39;black&#39;, transform=ccrs.Geodetic())
+    ax.plot(153.09, -26.53, marker='o', markersize=10, color='black', transform=ccrs.Geodetic())
 
     plt.show()
-</pre></div>
-
-
+</code></pre>
 <p>One item to note is that Cartopy has only a small number of projections for which it is prepared to label gridlines,
 and UTM projections are not in that number.  So we have to turn labels off to supress warning mesages.</p>
 <p>This gives us the map below (the use of a Blue color map was an experiment that won't be repeated).</p>
-<p><img alt="First LANDSAT map" src="./images/lsat01.png"></p>
-<h2>Zooming into the image</h2>
+<p><img alt="First LANDSAT map" src="./images/lsat01.png" /></p>
+<h2 id="zooming-into-the-image">Zooming into the image</h2>
 <p>For our next map, we are going to zoom into a very much smaller area, and this time we will use a PlateCarree
 projection for the map, so that gridline labels can be used.  This increases the run time, as the image
 has to be re-projected.  We will also use gray-scale for the image.</p>
-<div class="highlight"><pre><span></span>    #  size in lon/lat on map area
+<pre><code>    #  size in lon/lat on map area
     x0 = 153.03
     x1 = 153.12
     y0 = -26.605
@@ -361,62 +339,58 @@ has to be re-projected.  We will also use gray-scale for the image.</p>
 
     # show the image, specifying its extent, and its projection.  We use gray scale
     img = ax.imshow(data, extent=extent_tif,transform = img_CRS, 
-                    origin=&#39;upper&#39;, cmap=&#39;gray&#39;)
+                    origin='upper', cmap='gray')
 
     # add coastlines (pretty wrong), gridlines, and labels
-    ax.coastlines(resolution=&#39;10m&#39;,zorder=4, color=&#39;navy&#39;)
+    ax.coastlines(resolution='10m',zorder=4, color='navy')
     gl = ax.gridlines( draw_labels=True)
     # suppress gridline labels at top to allow space for title
     gl.xlabels_top = False
 
     # plot home (in Geodetic units)
-    ax.plot(153.09, -26.53, marker=&#39;o&#39;, markersize=10, color=&#39;red&#39;, transform=ccrs.Geodetic())
+    ax.plot(153.09, -26.53, marker='o', markersize=10, color='red', transform=ccrs.Geodetic())
 
-    ax.set_title(&#39;LANDSAT Band 5 (Near IR), Projection: PlateCarree&#39;)
+    ax.set_title('LANDSAT Band 5 (Near IR), Projection: PlateCarree')
 
     plt.show()
-</pre></div>
-
-
+</code></pre>
 <p>This gives us this map:</p>
-<p><img alt="Near IR LANDSAT map" src="./images/lsat02.png"></p>
+<p><img alt="Near IR LANDSAT map" src="./images/lsat02.png" /></p>
 <p>Even the <code>'10m'</code> coastlines are too coarse for this very much zoomed map.  If you look in the two grid squares
 below the square containing the red dot, you can make out the two golf courses
 (fresh green grass reflecting strongly).</p>
-<h2>Conclusion</h2>
+<h2 id="conclusion">Conclusion</h2>
 <p>I'll wind this post up here.  The next post will contain details on LANDSAT color images and mapping.</p>
 <p>Just for completeness, here are the imports for all the code above (and some code to come)
 (some are used only to support print-outs that define the environment for reproducibility purposes) :</p>
-<div class="highlight"><pre><span></span>    <span class="c1"># all imports should go here</span>
+<pre><code>    # all imports should go here
 
-    <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+    import pandas as pd
 
-    <span class="c1"># most of these following are used to support repeatability of the notebook</span>
-    <span class="kn">import</span> <span class="nn">sys</span>
-    <span class="kn">import</span> <span class="nn">os</span>
-    <span class="kn">import</span> <span class="nn">subprocess</span>
-    <span class="kn">import</span> <span class="nn">datetime</span>
-    <span class="kn">import</span> <span class="nn">platform</span>
-    <span class="kn">import</span> <span class="nn">datetime</span>
-    <span class="kn">import</span> <span class="nn">math</span>
+    # most of these following are used to support repeatability of the notebook
+    import sys
+    import os
+    import subprocess
+    import datetime
+    import platform
+    import datetime
+    import math
 
-    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+    import matplotlib.pyplot as plt
 
-    <span class="c1"># support for TIFF input</span>
-    <span class="kn">import</span> <span class="nn">gdal</span>
-    <span class="kn">import</span> <span class="nn">osr</span>
+    # support for TIFF input
+    import gdal
+    import osr
 
-    <span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="kn">as</span> <span class="nn">ccrs</span>
-    <span class="kn">import</span> <span class="nn">cartopy</span>
+    import cartopy.crs as ccrs
+    import cartopy
 
-    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+    import numpy as np
 
-    <span class="c1"># used for color image processing</span>
-    <span class="kn">import</span> <span class="nn">skimage.exposure</span>
-    <span class="kn">import</span> <span class="nn">skimage.io</span> <span class="kn">as</span> <span class="nn">sio</span>
-</pre></div>
-
-
+    # used for color image processing
+    import skimage.exposure
+    import skimage.io as sio
+</code></pre>
 <p>The notebook that has all the code is coming soon.</p>
 	<hr />
       </div>

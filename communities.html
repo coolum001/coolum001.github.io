@@ -106,59 +106,51 @@ Filed under <a href="./category/osmnx.html">OSMNX</a>
       </div>
       
       <div class="span8">
-	<h1>Visualization of communities via the Road Network</h1>
-<h2>Introduction</h2>
+	<h1 id="visualization-of-communities-via-the-road-network">Visualization of communities via the Road Network</h1>
+<h2 id="introduction">Introduction</h2>
 <p>Having extracted the local road network from  Open Street Maps (via OSMNX - see earlier blog posts), I thought it might be interesting to checkout what properties 
 of the road network we could automatically extract.  One such property is that of 'community'.</p>
-<h2>Data Sources</h2>
-<p>To provide continuity with the previous maps, I included the local police stations.<br>
+<h2 id="data-sources">Data Sources</h2>
+<p>To provide continuity with the previous maps, I included the local police stations.<br />
 The source of the police station locations is https://data.qld.gov.au/dataset/qps-police-stations</p>
-<h2>Mapping Design</h2>
+<h2 id="mapping-design">Mapping Design</h2>
 <p>Because I wanted to underlay some geographic context to the visualization of the road network, I decided to go with Cartopy as the basic mapping software, as its support for inclusion of map tiles is excellent.</p>
 <p>In order to provide some context, I decided to use Cartopy to underlay the Stamen image tiles, showing just terrain.  The URL is http://tile.stamen.com/terrain-background</p>
 <p>This also proves a nice (and accurate) coastline, without which the map would be a little confusing.</p>
 <p>As before, I chose OSMNX for road information, as it is unsurpassed in this area.</p>
-<h2>Implementation</h2>
-<h3>Background Map Tiles</h3>
+<h2 id="implementation">Implementation</h2>
+<h3 id="background-map-tiles">Background Map Tiles</h3>
 <p>The Stamen terrain-only background map tiles are not supported out-of-box by Cartopy, but it is pretty easy to get access to them.</p>
 <p>The following code fragment gets us an <code>imagery</code> map tile provider that we can pass to Cartopy.</p>
-<div class="highlight"><pre><span></span><span class="kr">class</span> <span class="nx">StamenToner</span><span class="p">(</span><span class="nx">GoogleTiles</span><span class="p">)</span><span class="o">:</span>
-    <span class="nx">def</span> <span class="nx">_image_url</span><span class="p">(</span><span class="nx">self</span><span class="p">,</span> <span class="nx">tile</span><span class="p">)</span><span class="o">:</span>
-        <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">z</span> <span class="o">=</span> <span class="nx">tile</span>
-        <span class="nx">url</span> <span class="o">=</span> <span class="s1">&#39;http://tile.stamen.com/terrain-background/{}/{}/{}.png&#39;</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="nx">z</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nx">url</span>    
-    <span class="err">#</span> <span class="nx">end</span> <span class="nx">_image_url</span>
-<span class="err">#</span> <span class="nx">end</span> <span class="nx">StamenToner</span>
+<pre><code>class StamenToner(GoogleTiles):
+    def _image_url(self, tile):
+        x, y, z = tile
+        url = 'http://tile.stamen.com/terrain-background/{}/{}/{}.png'.format(z, x, y)
+        return url    
+    # end _image_url
+# end StamenToner
 
-<span class="nx">imagery</span> <span class="o">=</span> <span class="nx">StamenToner</span><span class="p">()</span>
-</pre></div>
-
-
-<h3>Defining the map</h3>
+imagery = StamenToner()
+</code></pre>
+<h3 id="defining-the-map">Defining the map</h3>
 <p>First we create a figure holding a map, that uses the PlateCarree coordinate refrence system (CRS).  Next, we set the extent of our map (to be just my local area).</p>
-<div class="highlight"><pre><span></span>fig = plt.figure(figsize=(20, 20) )
+<pre><code>fig = plt.figure(figsize=(20, 20) )
 ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree() )
 
 home = ( 153, 153.2, -26.6, -26.4) #home = ( 152.5, 153.5, -27, -26)
 ax.set_extent(home, crs=ccrs.PlateCarree() )
-</pre></div>
-
-
-<h3>Loading the road network</h3>
+</code></pre>
+<h3 id="loading-the-road-network">Loading the road network</h3>
 <p>Next we load the road network, and convert the nodes (intersections) and edges (road segments) of our graph into GeoPandas GeoDataFrames.</p>
-<div class="highlight"><pre><span></span>graph = ox.graph_from_bbox(home[3], home[2], home[1], home[0], network_type=&#39;drive&#39;, truncate_by_edge=True) 
+<pre><code>graph = ox.graph_from_bbox(home[3], home[2], home[1], home[0], network_type='drive', truncate_by_edge=True) 
 n_df, e_df = ox.save_load.graph_to_gdfs(graph, nodes=True, edges=True)
-</pre></div>
-
-
-<h3>Plotting the roads</h3>
+</code></pre>
+<h3 id="plotting-the-roads">Plotting the roads</h3>
 <p>Next we add the background image, and plot the road network.  We set <code>zorder</code> to 2, so that all the roads are visible, even when we add out community shading.</p>
-<div class="highlight"><pre><span></span>ax.add_image(imagery, 12, alpha=0.5)
-e_df.plot(ax=ax, edgecolor=&#39;black&#39;, linewidth=1, facecolor=&#39;none&#39;, zorder=2, alpha=0.8, )
-</pre></div>
-
-
-<h3>Extract the communities</h3>
+<pre><code>ax.add_image(imagery, 12, alpha=0.5)
+e_df.plot(ax=ax, edgecolor='black', linewidth=1, facecolor='none', zorder=2, alpha=0.8, )
+</code></pre>
+<h3 id="extract-the-communities">Extract the communities</h3>
 <p>Next, we add an attribute <code>community</code> to our GeoDataFrame that represents nodes, and set it to 0 for all nodes.</p>
 <p>Then we use an algorithm provided by <code>networkx</code>.  I tried most of the <code>networkx</code> community algorithms: some took to long to complete,  some failed on the types of network (graphs) returned by OSMNX, but <code>async_fluidc</code>:</p>
 <ul>
@@ -171,81 +163,69 @@ e_df.plot(ax=ax, edgecolor=&#39;black&#39;, linewidth=1, facecolor=&#39;none&#39
 </ul>
 <p>Note that the networks returned via <code>OSMNX</code> must be converted to undirected network before processing.  I chose to extract 8 communities;  this was an arbitary guess, but as it turns out, not a bad one given the size of the area in my map.</p>
 <p>The <code>async_fluidc</code> call returns sets of nodes; each node in the set belong to the same community.  We loop over these sets, and assign an integer to each node, being the community index (starting at 1 for non-programmer friendlyness)</p>
-<div class="highlight"><pre><span></span>n_df[&#39;community&#39;] = 0
+<pre><code>n_df['community'] = 0
 zz = community.asyn_fluidc(graph.to_undirected(), 8 )
 for i, x in enumerate(zz):
     for n in x:
-        n_df.at[n, &#39;community&#39;] = i+1
+        n_df.at[n, 'community'] = i+1
     #end for
 #end for
-</pre></div>
-
-
-<h3>Plotting the communities</h3>
+</code></pre>
+<h3 id="plotting-the-communities">Plotting the communities</h3>
 <p>We show the communities by usng GeoPandas to draw the nodes, with a marker colored according to the <code>community</code>.  I decided to use the <code>Set3</code> colormap.</p>
-<div class="highlight"><pre><span></span>n_df.plot(ax=ax, marker=&#39;o&#39;, markersize=200, column=&#39;community&#39;, cmap=&#39;Set3&#39;, zorder=1, legend=True, categorical=True)
-</pre></div>
-
-
-<h3>map embellishments</h3>
+<pre><code>n_df.plot(ax=ax, marker='o', markersize=200, column='community', cmap='Set3', zorder=1, legend=True, categorical=True)
+</code></pre>
+<h3 id="map-embellishments">map embellishments</h3>
 <p>I add a marker for my home.</p>
-<div class="highlight"><pre><span></span># plot marker with lon / lat
+<pre><code># plot marker with lon / lat
 home_lat, home_lon = -26.527,153.08679
-ax.plot(home_lon, home_lat, marker=&#39;o&#39;, transform=ccrs.PlateCarree(), markersize=5, alpha=1, color=&#39;red&#39;, zorder=5 )
-</pre></div>
-
-
+ax.plot(home_lon, home_lat, marker='o', transform=ccrs.PlateCarree(), markersize=5, alpha=1, color='red', zorder=5 )
+</code></pre>
 <p>I add markers for local police stations.</p>
-<div class="highlight"><pre><span></span>station_file=&#39;D:\\Cartography\\QPS_STATIONS.shp&#39;
+<pre><code>station_file='D:\\Cartography\\QPS_STATIONS.shp'
 police_df = gpd.read_file(station_file)
-police_df.plot(ax=ax, marker=&#39;s&#39;, color=&#39;darkblue&#39;, zorder=5, legend=True)
-</pre></div>
-
-
+police_df.plot(ax=ax, marker='s', color='darkblue', zorder=5, legend=True)
+</code></pre>
 <p>I add a grid.</p>
-<div class="highlight"><pre><span></span>gl = ax.gridlines(draw_labels=True)
+<pre><code>gl = ax.gridlines(draw_labels=True)
 gl.xlabels_top = gl.ylabels_right = False
 gl.xformatter = LONGITUDE_FORMATTER
 gl.yformatter = LATITUDE_FORMATTER
-</pre></div>
-
-
+</code></pre>
 <p>I add a title, and show the result.</p>
-<div class="highlight"><pre><span></span>plt.title(&#39;OSM Roads and Community Detection&#39;, {&#39;fontsize&#39;:30}, pad=40)
+<pre><code>plt.title('OSM Roads and Community Detection', {'fontsize':30}, pad=40)
 
 plt.show()
-</pre></div>
-
-
-<h2>Resulting graphic</h2>
-<p><img alt="CommunityMap" src="./images/community.png"></p>
+</code></pre>
+<h2 id="resulting-graphic">Resulting graphic</h2>
+<p><img alt="CommunityMap" src="./images/community.png" /></p>
 <p>A larger version is <a href="images/community.png">here</a></p>
 <p>This accords pretty well with my perception of the local communities.  The number of communities I chose to extract (8) is maybe a little large, as community 6 (light grey) is probably not real.  The differences between the coastal communities (1 - teal, 2 - pink, 8 - dark yellow), and the hinterland community (4 - orange) are very real in real life.</p>
-<h2>Conclusion</h2>
+<h2 id="conclusion">Conclusion</h2>
 <p>For completeness, here are the imports for this Jupyter Notebook 
 (not all are used in the code fragments above, as some are for producing output to support reproducability).</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">osmnx</span> <span class="kn">as</span> <span class="nn">ox</span>
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="kn">as</span> <span class="nn">nx</span>
-<span class="kn">from</span> <span class="nn">networkx.algorithms</span> <span class="kn">import</span> <span class="n">community</span>
+<pre><code>import osmnx as ox
+import networkx as nx
+from networkx.algorithms import community
 
-<span class="kn">import</span> <span class="nn">geopandas</span> <span class="kn">as</span> <span class="nn">gpd</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+import geopandas as gpd
+import pandas as pd
+import numpy as np
 
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="kn">as</span> <span class="nn">mpatches</span>
-<span class="kn">import</span> <span class="nn">matplotlib.colors</span> <span class="kn">as</span> <span class="nn">mpc</span>
-<span class="kn">import</span> <span class="nn">matplotlib.cm</span> <span class="kn">as</span> <span class="nn">mcm</span>
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import matplotlib.colors as mpc
+import matplotlib.cm as mcm
 
-<span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="kn">as</span> <span class="nn">ccrs</span>
-<span class="kn">from</span> <span class="nn">cartopy.mpl.gridliner</span> <span class="kn">import</span> <span class="n">LONGITUDE_FORMATTER</span><span class="p">,</span> <span class="n">LATITUDE_FORMATTER</span>
-<span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">GoogleTiles</span>
+import cartopy.crs as ccrs
+from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
+from cartopy.io.img_tiles import GoogleTiles
 
-<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Polygon</span>
-<span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">LineString</span>
+from shapely.geometry import Polygon
+from shapely.geometry import LineString
 
-<span class="kn">import</span> <span class="nn">itertools</span>
-</pre></div>
+import itertools
+</code></pre>
 	<hr />
       </div>
     </div>

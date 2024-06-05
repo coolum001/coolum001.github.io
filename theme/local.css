@@ -1,5 +1,13 @@
-/* Styling for Nav bar. Bg color, link color etc */
+/* supress Pilcrow */
 
+.anchor-link{
+    font-size: 0;
+}
+
+
+
+/* Styling for Nav bar. Bg color, link color etc */
+ 
 .blog-header {
   position: relative;
   padding: 16px 0;

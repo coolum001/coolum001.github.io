@@ -108,12 +108,12 @@ Filed under <a href="../category/cartopy.html">Cartopy</a>
 </p>
       </div>
       <div class="article-content span8">
-	<h1>More Cartopy Tiles Examples</h1>
-<h2>Introduction</h2>
+	<h1 id="more-cartopy-tiles-examples">More Cartopy Tiles Examples</h1>
+<h2 id="introduction">Introduction</h2>
 <p>A previous post provided examples of Cartopy graphics, and its support for raster tiles.  This post will continue the theme, and provide more examples.</p>
-<h2>Google Maps</h2>
+<h2 id="google-maps">Google Maps</h2>
 <p>A small example:</p>
-<div class="highlight"><pre><span></span>    fig = plt.figure(figsize=(10,10))
+<pre><code>    fig = plt.figure(figsize=(10,10))
 
     tiler = GoogleTiles()
     mercator = tiler.crs
@@ -125,17 +125,15 @@ Filed under <a href="../category/cartopy.html">Cartopy</a>
     ax.add_image(tiler, zoom )
 
     # even 1:10m are too coarse for .2 degree square
-    #ax.coastlines(&#39;10m&#39;)
+    #ax.coastlines('10m')
 
     home_lat, home_lon = -26.5258277,153.0912987
     # Add a marker for home
-    plt.plot(home_lon, home_lat, marker=&#39;o&#39;, color=&#39;red&#39;, markersize=5,
+    plt.plot(home_lon, home_lat, marker='o', color='red', markersize=5,
              alpha=0.7, transform=ccrs.Geodetic())
 
     plt.show()
-</pre></div>
-
-
+</code></pre>
 <p>After creating the matplotlib <code>figure</code>, we ask Cartopy to create a GoogleTiles object,  We get the Coordinate Reference System (CRS) that the tiling service
 uses, and create a Cartopy-aware Axes object using the CRS.  We are pre-judging the system a little, in that the variable name <code>mercator</code> relies on us knowing
 Google uses a Mercator projection (but Google could change tomorrow, and the code would work).</p>
@@ -146,11 +144,11 @@ don't match up to what Google gives us, so we skip drawing them.  I don't know i
 Then to demonstrate that this image can be used as an underlay for more graphics, I draw a red dot near where I live.  Once again, I have to be
 careful to tell the Axes object that the coordinates I am feeding in are lat/lon coordinates.</p>
 <p>The end result is below.</p>
-<p><img alt="Cartopy Google Tile Example" src="../images/googletile.png"></p>
-<h2>Stamen Terrain</h2>
+<p><img alt="Cartopy Google Tile Example" src="../images/googletile.png" /></p>
+<h2 id="stamen-terrain">Stamen Terrain</h2>
 <p>For some visualizations, having the underlying terrain visible would be more important that the cultural data of the Google Map Tile.  Cartopy supports an interface to
 Stamen Terrain tiles services.  The example is very similar to the one above</p>
-<div class="highlight"><pre><span></span>    fig = plt.figure(figsize=(10,10))
+<pre><code>    fig = plt.figure(figsize=(10,10))
 
     tiler = StamenTerrain()
     mercator = tiler.crs
@@ -162,21 +160,19 @@ Stamen Terrain tiles services.  The example is very similar to the one above</p>
     ax.add_image(tiler, zoom )
 
     # even 1:10m are too coarse for .2 degree square
-    #ax.coastlines(&#39;10m&#39;)
+    #ax.coastlines('10m')
 
     home_lat, home_lon = -26.5258277,153.0912987
     # Add a marker for home
-    plt.plot(home_lon, home_lat, marker=&#39;o&#39;, color=&#39;red&#39;, markersize=5,
+    plt.plot(home_lon, home_lat, marker='o', color='red', markersize=5,
              alpha=0.7, transform=ccrs.Geodetic())
 
     plt.show()
-</pre></div>
-
-
+</code></pre>
 <p>The end result is below.</p>
-<p><img alt="Cartopy Stamen Tile Example" src="../images/stamen01.png"></p>
+<p><img alt="Cartopy Stamen Tile Example" src="../images/stamen01.png" /></p>
 <p>To illustrate a zoomed-back-out use of this service, in the next example, we show the whole of Australia.</p>
-<div class="highlight"><pre><span></span>    fig = plt.figure(figsize=(10,10))
+<pre><code>    fig = plt.figure(figsize=(10,10))
 
     tiler = StamenTerrain()
     mercator = tiler.crs
@@ -186,43 +182,39 @@ Stamen Terrain tiles services.  The example is very similar to the one above</p>
     zoom = 6
     ax.add_image(tiler, zoom )
 
-    ax.coastlines(&#39;10m&#39;)
+    ax.coastlines('10m')
     plt.show()
-</pre></div>
-
-
+</code></pre>
 <p>Note the change in the zoom level.  This gives us the graphic below (with no additions from me, this time).</p>
-<p><img alt="Cartopy Stamen Tile Australia Example" src="../images/stamen02.png"></p>
-<h2>Imports</h2>
+<p><img alt="Cartopy Stamen Tile Australia Example" src="../images/stamen02.png" /></p>
+<h2 id="imports">Imports</h2>
 <p>Just for completeness, here are the imports from the Notebook that holds all the code above (and some code to come)
 (some are used only to support print-outs that define the environment for reproducibility purposes) :</p>
-<div class="highlight"><pre><span></span>    <span class="c1"># all imports should go here</span>
+<pre><code>    # all imports should go here
 
-    <span class="kn">import</span> <span class="nn">sys</span>
-    <span class="kn">import</span> <span class="nn">os</span>
-    <span class="kn">import</span> <span class="nn">subprocess</span>
-    <span class="kn">import</span> <span class="nn">datetime</span>
-    <span class="kn">import</span> <span class="nn">platform</span>
+    import sys
+    import os
+    import subprocess
+    import datetime
+    import platform
 
-    <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+    import pandas as pd
+    import matplotlib.pyplot as plt
 
-    <span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="kn">as</span> <span class="nn">ccrs</span>
-    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">OSM</span>
-    <span class="kn">import</span> <span class="nn">cartopy.feature</span> <span class="kn">as</span> <span class="nn">cfeature</span>
-    <span class="kn">from</span> <span class="nn">cartopy.io</span> <span class="kn">import</span> <span class="n">shapereader</span>
-    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">StamenTerrain</span>
-    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">GoogleTiles</span>
-    <span class="kn">from</span> <span class="nn">owslib.wmts</span> <span class="kn">import</span> <span class="n">WebMapTileService</span>
+    import cartopy.crs as ccrs
+    from cartopy.io.img_tiles import OSM
+    import cartopy.feature as cfeature
+    from cartopy.io import shapereader
+    from cartopy.io.img_tiles import StamenTerrain
+    from cartopy.io.img_tiles import GoogleTiles
+    from owslib.wmts import WebMapTileService
 
-    <span class="kn">from</span> <span class="nn">matplotlib.path</span> <span class="kn">import</span> <span class="n">Path</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.patheffects</span> <span class="kn">as</span> <span class="nn">PathEffects</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="kn">as</span> <span class="nn">mpatches</span>
+    from matplotlib.path import Path
+    import matplotlib.patheffects as PathEffects
+    import matplotlib.patches as mpatches
 
-    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-</pre></div>
-
-
+    import numpy as np
+</code></pre>
 <p>The notebook that has all the code is <a href="../notebooks/WorldChoroplethNotebook.html">here</a></p> 
 	<a class="btn btn-mini xsmall" href="../cartopytiles.html">
           <i class="icon-comment"></i> Comment </a>

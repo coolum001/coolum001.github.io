@@ -106,21 +106,21 @@ Filed under <a href="./category/fastai.html">fastai</a>
       </div>
       
       <div class="span8">
-	<h1>Adventures in Cloudland</h1>
-<h2>Introduction</h2>
+	<h1 id="adventures-in-cloudland">Adventures in Cloudland</h1>
+<h2 id="introduction">Introduction</h2>
 <p>As described in previous blog posts, lately I have been dipping my toe into Machine Learning (ML). This blog post will be a high level overview of my attempts to host a large ML web app on four different cloud providers.  Not much code in this blog post, but a description of the gotchas on the way.</p>
-<h2>Background</h2>
+<h2 id="background">Background</h2>
 <p>The fastai Machine Learning course I can strongly recommend: <a href="https://course.fast.ai/">fastai course, version 3</a>. The good people at the Coding from Beach Meetup <a href="https://www.meetup.com/en-AU/Coding-from-Beach/">Coding from Beach</a>
 organized a set of workshops, for interested people to work through the video lectures as a group.</p>
 <p>As an exercise, I replicated one of the examples in the course, where you present an image, and a Convolutional Neural Network (CNN) outputs the likelihood / certainty / probability that the image contains one of a set of pre-defined objects.  The course example categories were breeds of cat;  I decided to develop a recognizer for the Australian Museum 30 most common urban birds.</p>
 <p>To train a CNN, you need a large number of pre-labelled images.  Thanks to Google Image search, I was able to get large numbers of images for each bird species.  Large amounts of CNN training later, and a rapid learning uptake (mostly via StackOverflow)  of my Python web-backend of choice (Flask), I got an web app that could be very confident when given a photo of a Rainbow Lorikeet.</p>
-<p><img alt="BirdApp1" src="./images/rainbow.png"></p>
+<p><img alt="BirdApp1" src="./images/rainbow.png" /></p>
 <p>But, like me, was a little less sure about black birds.</p>
-<p><img alt="BirdApp1" src="./images/raven.png"></p>
-<h2>Vanity of vanities! All is vanity</h2>
+<p><img alt="BirdApp1" src="./images/raven.png" /></p>
+<h2 id="vanity-of-vanities-all-is-vanity">Vanity of vanities! All is vanity</h2>
 <p>I was inordinately proud of this web app, and immediately thought about web hosting.  Being a cheap bastard, I wanted to do it for as close as possible for free.</p>
 <p>There was a recommendation on the reddit Python forum for a hosting / cloud company called <a href="https://www.pythonanywhere.com/">PythonAnywhere</a>.</p>
-<h3>PythonAnywhere</h3>
+<h3 id="pythonanywhere">PythonAnywhere</h3>
 <p>I can strongly recommend PythonAnywhere for vanilla-flavour Python-based web app hosting.  The main reasons are:</p>
 <ol>
 <li>
@@ -131,61 +131,52 @@ organized a set of workshops, for interested people to work through the video le
 </li>
 </ol>
 <p>I had a couple of happy little mistakes along the way (as Bob Ross would say).  I initially decide to replicate exactly my development environment by running <code>pip freeze</code> on my dev machine, and <code>pip -f</code> on the host machine.  This it turned out was foolish, because I develop under Windows, and deploy to Linux.  I fixed this by using a <code>requirements.txt</code> file that just specified package names (and not versions), except for the fastai and pytorch versions I needed. </p>
-<h3>Cloud Giants</h3>
+<h3 id="cloud-giants">Cloud Giants</h3>
 <p>So then I set my sights on the giants of the Cloud: AWS, Microsoft Azure, and Google Cloud.  Again (being a  cheap bastard), I cranked up free accounts on all.  Again, I learned that my app was too large for this.</p>
 <p>Both Azure and Google know about Python 3 (although Google internally uses Python 2 - spit), and taking an app from a <code>Git</code> repository, but the process of running up the environment (via <code>PIP</code>) always fell over in both providers with memory (or maybe disk limitations).  I could have moved to more expansive (read expensive) accounts, but decided against this, as I had heard horror stories of unexpected Cloud bills, due to some mis-configuration by the end-user.</p>
 <p>As an example of unexpected consequences, at one stage Azure offered me the option to crank up a Azure Cloud Shell (CLI), which I activated.  Later I noticed in the Azure console that I had a storage account.</p>
-<p><img alt="azurecli1" src="./images/azurecli1.png"></p>
+<p><img alt="azurecli1" src="./images/azurecli1.png" /></p>
 <p>Where did that come from, I wondered: from my request for a Cloud Shell was the answer.</p>
-<p><img alt="azurecli2" src="./images/azurecli2.png"></p>
+<p><img alt="azurecli2" src="./images/azurecli2.png" /></p>
 <p>I wonder how big this storage is, I wondered: could be quite large I found - 6 GB is quite large by my standards.</p>
-<p><img alt="azurecli3" src="./images/azurecli3.png"></p>
+<p><img alt="azurecli3" src="./images/azurecli3.png" /></p>
 <p>Fortunately, the costs are not high (yet)</p>
-<p><img alt="azurecli4" src="./images/azurecli4.png"></p>
-<h2>Plan B</h2>
+<p><img alt="azurecli4" src="./images/azurecli4.png" /></p>
+<h2 id="plan-b">Plan B</h2>
 <p>So at this stage, I decided it was time to learn some new technology (maybe way past time).  All of Google Cloud, Amazon Web Services (AWS) and Microsoft Azure know about Docker images, and running them up as a web server.</p>
-<h3>Onwards to Docker</h3>
+<h3 id="onwards-to-docker">Onwards to Docker</h3>
 <p>Setting up a Docker image was relatively straight forward, but again there some glitches.  I chose the <code>python:3.7-slim</code> base image from Docker, and then discovered that the install process of <code>pytorch</code> needed some C libraries to be complied.  This then needed some C <code>.h</code> files to be installed.  Oh, and there was no C compiler, so that had to be installed as well.</p>
 <p>My <code>Dockerfile</code> looks like:</p>
-<div class="highlight"><pre><span></span>#  get python
-FROM python:3.7-slim
-
-# set working directory to /app
-WORKDIR /app
-
-# copy current directory to container at /app
-COPY . /app
-
-# install gcc
-RUN apt-get update -y 
+<p>```</p>
+<h1 id="get-python">get python</h1>
+<p>FROM python:3.7-slim</p>
+<h1 id="set-working-directory-to-app">set working directory to /app</h1>
+<p>WORKDIR /app</p>
+<h1 id="copy-current-directory-to-container-at-app">copy current directory to container at /app</h1>
+<p>COPY . /app</p>
+<h1 id="install-gcc">install gcc</h1>
+<p>RUN apt-get update -y 
 RUN apt-get install  -y --no-install-recommends gcc
-RUN apt-get install -y libc-dev
-
-# install packages
-RUN pip install --trusted-host pypi.python.org -r requirements.txt
-
-# make port 80 avaiable 
-EXPOSE 80
-
-
-# run app.py inside container on launch
-CMD [&quot;python&quot;, &quot;app.py&quot;]
-</pre></div>
-
-
+RUN apt-get install -y libc-dev</p>
+<h1 id="install-packages">install packages</h1>
+<p>RUN pip install --trusted-host pypi.python.org -r requirements.txt</p>
+<h1 id="make-port-80-avaiable">make port 80 avaiable</h1>
+<p>EXPOSE 80</p>
+<h1 id="run-apppy-inside-container-on-launch">run app.py inside container on launch</h1>
+<p>CMD ["python", "app.py"]
+```</p>
 <p>My <code>requirements.txt</code> file looks like:</p>
-<div class="highlight"><pre><span></span>flask==1.0.2
+<p>```
+flask==1.0.2
 flask-wtf
 werkzeug&gt;=0.15.3
-fastai&gt;=1.0.52
-#
-torch
-</pre></div>
-
-
+fastai&gt;=1.0.52</p>
+<h1 id="_1"></h1>
+<p>torch
+```</p>
 <p>Note the <code>werkzeug&gt;=0.15.3</code>: Github complains if you use a lower version, due to security issues.</p>
 <p>Now I suspect that I should have started with the pytorch base image, but "I am in blood Stepped in so far that should I wade no more. Returning were as tedious as go o'er.".  I had something that worked.</p>
-<h3>Docker Deployment</h3>
+<h3 id="docker-deployment">Docker Deployment</h3>
 <p>From here on, it was pretty smooth: all of AWS, Google Cloud, and Microsoft Azure know about taking a Docker image, and running it up. Both Google and Microsoft have their own Docker image repositories, AWS is happy to take your image from DockerHub.</p>
 <p>Again some gotchas:  </p>
 <ul>
@@ -195,21 +186,21 @@ torch
 <li>The basic Azure payment plan I used did not support "always on", so a cold start of my app take 8 minutes or more!</li>
 </ul>
 <p>I had some problem with my AWS account in getting to use Elastic Beanstalk  (maybe because my account is a very old retail <code>amazon.com</code> account), but the support from AWS was first rate.  They actually rang me from the USA to help me out!</p>
-<h2>App Management</h2>
+<h2 id="app-management">App Management</h2>
 <p>As a matter of interest, the screenshots below show the management consoles for all the providers.</p>
-<h3>PythonAnywhere</h3>
-<p><img alt="pythonanywhere" src="./images/pythonanywhere.png">
+<h3 id="pythonanywhere_1">PythonAnywhere</h3>
+<p><img alt="pythonanywhere" src="./images/pythonanywhere.png" />
 <a href="images/pythonanywhere.png">Larger</a></p>
-<h3>Google Cloud</h3>
-<p><img alt="googlecloud" src="./images/googlecloud.png">
+<h3 id="google-cloud">Google Cloud</h3>
+<p><img alt="googlecloud" src="./images/googlecloud.png" />
 <a href="images/googlecloud.png">Larger</a></p>
-<h3>Azure</h3>
-<p><img alt="azure" src="./images/azure.png">
+<h3 id="azure">Azure</h3>
+<p><img alt="azure" src="./images/azure.png" />
 <a href="images/azure.png">Larger</a></p>
-<h3>AWS</h3>
-<p><img alt="aws" src="./images/aws.png">
+<h3 id="aws">AWS</h3>
+<p><img alt="aws" src="./images/aws.png" />
 <a href="images/aws.png">Larger</a></p>
-<h2>Conclusions</h2>
+<h2 id="conclusions">Conclusions</h2>
 <p>Some random thoughts:</p>
 <ul>
 <li>

@@ -106,22 +106,20 @@ Filed under <a href="./category/cartopy.html">Cartopy</a>
       </div>
       
       <div class="span8">
-	<h1>Cartopy</h1>
+	<h1 id="cartopy">Cartopy</h1>
 <p>Cartopy is a different style of beast than Basemap.  With Basemap, you explicitly create a map object, and use the methods
 exposed by that object to plot map-related data, or to translate lat/lons to Axes coordinates (depending upon the projection
 you chose when the map was created).  With cartopy, my mental model is that you tell Matplotlib that you want a Cartopy-aware
 Axes object (by specifying a <code>projection</code> argument when the Axes is created). Subsequent operations on that Axes object invoke
 Cartopy 'under-the-blanket'.</p>
 <p>A small example:</p>
-<div class="highlight"><pre><span></span>    ax = plt.axes(projection=ccrs.PlateCarree())
+<pre><code>    ax = plt.axes(projection=ccrs.PlateCarree())
     ax.coastlines()
 
     plt.show()
-</pre></div>
-
-
+</code></pre>
 <p>yields a map that looks like:</p>
-<p><img alt="Cartopy Hello World" src="./images/cartopy01.png"></p>
+<p><img alt="Cartopy Hello World" src="./images/cartopy01.png" /></p>
 <p>And by the way, if you use Cartopy a lot, you will come to know and love the PlateCarree projection.  I had never even
 heard of it by that name before, but I guess that using a French name adds that extra little bit of class!</p>
 <p>Read about it <a href="https://en.wikipedia.org/wiki/Equirectangular_projection">here</a></p>
@@ -130,46 +128,42 @@ I'll take a small area around where I live, and show how various images can be o
 <p>Cartopy comes with a 'stock image' that provides a soothing land/water visual indication;  a bit fuzzy, but still nice to look at.
 Bear in mind that I am zoomed in a long way, beyond the design parameters for <code>stock_img()</code>.  I am plotting the coastlines at 1:10Million scale.
 The code:</p>
-<div class="highlight"><pre><span></span>    ax = plt.axes(projection=ccrs.PlateCarree())
+<pre><code>    ax = plt.axes(projection=ccrs.PlateCarree())
     ax.set_extent((150, 155, -30, -23))
     ax.stock_img()
-    ax.coastlines(resolution=&#39;10m&#39;,)
+    ax.coastlines(resolution='10m',)
     ax.gridlines(draw_labels=True, xlocs=[150, 152, 154, 155])
     plt.show()
-</pre></div>
-
-
+</code></pre>
 <p>gives us a map that looks like:</p>
-<p><img alt="Cartopy Hello World" src="./images/cartopy02.png"></p>
+<p><img alt="Cartopy Hello World" src="./images/cartopy02.png" /></p>
 <p>We can add some more vector data to overlay the stcok image by added the code below. Cartopy provides easy access to Natural Earth datasets.
 Note the <code>facecolor='none'</code> in the definition of <code>states_provinces</code>;  I just want to plot the borders of Queensland, not shade it a color.</p>
-<div class="highlight"><pre><span></span>    # Create a feature for States/Admin 1 regions at 1:10m from Natural Earth
+<pre><code>    # Create a feature for States/Admin 1 regions at 1:10m from Natural Earth
     states_provinces = cfeature.NaturalEarthFeature(
-        category=&#39;cultural&#39;,
-        name=&#39;admin_1_states_provinces_lines&#39;,
-        scale=&#39;10m&#39;,
-        facecolor=&#39;none&#39;)
+        category='cultural',
+        name='admin_1_states_provinces_lines',
+        scale='10m',
+        facecolor='none')
 
     rivers = cfeature.NaturalEarthFeature(
-        category=&#39;physical&#39;,
-        name=&#39;rivers_lake_centerlines&#39;,
-        scale=&#39;10m&#39;,
-        facecolor=&#39;none&#39;)
+        category='physical',
+        name='rivers_lake_centerlines',
+        scale='10m',
+        facecolor='none')
 
-    ax.coastlines(resolution=&#39;10m&#39;,)
-    ax.add_feature(states_provinces, edgecolor=&#39;gray&#39;)
-    ax.add_feature(rivers, edgecolor=&#39;blue&#39;)
-</pre></div>
-
-
+    ax.coastlines(resolution='10m',)
+    ax.add_feature(states_provinces, edgecolor='gray')
+    ax.add_feature(rivers, edgecolor='blue')
+</code></pre>
 <p>This gives us a map that looks like:</p>
-<p><img alt="Cartopy SQ Qld" src="./images/cartopy03.png"></p>
+<p><img alt="Cartopy SQ Qld" src="./images/cartopy03.png" /></p>
 <p>One small niggling worry is that I only specified the projection I am using once (by the <code>projection=ccrs.PlateCarree()</code> parameter
 in the Axes creation).  I don't know whether this only works because Natural Earth also uses PlateCarree as its default projection,
 or if because Cartopy re-projects all the feature data under-the-hood.  I plan to do some experiments in the future, but for my purposes,
 PlateCarree is fine (I am zoomed in a long way). </p>
 <p>In order to plot geo-data in all the current cultural context, Cartopy allows easy access to Open Street Map (OSM) tiles.  The code below:</p>
-<div class="highlight"><pre><span></span>    fig = plt.figure(figsize=(10,10))
+<pre><code>    fig = plt.figure(figsize=(10,10))
 
     imagery = OSM()
 
@@ -180,46 +174,42 @@ PlateCarree is fine (I am zoomed in a long way). </p>
     zoom = 12
     ax.add_image(imagery, zoom)
 
-    plt.title(&#39;Open Street Map and Cartopy&#39;)
+    plt.title('Open Street Map and Cartopy')
     plt.show()
-</pre></div>
-
-
+</code></pre>
 <p>gives us:</p>
-<p><img alt="Cartopy OSM" src="./images/cartopy04.png"></p>
+<p><img alt="Cartopy OSM" src="./images/cartopy04.png" /></p>
 <p>One point to note is the zoom parameter in the <code>add_image()</code> call.  This sets the level of detail that OSM returns.  I am sure that there
 is an algorithm that determins the best value, given the extent of the map, but I too lazy to pursue to (I just experimented till I got
 the right level of detail).  The zoom parameter is not well documented in the Cartopy User Guide (in my opinion).  If you set an OSM zoom too big,
 you can't read the raster text;  too small, and everything is fuzzy.</p>
 <p>I'll wind this post up here, but there is more Cartopy goodness to come. Just for completeness, here are the imports for all the code above (and some code to come)
 (some are used only to support print-outs that define the environment for reproducibility purposes) :</p>
-<div class="highlight"><pre><span></span>    <span class="c1"># all imports should go here</span>
+<pre><code>    # all imports should go here
 
-    <span class="kn">import</span> <span class="nn">sys</span>
-    <span class="kn">import</span> <span class="nn">os</span>
-    <span class="kn">import</span> <span class="nn">subprocess</span>
-    <span class="kn">import</span> <span class="nn">datetime</span>
-    <span class="kn">import</span> <span class="nn">platform</span>
+    import sys
+    import os
+    import subprocess
+    import datetime
+    import platform
 
-    <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>      
-    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+    import pandas as pd      
+    import matplotlib.pyplot as plt
 
-    <span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="kn">as</span> <span class="nn">ccrs</span>
-    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">OSM</span>
-    <span class="kn">import</span> <span class="nn">cartopy.feature</span> <span class="kn">as</span> <span class="nn">cfeature</span>
-    <span class="kn">from</span> <span class="nn">cartopy.io</span> <span class="kn">import</span> <span class="n">shapereader</span>
-    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">StamenTerrain</span>
-    <span class="kn">from</span> <span class="nn">cartopy.io.img_tiles</span> <span class="kn">import</span> <span class="n">GoogleTiles</span>
-    <span class="kn">from</span> <span class="nn">owslib.wmts</span> <span class="kn">import</span> <span class="n">WebMapTileService</span>
+    import cartopy.crs as ccrs
+    from cartopy.io.img_tiles import OSM
+    import cartopy.feature as cfeature
+    from cartopy.io import shapereader
+    from cartopy.io.img_tiles import StamenTerrain
+    from cartopy.io.img_tiles import GoogleTiles
+    from owslib.wmts import WebMapTileService
 
-    <span class="kn">from</span> <span class="nn">matplotlib.path</span> <span class="kn">import</span> <span class="n">Path</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.patheffects</span> <span class="kn">as</span> <span class="nn">PathEffects</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.patches</span> <span class="kn">as</span> <span class="nn">mpatches</span>
+    from matplotlib.path import Path
+    import matplotlib.patheffects as PathEffects
+    import matplotlib.patches as mpatches
 
-    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-</pre></div>
-
-
+    import numpy as np
+</code></pre>
 <p>The notebook that has all the code is <a href="./notebooks/WorldChoroplethNotebook.html">here</a></p>
 	<hr />
       </div>
