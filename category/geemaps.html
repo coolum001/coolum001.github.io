@@ -231,7 +231,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [135]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [23]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> lab_black
@@ -285,7 +285,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [136]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [24]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> watermark
@@ -350,7 +350,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [137]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [25]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">ee</span>
@@ -359,6 +359,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <span class="kn">import</span> <span class="nn">geemap.colormaps</span> <span class="k">as</span> <span class="nn">cm</span>
 
 <span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="kn">import</span> <span class="n">LinearSegmentedColormap</span>
+
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">IFrame</span>
 </pre></div>
 </div>
 </div>
@@ -429,7 +431,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [138]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [26]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="p">[</span>
@@ -473,7 +475,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[138]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[26]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
 <pre>['dem', 'ndvi', 'ndwi']</pre>
 </div>
@@ -496,7 +498,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [139]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [27]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">cm</span><span class="o">.</span><span class="n">palettes</span><span class="o">.</span><span class="n">ndvi</span>
@@ -536,7 +538,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[139]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[27]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
 <pre>('FFFFFF',
  'CE7E45',
@@ -575,7 +577,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [140]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [28]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">hex_to_rgb</span><span class="p">(</span><span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
@@ -673,7 +675,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [141]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [29]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># convert NDVI palette (hex color string) to a list of RGB tuples</span>
@@ -720,7 +722,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[141]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[29]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
 <div style="vertical-align: middle;"><strong>ndvi</strong> </div><div class="cmap"><img alt="ndvi colormap" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAABACAYAAABsv8+/AAAAE3RFWHRUaXRsZQBuZHZpIGNvbG9ybWFwMvN5vwAAABl0RVh0RGVzY3JpcHRpb24AbmR2aSBjb2xvcm1hcLlB6ScAAAAwdEVYdEF1dGhvcgBNYXRwbG90bGliIHYzLjguNCwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZ2TOsrQAAAAydEVYdFNvZnR3YXJlAE1hdHBsb3RsaWIgdjMuOC40LCBodHRwczovL21hdHBsb3RsaWIub3JnSmgtkwAAAaRJREFUeJzt1s1JREEYRNEacSWKuBTDMyQTMQdzcCe4E5FR50ecQeQZRTdCnZNAQX/Q3NWyLEsmeLy7nTGT0+PT8I3L67PhG0lycXM1fGN7fhy+kST3bw/DN5736+EbSbI9/A7f2HwPn0iSfHzN2VnvVsM3XjbDJ5Ikr5/jN37ep3zLyYw3m3D7JMl+wsZuwkaSHObMnMyZAQD+EwEAAIUEAAAUEgAAUEgAAEAhAQAAhQQAABQSAABQSAAAQCEBAACFBAAAFBIAAFBIAABAIQEAAIUEAAAUEgAAUEgAAEAhAQAAhQQAABQSAABQSAAAQCEBAACFBAAAFBIAAFBIAABAIQEAAIUEAAAUEgAAUEgAAEAhAQAAhQQAABQSAABQSAAAQCEBAACFBAAAFBIAAFBIAABAIQEAAIUEAAAUEgAAUEgAAEAhAQAAhQQAABQSAABQSAAAQCEBAACFBAAAFBIAAFBIAABAIQEAAIUEAAAUEgAAUEgAAEAhAQAAhQQAABQSAABQSAAAQCEBAACFBAAAFBIAAFBIAABAIQEAAIUEAAAU+gNtUyOUWP/A+wAAAABJRU5ErkJggg==" style="border: 1px solid #555;" title="ndvi"/></div><div style="vertical-align: middle; max-width: 514px; display: flex; justify-content: space-between;"><div style="float: left;"><div style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #ffffffff;" title="#ffffffff"></div> under</div><div style="margin: 0 auto; display: inline-block;">bad <div style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #00000000;" title="#00000000"></div></div><div style="float: right;">over <div style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #011301ff;" title="#011301ff"></div></div>
 </div>
@@ -743,7 +745,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [142]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [30]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># convert NDWI palette (hex color string) to a list of RGB tuples</span>
@@ -790,7 +792,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[142]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[30]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
 <div style="vertical-align: middle;"><strong>ndwi</strong> </div><div class="cmap"><img alt="ndwi colormap" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAABACAYAAABsv8+/AAAAE3RFWHRUaXRsZQBuZHdpIGNvbG9ybWFw832mfwAAABl0RVh0RGVzY3JpcHRpb24AbmR3aSBjb2xvcm1hcHjPNucAAAAwdEVYdEF1dGhvcgBNYXRwbG90bGliIHYzLjguNCwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZ2TOsrQAAAAydEVYdFNvZnR3YXJlAE1hdHBsb3RsaWIgdjMuOC40LCBodHRwczovL21hdHBsb3RsaWIub3JnSmgtkwAAAYRJREFUeJzt1gtKQ0EQBdHW/e9TlMSo+fqBuIo3iHXOBi7NMFAPu6eP+yxwvn6vmJnL7WfzjdNtzS3vn9vf8rZgY2bmsOBdXhfdsv/c/v1fFv2X58vXkp0V97ye1tyyYud8uW6+MTMzt+P/2JiZ+/mw/cZxt/nGzMyc9ktmHpesAAB/igAAgCABAABBAgAAggQAAAQJAAAIEgAAECQAACBIAABAkAAAgCABAABBAgAAggQAAAQJAAAIEgAAECQAACBIAABAkAAAgCABAABBAgAAggQAAAQJAAAIEgAAECQAACBIAABAkAAAgCABAABBAgAAggQAAAQJAAAIEgAAECQAACBIAABAkAAAgCABAABBAgAAggQAAAQJAAAIEgAAECQAACBIAABAkAAAgCABAABBAgAAggQAAAQJAAAIEgAAECQAACBIAABAkAAAgCABAABBAgAAggQAAAQJAAAIEgAAECQAACBIAABAkAAAgCABAABBAgAAggQAAAQJAAAIEgAAEPQLBTU4EaUJRfUAAAAASUVORK5CYII=" style="border: 1px solid #555;" title="ndwi"/></div><div style="vertical-align: middle; max-width: 514px; display: flex; justify-content: space-between;"><div style="float: left;"><div style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #ece7f2ff;" title="#ece7f2ff"></div> under</div><div style="margin: 0 auto; display: inline-block;">bad <div style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #00000000;" title="#00000000"></div></div><div style="float: right;">over <div style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #023858ff;" title="#023858ff"></div></div>
 </div>
@@ -857,7 +859,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [143]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [31]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">ee</span><span class="o">.</span><span class="n">Authenticate</span><span class="p">()</span>
@@ -897,7 +899,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[143]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[31]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
 <pre>True</pre>
 </div>
@@ -909,7 +911,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [144]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [32]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">()</span>
@@ -966,7 +968,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [145]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [33]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">toa_collection_name</span> <span class="o">=</span> <span class="s2">"LANDSAT/LC08/C02/T1_TOA"</span>
@@ -1023,7 +1025,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [146]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [34]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">start_date</span> <span class="o">=</span> <span class="s2">"2024-01-01"</span>
@@ -1083,7 +1085,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [147]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [35]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span>
@@ -1149,7 +1151,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [148]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [36]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># get a point close to home</span>
@@ -1221,7 +1223,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [149]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [37]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># get the median value for each pixel (hopefully means clouds dont show)</span>
@@ -1279,7 +1281,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [150]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [38]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># show metadata relating to best image</span>
@@ -1355,7 +1357,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [151]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [39]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># set up for true color image</span>
@@ -1420,7 +1422,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [152]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [40]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="nb">map</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
@@ -1468,10 +1470,18 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [153]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [41]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="nb">map</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Some browsers can't render Maps after Pelican processing for Blog</span>
+<span class="c1"># so save as html, and display that</span>
+
+<span class="n">save_url_1</span> <span class="o">=</span> <span class="s2">"map01.html"</span>
+<span class="nb">map</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span>
+    <span class="n">save_url_1</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"True Color"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">IFrame</span><span class="p">(</span><span class="s2">"map01.png"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">700</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1508,191 +1518,21 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[153]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[41]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<iframe "allowfullscreen"="" "mozallowfullscreen"="" "webkitallowfullscreen"="" height="600" srcdoc="&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-    
-    &lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
-    
-        &lt;script&gt;
-            L_NO_TOUCH = false;
-            L_DISABLE_3D = false;
-        &lt;/script&gt;
-    
-    &lt;style&gt;html, body {width: 100%;height: 100%;margin: 0;padding: 0;}&lt;/style&gt;
-    &lt;style&gt;#map {position:absolute;top:0;bottom:0;right:0;left:0;}&lt;/style&gt;
-    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js&quot;&gt;&lt;/script&gt;
-    &lt;script src=&quot;https://code.jquery.com/jquery-3.7.1.min.js&quot;&gt;&lt;/script&gt;
-    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js&quot;&gt;&lt;/script&gt;
-    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css&quot;/&gt;
-    
-            &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,
-                initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; /&gt;
-            &lt;style&gt;
-                #map_1481ade2f4111e72134955cf14f2c9a1 {
-                    position: relative;
-                    width: 100.0%;
-                    height: 100.0%;
-                    left: 0.0%;
-                    top: 0.0%;
-                }
-                .leaflet-container { font-size: 1rem; }
-            &lt;/style&gt;
-        
-    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.min.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.css&quot;/&gt;
-    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.css&quot;/&gt;
-    &lt;script src=&quot;https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css&quot;/&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    
-    
-            &lt;div class=&quot;folium-map&quot; id=&quot;map_1481ade2f4111e72134955cf14f2c9a1&quot; &gt;&lt;/div&gt;
-        
-&lt;/body&gt;
-&lt;script&gt;
-    
-    
-            var map_1481ade2f4111e72134955cf14f2c9a1 = L.map(
-                &quot;map_1481ade2f4111e72134955cf14f2c9a1&quot;,
-                {
-                    center: [20.0, 0.0],
-                    crs: L.CRS.EPSG3857,
-                    zoom: 2,
-                    zoomControl: true,
-                    preferCanvas: false,
-                    eeInitialize: true,
-                    addGoogleMap: false,
-                    pluginLatlngpopup: false,
-                    pluginFullscreen: true,
-                    pluginDraw: true,
-                    DrawExport: false,
-                    pluginMinimap: false,
-                    locateControl: false,
-                    searchControl: true,
-                    layersControl: true,
-                }
-            );
-
-            
-
-        
-    
-            var tile_layer_b78498948f654cc856cf5ea4da713a6f = L.tileLayer(
-                &quot;https://tile.openstreetmap.org/{z}/{x}/{y}.png&quot;,
-                {&quot;attribution&quot;: &quot;\u0026copy; \u003ca href=\&quot;https://www.openstreetmap.org/copyright\&quot;\u003eOpenStreetMap\u003c/a\u003e contributors&quot;, &quot;detectRetina&quot;: false, &quot;maxNativeZoom&quot;: 19, &quot;maxZoom&quot;: 30, &quot;minZoom&quot;: 0, &quot;noWrap&quot;: false, &quot;opacity&quot;: 1, &quot;subdomains&quot;: &quot;abc&quot;, &quot;tms&quot;: false}
-            );
-        
-    
-            tile_layer_b78498948f654cc856cf5ea4da713a6f.addTo(map_1481ade2f4111e72134955cf14f2c9a1);
-        
-    
-            L.control.fullscreen(
-                {&quot;forceSeparateButton&quot;: false, &quot;position&quot;: &quot;topleft&quot;, &quot;title&quot;: &quot;Full Screen&quot;, &quot;titleCancel&quot;: &quot;Exit Full Screen&quot;}
-            ).addTo(map_1481ade2f4111e72134955cf14f2c9a1);
-        
-    
-            var options = {
-              position: &quot;topleft&quot;,
-              draw: {},
-              edit: {},
-            }
-                // FeatureGroup is to store editable layers.
-                var drawnItems_draw_control_ece164b596a2cb292e9ddee8008cba3b =
-                    new L.featureGroup().addTo(
-                        map_1481ade2f4111e72134955cf14f2c9a1
-                    );
-
-            options.edit.featureGroup = drawnItems_draw_control_ece164b596a2cb292e9ddee8008cba3b;
-            var draw_control_ece164b596a2cb292e9ddee8008cba3b = new L.Control.Draw(
-                options
-            ).addTo( map_1481ade2f4111e72134955cf14f2c9a1 );
-            map_1481ade2f4111e72134955cf14f2c9a1.on(L.Draw.Event.CREATED, function(e) {
-                var layer = e.layer,
-                    type = e.layerType;
-                var coords = JSON.stringify(layer.toGeoJSON());
-                layer.on('click', function() {
-                    alert(coords);
-                    console.log(coords);
-                });
-                drawnItems_draw_control_ece164b596a2cb292e9ddee8008cba3b.addLayer(layer);
-            });
-            map_1481ade2f4111e72134955cf14f2c9a1.on('draw:created', function(e) {
-                drawnItems_draw_control_ece164b596a2cb292e9ddee8008cba3b.addLayer(e.layer);
-            });
-
-            
-        
-    
-
-            var geocoderOpts_geocoder_e287f0521c988f83712a6fc8fc7c660e = {&quot;collapsed&quot;: true, &quot;defaultMarkGeocode&quot;: true, &quot;position&quot;: &quot;topleft&quot;, &quot;provider&quot;: &quot;nominatim&quot;, &quot;providerOptions&quot;: {}, &quot;zoom&quot;: 11};
-
-            // note: geocoder name should start with lowercase
-            var geocoderName_geocoder_e287f0521c988f83712a6fc8fc7c660e = geocoderOpts_geocoder_e287f0521c988f83712a6fc8fc7c660e[&quot;provider&quot;];
-
-            var customGeocoder_geocoder_e287f0521c988f83712a6fc8fc7c660e = L.Control.Geocoder[ geocoderName_geocoder_e287f0521c988f83712a6fc8fc7c660e ](
-                geocoderOpts_geocoder_e287f0521c988f83712a6fc8fc7c660e['providerOptions']
-            );
-            geocoderOpts_geocoder_e287f0521c988f83712a6fc8fc7c660e[&quot;geocoder&quot;] = customGeocoder_geocoder_e287f0521c988f83712a6fc8fc7c660e;
-
-            L.Control.geocoder(
-                geocoderOpts_geocoder_e287f0521c988f83712a6fc8fc7c660e
-            ).on('markgeocode', function(e) {
-                var zoom = geocoderOpts_geocoder_e287f0521c988f83712a6fc8fc7c660e['zoom'] || map_1481ade2f4111e72134955cf14f2c9a1.getZoom();
-                map_1481ade2f4111e72134955cf14f2c9a1.setView(e.geocode.center, zoom);
-            }).addTo(map_1481ade2f4111e72134955cf14f2c9a1);
-
-        
-    
-            map_1481ade2f4111e72134955cf14f2c9a1.fitBounds(
-                [[20, 0], [20, 0]],
-                {&quot;maxZoom&quot;: 2}
-            );
-        
-    
-            map_1481ade2f4111e72134955cf14f2c9a1.fitBounds(
-                [[-26.5282752, 153.0890232], [-26.5282752, 153.0890232]],
-                {&quot;maxZoom&quot;: 14}
-            );
-        
-    
-            var tile_layer_9b9f569875ab6fd7e2e63c30b5f7ad14 = L.tileLayer(
-                &quot;https://earthengine.googleapis.com/v1/projects/794909123592/maps/c49e0b6fc8195196813edd74a10cebac-060eb836c330603304ddb4cbaddd4281/tiles/{z}/{x}/{y}&quot;,
-                {&quot;attribution&quot;: &quot;Google Earth Engine&quot;, &quot;detectRetina&quot;: false, &quot;maxZoom&quot;: 24, &quot;minZoom&quot;: 0, &quot;noWrap&quot;: false, &quot;opacity&quot;: 1.0, &quot;subdomains&quot;: &quot;abc&quot;, &quot;tms&quot;: false}
-            );
-        
-    
-            tile_layer_9b9f569875ab6fd7e2e63c30b5f7ad14.addTo(map_1481ade2f4111e72134955cf14f2c9a1);
-        
-    
-            var layer_control_3b64ebf788d9dca487b83404cb38f33e_layers = {
-                base_layers : {
-                    &quot;openstreetmap&quot; : tile_layer_b78498948f654cc856cf5ea4da713a6f,
-                },
-                overlays :  {
-                    &quot;Median&quot; : tile_layer_9b9f569875ab6fd7e2e63c30b5f7ad14,
-                },
-            };
-            let layer_control_3b64ebf788d9dca487b83404cb38f33e = L.control.layers(
-                layer_control_3b64ebf788d9dca487b83404cb38f33e_layers.base_layers,
-                layer_control_3b64ebf788d9dca487b83404cb38f33e_layers.overlays,
-                {&quot;autoZIndex&quot;: true, &quot;collapsed&quot;: true, &quot;position&quot;: &quot;topright&quot;}
-            ).addTo(map_1481ade2f4111e72134955cf14f2c9a1);
-
-        
-&lt;/script&gt;
-&lt;/html&gt;" style="border:none !important;" width="100%"></iframe>
+<iframe allowfullscreen="" frameborder="0" height="700" src="map01.png" width="1200"></iframe>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3c3a660c-e8e2-4696-b6d1-d987b98f58f2">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><a href="map01.html">Interactive map here</a></p>
 </div>
 </div>
 </div>
@@ -1716,7 +1556,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [154]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [42]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Calculate normalized difference vegetation index: (NIR - Red) / (NIR + Red).</span>
@@ -1789,10 +1629,18 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [155]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [43]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">m</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Some browsers can't render Maps after Pelican processing for Blog</span>
+<span class="c1"># so save as html, and display that</span>
+
+<span class="n">save_url_2</span> <span class="o">=</span> <span class="s2">"map02.html"</span>
+<span class="n">m</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span>
+    <span class="n">save_url_2</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"ndvi palette"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">IFrame</span><span class="p">(</span><span class="s2">"map02.png"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">700</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1829,191 +1677,21 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[155]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[43]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<iframe "allowfullscreen"="" "mozallowfullscreen"="" "webkitallowfullscreen"="" height="600" srcdoc="&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-    
-    &lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
-    
-        &lt;script&gt;
-            L_NO_TOUCH = false;
-            L_DISABLE_3D = false;
-        &lt;/script&gt;
-    
-    &lt;style&gt;html, body {width: 100%;height: 100%;margin: 0;padding: 0;}&lt;/style&gt;
-    &lt;style&gt;#map {position:absolute;top:0;bottom:0;right:0;left:0;}&lt;/style&gt;
-    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js&quot;&gt;&lt;/script&gt;
-    &lt;script src=&quot;https://code.jquery.com/jquery-3.7.1.min.js&quot;&gt;&lt;/script&gt;
-    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js&quot;&gt;&lt;/script&gt;
-    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css&quot;/&gt;
-    
-            &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,
-                initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; /&gt;
-            &lt;style&gt;
-                #map_9638f8b7b63d32f4bd9e0f07226df12c {
-                    position: relative;
-                    width: 100.0%;
-                    height: 100.0%;
-                    left: 0.0%;
-                    top: 0.0%;
-                }
-                .leaflet-container { font-size: 1rem; }
-            &lt;/style&gt;
-        
-    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.min.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.css&quot;/&gt;
-    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.css&quot;/&gt;
-    &lt;script src=&quot;https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css&quot;/&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    
-    
-            &lt;div class=&quot;folium-map&quot; id=&quot;map_9638f8b7b63d32f4bd9e0f07226df12c&quot; &gt;&lt;/div&gt;
-        
-&lt;/body&gt;
-&lt;script&gt;
-    
-    
-            var map_9638f8b7b63d32f4bd9e0f07226df12c = L.map(
-                &quot;map_9638f8b7b63d32f4bd9e0f07226df12c&quot;,
-                {
-                    center: [20.0, 0.0],
-                    crs: L.CRS.EPSG3857,
-                    zoom: 2,
-                    zoomControl: true,
-                    preferCanvas: false,
-                    eeInitialize: true,
-                    addGoogleMap: false,
-                    pluginLatlngpopup: false,
-                    pluginFullscreen: true,
-                    pluginDraw: true,
-                    DrawExport: false,
-                    pluginMinimap: false,
-                    locateControl: false,
-                    searchControl: true,
-                    layersControl: true,
-                }
-            );
-
-            
-
-        
-    
-            var tile_layer_3cbad7036237e3e8321cce7a7b104e40 = L.tileLayer(
-                &quot;https://tile.openstreetmap.org/{z}/{x}/{y}.png&quot;,
-                {&quot;attribution&quot;: &quot;\u0026copy; \u003ca href=\&quot;https://www.openstreetmap.org/copyright\&quot;\u003eOpenStreetMap\u003c/a\u003e contributors&quot;, &quot;detectRetina&quot;: false, &quot;maxNativeZoom&quot;: 19, &quot;maxZoom&quot;: 30, &quot;minZoom&quot;: 0, &quot;noWrap&quot;: false, &quot;opacity&quot;: 1, &quot;subdomains&quot;: &quot;abc&quot;, &quot;tms&quot;: false}
-            );
-        
-    
-            tile_layer_3cbad7036237e3e8321cce7a7b104e40.addTo(map_9638f8b7b63d32f4bd9e0f07226df12c);
-        
-    
-            L.control.fullscreen(
-                {&quot;forceSeparateButton&quot;: false, &quot;position&quot;: &quot;topleft&quot;, &quot;title&quot;: &quot;Full Screen&quot;, &quot;titleCancel&quot;: &quot;Exit Full Screen&quot;}
-            ).addTo(map_9638f8b7b63d32f4bd9e0f07226df12c);
-        
-    
-            var options = {
-              position: &quot;topleft&quot;,
-              draw: {},
-              edit: {},
-            }
-                // FeatureGroup is to store editable layers.
-                var drawnItems_draw_control_392d820fcbea0d39887c42c58a83ee28 =
-                    new L.featureGroup().addTo(
-                        map_9638f8b7b63d32f4bd9e0f07226df12c
-                    );
-
-            options.edit.featureGroup = drawnItems_draw_control_392d820fcbea0d39887c42c58a83ee28;
-            var draw_control_392d820fcbea0d39887c42c58a83ee28 = new L.Control.Draw(
-                options
-            ).addTo( map_9638f8b7b63d32f4bd9e0f07226df12c );
-            map_9638f8b7b63d32f4bd9e0f07226df12c.on(L.Draw.Event.CREATED, function(e) {
-                var layer = e.layer,
-                    type = e.layerType;
-                var coords = JSON.stringify(layer.toGeoJSON());
-                layer.on('click', function() {
-                    alert(coords);
-                    console.log(coords);
-                });
-                drawnItems_draw_control_392d820fcbea0d39887c42c58a83ee28.addLayer(layer);
-            });
-            map_9638f8b7b63d32f4bd9e0f07226df12c.on('draw:created', function(e) {
-                drawnItems_draw_control_392d820fcbea0d39887c42c58a83ee28.addLayer(e.layer);
-            });
-
-            
-        
-    
-
-            var geocoderOpts_geocoder_e97b622eb314aaf08055166be927ea76 = {&quot;collapsed&quot;: true, &quot;defaultMarkGeocode&quot;: true, &quot;position&quot;: &quot;topleft&quot;, &quot;provider&quot;: &quot;nominatim&quot;, &quot;providerOptions&quot;: {}, &quot;zoom&quot;: 11};
-
-            // note: geocoder name should start with lowercase
-            var geocoderName_geocoder_e97b622eb314aaf08055166be927ea76 = geocoderOpts_geocoder_e97b622eb314aaf08055166be927ea76[&quot;provider&quot;];
-
-            var customGeocoder_geocoder_e97b622eb314aaf08055166be927ea76 = L.Control.Geocoder[ geocoderName_geocoder_e97b622eb314aaf08055166be927ea76 ](
-                geocoderOpts_geocoder_e97b622eb314aaf08055166be927ea76['providerOptions']
-            );
-            geocoderOpts_geocoder_e97b622eb314aaf08055166be927ea76[&quot;geocoder&quot;] = customGeocoder_geocoder_e97b622eb314aaf08055166be927ea76;
-
-            L.Control.geocoder(
-                geocoderOpts_geocoder_e97b622eb314aaf08055166be927ea76
-            ).on('markgeocode', function(e) {
-                var zoom = geocoderOpts_geocoder_e97b622eb314aaf08055166be927ea76['zoom'] || map_9638f8b7b63d32f4bd9e0f07226df12c.getZoom();
-                map_9638f8b7b63d32f4bd9e0f07226df12c.setView(e.geocode.center, zoom);
-            }).addTo(map_9638f8b7b63d32f4bd9e0f07226df12c);
-
-        
-    
-            map_9638f8b7b63d32f4bd9e0f07226df12c.fitBounds(
-                [[20, 0], [20, 0]],
-                {&quot;maxZoom&quot;: 2}
-            );
-        
-    
-            map_9638f8b7b63d32f4bd9e0f07226df12c.fitBounds(
-                [[-26.5282752, 153.0890232], [-26.5282752, 153.0890232]],
-                {&quot;maxZoom&quot;: 14}
-            );
-        
-    
-            var tile_layer_2398e56e6f4344f7c1aae43729f77d70 = L.tileLayer(
-                &quot;https://earthengine.googleapis.com/v1/projects/794909123592/maps/6f5f09ba9258f60f8616366810d4fef1-7107ff149759823356c346f6af6092df/tiles/{z}/{x}/{y}&quot;,
-                {&quot;attribution&quot;: &quot;Google Earth Engine&quot;, &quot;detectRetina&quot;: false, &quot;maxZoom&quot;: 24, &quot;minZoom&quot;: 0, &quot;noWrap&quot;: false, &quot;opacity&quot;: 1.0, &quot;subdomains&quot;: &quot;abc&quot;, &quot;tms&quot;: false}
-            );
-        
-    
-            tile_layer_2398e56e6f4344f7c1aae43729f77d70.addTo(map_9638f8b7b63d32f4bd9e0f07226df12c);
-        
-    
-            var layer_control_cb0c3c74a76aa77f6b97d01025dbbc36_layers = {
-                base_layers : {
-                    &quot;openstreetmap&quot; : tile_layer_3cbad7036237e3e8321cce7a7b104e40,
-                },
-                overlays :  {
-                    &quot;NDVI&quot; : tile_layer_2398e56e6f4344f7c1aae43729f77d70,
-                },
-            };
-            let layer_control_cb0c3c74a76aa77f6b97d01025dbbc36 = L.control.layers(
-                layer_control_cb0c3c74a76aa77f6b97d01025dbbc36_layers.base_layers,
-                layer_control_cb0c3c74a76aa77f6b97d01025dbbc36_layers.overlays,
-                {&quot;autoZIndex&quot;: true, &quot;collapsed&quot;: true, &quot;position&quot;: &quot;topright&quot;}
-            ).addTo(map_9638f8b7b63d32f4bd9e0f07226df12c);
-
-        
-&lt;/script&gt;
-&lt;/html&gt;" style="border:none !important;" width="100%"></iframe>
+<iframe allowfullscreen="" frameborder="0" height="700" src="map02.png" width="1200"></iframe>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b94d6941-326f-4e44-9b56-b252e231be28">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><a href="map02.html">Interactive map here</a></p>
 </div>
 </div>
 </div>
@@ -2045,7 +1723,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [156]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [44]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">cm</span><span class="o">.</span><span class="n">plot_colormap</span><span class="p">(</span><span class="s2">"RdYlGn"</span><span class="p">)</span>
@@ -2108,7 +1786,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [157]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [45]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Display NDVI result on the map.</span>
@@ -2123,7 +1801,60 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     <span class="p">},</span>
     <span class="s2">"NDVI"</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">m</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
+<style>
+                .geemap-dark {
+                    --jp-widgets-color: white;
+                    --jp-widgets-label-color: white;
+                    --jp-ui-font-color1: white;
+                    --jp-layout-color2: #454545;
+                    background-color: #383838;
+                }
+
+                .geemap-dark .jupyter-button {
+                    --jp-layout-color3: #383838;
+                }
+
+                .geemap-colab {
+                    background-color: var(--colab-primary-surface-color, white);
+                }
+
+                .geemap-colab .jupyter-button {
+                    --jp-layout-color3: var(--colab-primary-surface-color, white);
+                }
+            </style>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=4b67eeff-7b1a-4c97-8c21-900591a5d0a0">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [46]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Some browsers can't render Maps after Pelican processing for Blog</span>
+<span class="c1"># so save as html, and display that</span>
+
+<span class="n">save_url_3</span> <span class="o">=</span> <span class="s2">"map03.html"</span>
+<span class="n">m</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span>
+    <span class="n">save_url_3</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"Red-Yellow-Green palette"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">IFrame</span><span class="p">(</span><span class="s2">"map03.png"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">700</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -2160,191 +1891,21 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[157]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[46]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<iframe "allowfullscreen"="" "mozallowfullscreen"="" "webkitallowfullscreen"="" height="600" srcdoc="&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-    
-    &lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
-    
-        &lt;script&gt;
-            L_NO_TOUCH = false;
-            L_DISABLE_3D = false;
-        &lt;/script&gt;
-    
-    &lt;style&gt;html, body {width: 100%;height: 100%;margin: 0;padding: 0;}&lt;/style&gt;
-    &lt;style&gt;#map {position:absolute;top:0;bottom:0;right:0;left:0;}&lt;/style&gt;
-    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js&quot;&gt;&lt;/script&gt;
-    &lt;script src=&quot;https://code.jquery.com/jquery-3.7.1.min.js&quot;&gt;&lt;/script&gt;
-    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js&quot;&gt;&lt;/script&gt;
-    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css&quot;/&gt;
-    
-            &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,
-                initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; /&gt;
-            &lt;style&gt;
-                #map_7d911804345ed22ea5789a394e448e22 {
-                    position: relative;
-                    width: 100.0%;
-                    height: 100.0%;
-                    left: 0.0%;
-                    top: 0.0%;
-                }
-                .leaflet-container { font-size: 1rem; }
-            &lt;/style&gt;
-        
-    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.min.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.css&quot;/&gt;
-    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.css&quot;/&gt;
-    &lt;script src=&quot;https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css&quot;/&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    
-    
-            &lt;div class=&quot;folium-map&quot; id=&quot;map_7d911804345ed22ea5789a394e448e22&quot; &gt;&lt;/div&gt;
-        
-&lt;/body&gt;
-&lt;script&gt;
-    
-    
-            var map_7d911804345ed22ea5789a394e448e22 = L.map(
-                &quot;map_7d911804345ed22ea5789a394e448e22&quot;,
-                {
-                    center: [20.0, 0.0],
-                    crs: L.CRS.EPSG3857,
-                    zoom: 2,
-                    zoomControl: true,
-                    preferCanvas: false,
-                    eeInitialize: true,
-                    addGoogleMap: false,
-                    pluginLatlngpopup: false,
-                    pluginFullscreen: true,
-                    pluginDraw: true,
-                    DrawExport: false,
-                    pluginMinimap: false,
-                    locateControl: false,
-                    searchControl: true,
-                    layersControl: true,
-                }
-            );
-
-            
-
-        
-    
-            var tile_layer_d773ff1fbb1db2219dd0db9ccd86f8fb = L.tileLayer(
-                &quot;https://tile.openstreetmap.org/{z}/{x}/{y}.png&quot;,
-                {&quot;attribution&quot;: &quot;\u0026copy; \u003ca href=\&quot;https://www.openstreetmap.org/copyright\&quot;\u003eOpenStreetMap\u003c/a\u003e contributors&quot;, &quot;detectRetina&quot;: false, &quot;maxNativeZoom&quot;: 19, &quot;maxZoom&quot;: 30, &quot;minZoom&quot;: 0, &quot;noWrap&quot;: false, &quot;opacity&quot;: 1, &quot;subdomains&quot;: &quot;abc&quot;, &quot;tms&quot;: false}
-            );
-        
-    
-            tile_layer_d773ff1fbb1db2219dd0db9ccd86f8fb.addTo(map_7d911804345ed22ea5789a394e448e22);
-        
-    
-            L.control.fullscreen(
-                {&quot;forceSeparateButton&quot;: false, &quot;position&quot;: &quot;topleft&quot;, &quot;title&quot;: &quot;Full Screen&quot;, &quot;titleCancel&quot;: &quot;Exit Full Screen&quot;}
-            ).addTo(map_7d911804345ed22ea5789a394e448e22);
-        
-    
-            var options = {
-              position: &quot;topleft&quot;,
-              draw: {},
-              edit: {},
-            }
-                // FeatureGroup is to store editable layers.
-                var drawnItems_draw_control_e5c5fec9191a71b5889272274516d3b4 =
-                    new L.featureGroup().addTo(
-                        map_7d911804345ed22ea5789a394e448e22
-                    );
-
-            options.edit.featureGroup = drawnItems_draw_control_e5c5fec9191a71b5889272274516d3b4;
-            var draw_control_e5c5fec9191a71b5889272274516d3b4 = new L.Control.Draw(
-                options
-            ).addTo( map_7d911804345ed22ea5789a394e448e22 );
-            map_7d911804345ed22ea5789a394e448e22.on(L.Draw.Event.CREATED, function(e) {
-                var layer = e.layer,
-                    type = e.layerType;
-                var coords = JSON.stringify(layer.toGeoJSON());
-                layer.on('click', function() {
-                    alert(coords);
-                    console.log(coords);
-                });
-                drawnItems_draw_control_e5c5fec9191a71b5889272274516d3b4.addLayer(layer);
-            });
-            map_7d911804345ed22ea5789a394e448e22.on('draw:created', function(e) {
-                drawnItems_draw_control_e5c5fec9191a71b5889272274516d3b4.addLayer(e.layer);
-            });
-
-            
-        
-    
-
-            var geocoderOpts_geocoder_c937e621a9baf7cdb3b5d9cf1d9b056e = {&quot;collapsed&quot;: true, &quot;defaultMarkGeocode&quot;: true, &quot;position&quot;: &quot;topleft&quot;, &quot;provider&quot;: &quot;nominatim&quot;, &quot;providerOptions&quot;: {}, &quot;zoom&quot;: 11};
-
-            // note: geocoder name should start with lowercase
-            var geocoderName_geocoder_c937e621a9baf7cdb3b5d9cf1d9b056e = geocoderOpts_geocoder_c937e621a9baf7cdb3b5d9cf1d9b056e[&quot;provider&quot;];
-
-            var customGeocoder_geocoder_c937e621a9baf7cdb3b5d9cf1d9b056e = L.Control.Geocoder[ geocoderName_geocoder_c937e621a9baf7cdb3b5d9cf1d9b056e ](
-                geocoderOpts_geocoder_c937e621a9baf7cdb3b5d9cf1d9b056e['providerOptions']
-            );
-            geocoderOpts_geocoder_c937e621a9baf7cdb3b5d9cf1d9b056e[&quot;geocoder&quot;] = customGeocoder_geocoder_c937e621a9baf7cdb3b5d9cf1d9b056e;
-
-            L.Control.geocoder(
-                geocoderOpts_geocoder_c937e621a9baf7cdb3b5d9cf1d9b056e
-            ).on('markgeocode', function(e) {
-                var zoom = geocoderOpts_geocoder_c937e621a9baf7cdb3b5d9cf1d9b056e['zoom'] || map_7d911804345ed22ea5789a394e448e22.getZoom();
-                map_7d911804345ed22ea5789a394e448e22.setView(e.geocode.center, zoom);
-            }).addTo(map_7d911804345ed22ea5789a394e448e22);
-
-        
-    
-            map_7d911804345ed22ea5789a394e448e22.fitBounds(
-                [[20, 0], [20, 0]],
-                {&quot;maxZoom&quot;: 2}
-            );
-        
-    
-            map_7d911804345ed22ea5789a394e448e22.fitBounds(
-                [[-26.5282752, 153.0890232], [-26.5282752, 153.0890232]],
-                {&quot;maxZoom&quot;: 14}
-            );
-        
-    
-            var tile_layer_214c8e2d612e1677d4cc461233b21e5f = L.tileLayer(
-                &quot;https://earthengine.googleapis.com/v1/projects/794909123592/maps/a1c9a42e3a5d77890c2d946d815c57d8-1e07133c1174eb46fafa8757d52e6507/tiles/{z}/{x}/{y}&quot;,
-                {&quot;attribution&quot;: &quot;Google Earth Engine&quot;, &quot;detectRetina&quot;: false, &quot;maxZoom&quot;: 24, &quot;minZoom&quot;: 0, &quot;noWrap&quot;: false, &quot;opacity&quot;: 1.0, &quot;subdomains&quot;: &quot;abc&quot;, &quot;tms&quot;: false}
-            );
-        
-    
-            tile_layer_214c8e2d612e1677d4cc461233b21e5f.addTo(map_7d911804345ed22ea5789a394e448e22);
-        
-    
-            var layer_control_e24bb1ba4dc8a6f85c8fc16cecc9f814_layers = {
-                base_layers : {
-                    &quot;openstreetmap&quot; : tile_layer_d773ff1fbb1db2219dd0db9ccd86f8fb,
-                },
-                overlays :  {
-                    &quot;NDVI&quot; : tile_layer_214c8e2d612e1677d4cc461233b21e5f,
-                },
-            };
-            let layer_control_e24bb1ba4dc8a6f85c8fc16cecc9f814 = L.control.layers(
-                layer_control_e24bb1ba4dc8a6f85c8fc16cecc9f814_layers.base_layers,
-                layer_control_e24bb1ba4dc8a6f85c8fc16cecc9f814_layers.overlays,
-                {&quot;autoZIndex&quot;: true, &quot;collapsed&quot;: true, &quot;position&quot;: &quot;topright&quot;}
-            ).addTo(map_7d911804345ed22ea5789a394e448e22);
-
-        
-&lt;/script&gt;
-&lt;/html&gt;" style="border:none !important;" width="100%"></iframe>
+<iframe allowfullscreen="" frameborder="0" height="700" src="map03.png" width="1200"></iframe>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=fe31dd14-f61b-41d2-b4e7-89acc9b8cd7e">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><a href="map03.html">Interactive map here</a></p>
 </div>
 </div>
 </div>
@@ -2390,7 +1951,7 @@ Values of water bodies are larger than 0.5. Vegetation has much smaller values, 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [158]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [47]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Create an NDWI image, define visualization parameters and display.</span>
@@ -2450,7 +2011,7 @@ Values of water bodies are larger than 0.5. Vegetation has much smaller values, 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [159]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [48]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Display NDWI result on the map.</span>
@@ -2461,7 +2022,60 @@ Values of water bodies are larger than 0.5. Vegetation has much smaller values, 
     <span class="n">ndwi_viz</span><span class="p">,</span>
     <span class="s2">"NDWI"</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">m</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
+<style>
+                .geemap-dark {
+                    --jp-widgets-color: white;
+                    --jp-widgets-label-color: white;
+                    --jp-ui-font-color1: white;
+                    --jp-layout-color2: #454545;
+                    background-color: #383838;
+                }
+
+                .geemap-dark .jupyter-button {
+                    --jp-layout-color3: #383838;
+                }
+
+                .geemap-colab {
+                    background-color: var(--colab-primary-surface-color, white);
+                }
+
+                .geemap-colab .jupyter-button {
+                    --jp-layout-color3: var(--colab-primary-surface-color, white);
+                }
+            </style>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=5a653802-f519-4a6d-8329-e262b89fe9fc">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [49]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Some browsers can't render Maps after Pelican processing for Blog</span>
+<span class="c1"># so save as html, and display that</span>
+
+<span class="n">save_url_4</span> <span class="o">=</span> <span class="s2">"map04.html"</span>
+<span class="n">m</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span>
+    <span class="n">save_url_4</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"ndwi palette"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">IFrame</span><span class="p">(</span><span class="s2">"map04.png"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">700</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -2498,191 +2112,21 @@ Values of water bodies are larger than 0.5. Vegetation has much smaller values, 
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[159]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[49]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<iframe "allowfullscreen"="" "mozallowfullscreen"="" "webkitallowfullscreen"="" height="600" srcdoc="&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-    
-    &lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
-    
-        &lt;script&gt;
-            L_NO_TOUCH = false;
-            L_DISABLE_3D = false;
-        &lt;/script&gt;
-    
-    &lt;style&gt;html, body {width: 100%;height: 100%;margin: 0;padding: 0;}&lt;/style&gt;
-    &lt;style&gt;#map {position:absolute;top:0;bottom:0;right:0;left:0;}&lt;/style&gt;
-    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js&quot;&gt;&lt;/script&gt;
-    &lt;script src=&quot;https://code.jquery.com/jquery-3.7.1.min.js&quot;&gt;&lt;/script&gt;
-    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js&quot;&gt;&lt;/script&gt;
-    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css&quot;/&gt;
-    
-            &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,
-                initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; /&gt;
-            &lt;style&gt;
-                #map_e18e4db9ddfc3a0cf85f32ee26538c86 {
-                    position: relative;
-                    width: 100.0%;
-                    height: 100.0%;
-                    left: 0.0%;
-                    top: 0.0%;
-                }
-                .leaflet-container { font-size: 1rem; }
-            &lt;/style&gt;
-        
-    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.min.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.css&quot;/&gt;
-    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.css&quot;/&gt;
-    &lt;script src=&quot;https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css&quot;/&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    
-    
-            &lt;div class=&quot;folium-map&quot; id=&quot;map_e18e4db9ddfc3a0cf85f32ee26538c86&quot; &gt;&lt;/div&gt;
-        
-&lt;/body&gt;
-&lt;script&gt;
-    
-    
-            var map_e18e4db9ddfc3a0cf85f32ee26538c86 = L.map(
-                &quot;map_e18e4db9ddfc3a0cf85f32ee26538c86&quot;,
-                {
-                    center: [20.0, 0.0],
-                    crs: L.CRS.EPSG3857,
-                    zoom: 2,
-                    zoomControl: true,
-                    preferCanvas: false,
-                    eeInitialize: true,
-                    addGoogleMap: false,
-                    pluginLatlngpopup: false,
-                    pluginFullscreen: true,
-                    pluginDraw: true,
-                    DrawExport: false,
-                    pluginMinimap: false,
-                    locateControl: false,
-                    searchControl: true,
-                    layersControl: true,
-                }
-            );
-
-            
-
-        
-    
-            var tile_layer_22dc0f7f7092e972c542a0cf4fdaf8da = L.tileLayer(
-                &quot;https://tile.openstreetmap.org/{z}/{x}/{y}.png&quot;,
-                {&quot;attribution&quot;: &quot;\u0026copy; \u003ca href=\&quot;https://www.openstreetmap.org/copyright\&quot;\u003eOpenStreetMap\u003c/a\u003e contributors&quot;, &quot;detectRetina&quot;: false, &quot;maxNativeZoom&quot;: 19, &quot;maxZoom&quot;: 30, &quot;minZoom&quot;: 0, &quot;noWrap&quot;: false, &quot;opacity&quot;: 1, &quot;subdomains&quot;: &quot;abc&quot;, &quot;tms&quot;: false}
-            );
-        
-    
-            tile_layer_22dc0f7f7092e972c542a0cf4fdaf8da.addTo(map_e18e4db9ddfc3a0cf85f32ee26538c86);
-        
-    
-            L.control.fullscreen(
-                {&quot;forceSeparateButton&quot;: false, &quot;position&quot;: &quot;topleft&quot;, &quot;title&quot;: &quot;Full Screen&quot;, &quot;titleCancel&quot;: &quot;Exit Full Screen&quot;}
-            ).addTo(map_e18e4db9ddfc3a0cf85f32ee26538c86);
-        
-    
-            var options = {
-              position: &quot;topleft&quot;,
-              draw: {},
-              edit: {},
-            }
-                // FeatureGroup is to store editable layers.
-                var drawnItems_draw_control_354687cd51586cb0ecbd7ba59d03ce44 =
-                    new L.featureGroup().addTo(
-                        map_e18e4db9ddfc3a0cf85f32ee26538c86
-                    );
-
-            options.edit.featureGroup = drawnItems_draw_control_354687cd51586cb0ecbd7ba59d03ce44;
-            var draw_control_354687cd51586cb0ecbd7ba59d03ce44 = new L.Control.Draw(
-                options
-            ).addTo( map_e18e4db9ddfc3a0cf85f32ee26538c86 );
-            map_e18e4db9ddfc3a0cf85f32ee26538c86.on(L.Draw.Event.CREATED, function(e) {
-                var layer = e.layer,
-                    type = e.layerType;
-                var coords = JSON.stringify(layer.toGeoJSON());
-                layer.on('click', function() {
-                    alert(coords);
-                    console.log(coords);
-                });
-                drawnItems_draw_control_354687cd51586cb0ecbd7ba59d03ce44.addLayer(layer);
-            });
-            map_e18e4db9ddfc3a0cf85f32ee26538c86.on('draw:created', function(e) {
-                drawnItems_draw_control_354687cd51586cb0ecbd7ba59d03ce44.addLayer(e.layer);
-            });
-
-            
-        
-    
-
-            var geocoderOpts_geocoder_94fce9e91ca46f775af63072b359e336 = {&quot;collapsed&quot;: true, &quot;defaultMarkGeocode&quot;: true, &quot;position&quot;: &quot;topleft&quot;, &quot;provider&quot;: &quot;nominatim&quot;, &quot;providerOptions&quot;: {}, &quot;zoom&quot;: 11};
-
-            // note: geocoder name should start with lowercase
-            var geocoderName_geocoder_94fce9e91ca46f775af63072b359e336 = geocoderOpts_geocoder_94fce9e91ca46f775af63072b359e336[&quot;provider&quot;];
-
-            var customGeocoder_geocoder_94fce9e91ca46f775af63072b359e336 = L.Control.Geocoder[ geocoderName_geocoder_94fce9e91ca46f775af63072b359e336 ](
-                geocoderOpts_geocoder_94fce9e91ca46f775af63072b359e336['providerOptions']
-            );
-            geocoderOpts_geocoder_94fce9e91ca46f775af63072b359e336[&quot;geocoder&quot;] = customGeocoder_geocoder_94fce9e91ca46f775af63072b359e336;
-
-            L.Control.geocoder(
-                geocoderOpts_geocoder_94fce9e91ca46f775af63072b359e336
-            ).on('markgeocode', function(e) {
-                var zoom = geocoderOpts_geocoder_94fce9e91ca46f775af63072b359e336['zoom'] || map_e18e4db9ddfc3a0cf85f32ee26538c86.getZoom();
-                map_e18e4db9ddfc3a0cf85f32ee26538c86.setView(e.geocode.center, zoom);
-            }).addTo(map_e18e4db9ddfc3a0cf85f32ee26538c86);
-
-        
-    
-            map_e18e4db9ddfc3a0cf85f32ee26538c86.fitBounds(
-                [[20, 0], [20, 0]],
-                {&quot;maxZoom&quot;: 2}
-            );
-        
-    
-            map_e18e4db9ddfc3a0cf85f32ee26538c86.fitBounds(
-                [[-26.5282752, 153.0890232], [-26.5282752, 153.0890232]],
-                {&quot;maxZoom&quot;: 10}
-            );
-        
-    
-            var tile_layer_d9f788d50d4438bcdbbb5eb95a257d3b = L.tileLayer(
-                &quot;https://earthengine.googleapis.com/v1/projects/794909123592/maps/98dacd1be36f157aaa359ab6575b25dd-77b5cf9b510aa4413f7144dc6003ac2a/tiles/{z}/{x}/{y}&quot;,
-                {&quot;attribution&quot;: &quot;Google Earth Engine&quot;, &quot;detectRetina&quot;: false, &quot;maxZoom&quot;: 24, &quot;minZoom&quot;: 0, &quot;noWrap&quot;: false, &quot;opacity&quot;: 1.0, &quot;subdomains&quot;: &quot;abc&quot;, &quot;tms&quot;: false}
-            );
-        
-    
-            tile_layer_d9f788d50d4438bcdbbb5eb95a257d3b.addTo(map_e18e4db9ddfc3a0cf85f32ee26538c86);
-        
-    
-            var layer_control_1b4db230ae5f862cd744676318ef54aa_layers = {
-                base_layers : {
-                    &quot;openstreetmap&quot; : tile_layer_22dc0f7f7092e972c542a0cf4fdaf8da,
-                },
-                overlays :  {
-                    &quot;NDWI&quot; : tile_layer_d9f788d50d4438bcdbbb5eb95a257d3b,
-                },
-            };
-            let layer_control_1b4db230ae5f862cd744676318ef54aa = L.control.layers(
-                layer_control_1b4db230ae5f862cd744676318ef54aa_layers.base_layers,
-                layer_control_1b4db230ae5f862cd744676318ef54aa_layers.overlays,
-                {&quot;autoZIndex&quot;: true, &quot;collapsed&quot;: true, &quot;position&quot;: &quot;topright&quot;}
-            ).addTo(map_e18e4db9ddfc3a0cf85f32ee26538c86);
-
-        
-&lt;/script&gt;
-&lt;/html&gt;" style="border:none !important;" width="100%"></iframe>
+<iframe allowfullscreen="" frameborder="0" height="700" src="map04.png" width="1200"></iframe>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=79797365-5446-4683-9cba-fea5b7d91d91">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><a href="map04.html">Interactive map here</a></p>
 </div>
 </div>
 </div>
@@ -2714,7 +2158,7 @@ Values of water bodies are larger than 0.5. Vegetation has much smaller values, 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [160]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [50]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">water_threshold</span> <span class="o">=</span> <span class="mf">0.25</span>
@@ -2774,7 +2218,7 @@ Values of water bodies are larger than 0.5. Vegetation has much smaller values, 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [161]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [51]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Display NDWI, NDVI combined result on the map.</span>
@@ -2832,10 +2276,18 @@ Values of water bodies are larger than 0.5. Vegetation has much smaller values, 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [162]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [52]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">m</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Some browsers can't render Maps after Pelican processing for Blog</span>
+<span class="c1"># so save as html, and display that</span>
+
+<span class="n">save_url_5</span> <span class="o">=</span> <span class="s2">"map05.html"</span>
+<span class="n">m</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span>
+    <span class="n">save_url_5</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"Masked Red-Yellow-Green palette"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">IFrame</span><span class="p">(</span><span class="s2">"map05.png"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">700</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -2872,191 +2324,21 @@ Values of water bodies are larger than 0.5. Vegetation has much smaller values, 
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[162]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[52]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<iframe "allowfullscreen"="" "mozallowfullscreen"="" "webkitallowfullscreen"="" height="600" srcdoc="&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-    
-    &lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
-    
-        &lt;script&gt;
-            L_NO_TOUCH = false;
-            L_DISABLE_3D = false;
-        &lt;/script&gt;
-    
-    &lt;style&gt;html, body {width: 100%;height: 100%;margin: 0;padding: 0;}&lt;/style&gt;
-    &lt;style&gt;#map {position:absolute;top:0;bottom:0;right:0;left:0;}&lt;/style&gt;
-    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js&quot;&gt;&lt;/script&gt;
-    &lt;script src=&quot;https://code.jquery.com/jquery-3.7.1.min.js&quot;&gt;&lt;/script&gt;
-    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js&quot;&gt;&lt;/script&gt;
-    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css&quot;/&gt;
-    
-            &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,
-                initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; /&gt;
-            &lt;style&gt;
-                #map_ac2bffd779317ad43a20b893c5318086 {
-                    position: relative;
-                    width: 100.0%;
-                    height: 100.0%;
-                    left: 0.0%;
-                    top: 0.0%;
-                }
-                .leaflet-container { font-size: 1rem; }
-            &lt;/style&gt;
-        
-    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.min.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.css&quot;/&gt;
-    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.css&quot;/&gt;
-    &lt;script src=&quot;https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css&quot;/&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    
-    
-            &lt;div class=&quot;folium-map&quot; id=&quot;map_ac2bffd779317ad43a20b893c5318086&quot; &gt;&lt;/div&gt;
-        
-&lt;/body&gt;
-&lt;script&gt;
-    
-    
-            var map_ac2bffd779317ad43a20b893c5318086 = L.map(
-                &quot;map_ac2bffd779317ad43a20b893c5318086&quot;,
-                {
-                    center: [20.0, 0.0],
-                    crs: L.CRS.EPSG3857,
-                    zoom: 2,
-                    zoomControl: true,
-                    preferCanvas: false,
-                    eeInitialize: true,
-                    addGoogleMap: false,
-                    pluginLatlngpopup: false,
-                    pluginFullscreen: true,
-                    pluginDraw: true,
-                    DrawExport: false,
-                    pluginMinimap: false,
-                    locateControl: false,
-                    searchControl: true,
-                    layersControl: true,
-                }
-            );
-
-            
-
-        
-    
-            var tile_layer_e387e3b67a630daefddf3a9f195fb546 = L.tileLayer(
-                &quot;https://tile.openstreetmap.org/{z}/{x}/{y}.png&quot;,
-                {&quot;attribution&quot;: &quot;\u0026copy; \u003ca href=\&quot;https://www.openstreetmap.org/copyright\&quot;\u003eOpenStreetMap\u003c/a\u003e contributors&quot;, &quot;detectRetina&quot;: false, &quot;maxNativeZoom&quot;: 19, &quot;maxZoom&quot;: 30, &quot;minZoom&quot;: 0, &quot;noWrap&quot;: false, &quot;opacity&quot;: 1, &quot;subdomains&quot;: &quot;abc&quot;, &quot;tms&quot;: false}
-            );
-        
-    
-            tile_layer_e387e3b67a630daefddf3a9f195fb546.addTo(map_ac2bffd779317ad43a20b893c5318086);
-        
-    
-            L.control.fullscreen(
-                {&quot;forceSeparateButton&quot;: false, &quot;position&quot;: &quot;topleft&quot;, &quot;title&quot;: &quot;Full Screen&quot;, &quot;titleCancel&quot;: &quot;Exit Full Screen&quot;}
-            ).addTo(map_ac2bffd779317ad43a20b893c5318086);
-        
-    
-            var options = {
-              position: &quot;topleft&quot;,
-              draw: {},
-              edit: {},
-            }
-                // FeatureGroup is to store editable layers.
-                var drawnItems_draw_control_f67e2d687826d2da5c30f118b5cf08e8 =
-                    new L.featureGroup().addTo(
-                        map_ac2bffd779317ad43a20b893c5318086
-                    );
-
-            options.edit.featureGroup = drawnItems_draw_control_f67e2d687826d2da5c30f118b5cf08e8;
-            var draw_control_f67e2d687826d2da5c30f118b5cf08e8 = new L.Control.Draw(
-                options
-            ).addTo( map_ac2bffd779317ad43a20b893c5318086 );
-            map_ac2bffd779317ad43a20b893c5318086.on(L.Draw.Event.CREATED, function(e) {
-                var layer = e.layer,
-                    type = e.layerType;
-                var coords = JSON.stringify(layer.toGeoJSON());
-                layer.on('click', function() {
-                    alert(coords);
-                    console.log(coords);
-                });
-                drawnItems_draw_control_f67e2d687826d2da5c30f118b5cf08e8.addLayer(layer);
-            });
-            map_ac2bffd779317ad43a20b893c5318086.on('draw:created', function(e) {
-                drawnItems_draw_control_f67e2d687826d2da5c30f118b5cf08e8.addLayer(e.layer);
-            });
-
-            
-        
-    
-
-            var geocoderOpts_geocoder_7525d2b84981e7ab653c9397857d709b = {&quot;collapsed&quot;: true, &quot;defaultMarkGeocode&quot;: true, &quot;position&quot;: &quot;topleft&quot;, &quot;provider&quot;: &quot;nominatim&quot;, &quot;providerOptions&quot;: {}, &quot;zoom&quot;: 11};
-
-            // note: geocoder name should start with lowercase
-            var geocoderName_geocoder_7525d2b84981e7ab653c9397857d709b = geocoderOpts_geocoder_7525d2b84981e7ab653c9397857d709b[&quot;provider&quot;];
-
-            var customGeocoder_geocoder_7525d2b84981e7ab653c9397857d709b = L.Control.Geocoder[ geocoderName_geocoder_7525d2b84981e7ab653c9397857d709b ](
-                geocoderOpts_geocoder_7525d2b84981e7ab653c9397857d709b['providerOptions']
-            );
-            geocoderOpts_geocoder_7525d2b84981e7ab653c9397857d709b[&quot;geocoder&quot;] = customGeocoder_geocoder_7525d2b84981e7ab653c9397857d709b;
-
-            L.Control.geocoder(
-                geocoderOpts_geocoder_7525d2b84981e7ab653c9397857d709b
-            ).on('markgeocode', function(e) {
-                var zoom = geocoderOpts_geocoder_7525d2b84981e7ab653c9397857d709b['zoom'] || map_ac2bffd779317ad43a20b893c5318086.getZoom();
-                map_ac2bffd779317ad43a20b893c5318086.setView(e.geocode.center, zoom);
-            }).addTo(map_ac2bffd779317ad43a20b893c5318086);
-
-        
-    
-            map_ac2bffd779317ad43a20b893c5318086.fitBounds(
-                [[20, 0], [20, 0]],
-                {&quot;maxZoom&quot;: 2}
-            );
-        
-    
-            map_ac2bffd779317ad43a20b893c5318086.fitBounds(
-                [[-26.5282752, 153.0890232], [-26.5282752, 153.0890232]],
-                {&quot;maxZoom&quot;: 13}
-            );
-        
-    
-            var tile_layer_856610c07d86a2fba710ab3aed653fb5 = L.tileLayer(
-                &quot;https://earthengine.googleapis.com/v1/projects/794909123592/maps/ab178eccf6c31cc287a814d9dd8f9fd6-2bf59eded53728250689517131868be8/tiles/{z}/{x}/{y}&quot;,
-                {&quot;attribution&quot;: &quot;Google Earth Engine&quot;, &quot;detectRetina&quot;: false, &quot;maxZoom&quot;: 24, &quot;minZoom&quot;: 0, &quot;noWrap&quot;: false, &quot;opacity&quot;: 1.0, &quot;subdomains&quot;: &quot;abc&quot;, &quot;tms&quot;: false}
-            );
-        
-    
-            tile_layer_856610c07d86a2fba710ab3aed653fb5.addTo(map_ac2bffd779317ad43a20b893c5318086);
-        
-    
-            var layer_control_7b2bf6a02b12ade03a3cbd3eb24534c9_layers = {
-                base_layers : {
-                    &quot;openstreetmap&quot; : tile_layer_e387e3b67a630daefddf3a9f195fb546,
-                },
-                overlays :  {
-                    &quot;NDVI&quot; : tile_layer_856610c07d86a2fba710ab3aed653fb5,
-                },
-            };
-            let layer_control_7b2bf6a02b12ade03a3cbd3eb24534c9 = L.control.layers(
-                layer_control_7b2bf6a02b12ade03a3cbd3eb24534c9_layers.base_layers,
-                layer_control_7b2bf6a02b12ade03a3cbd3eb24534c9_layers.overlays,
-                {&quot;autoZIndex&quot;: true, &quot;collapsed&quot;: true, &quot;position&quot;: &quot;topright&quot;}
-            ).addTo(map_ac2bffd779317ad43a20b893c5318086);
-
-        
-&lt;/script&gt;
-&lt;/html&gt;" style="border:none !important;" width="100%"></iframe>
+<iframe allowfullscreen="" frameborder="0" height="700" src="map05.png" width="600"></iframe>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c2cf2447-fc8b-4a85-8053-ef6513ab3c11">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><a href="map05.html">Interactive map here</a></p>
 </div>
 </div>
 </div>
@@ -3087,7 +2369,7 @@ Values of water bodies are larger than 0.5. Vegetation has much smaller values, 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [163]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [53]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">colors</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get_palette</span><span class="p">(</span>
@@ -3155,7 +2437,7 @@ Values of water bodies are larger than 0.5. Vegetation has much smaller values, 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [164]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [54]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">color_extd</span> <span class="o">=</span> <span class="p">[</span>
@@ -3214,7 +2496,7 @@ Values of water bodies are larger than 0.5. Vegetation has much smaller values, 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [165]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [55]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Display NDVI result on the map.</span>
@@ -3229,7 +2511,60 @@ Values of water bodies are larger than 0.5. Vegetation has much smaller values, 
     <span class="p">},</span>
     <span class="s2">"NDVI"</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">m</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
+<style>
+                .geemap-dark {
+                    --jp-widgets-color: white;
+                    --jp-widgets-label-color: white;
+                    --jp-ui-font-color1: white;
+                    --jp-layout-color2: #454545;
+                    background-color: #383838;
+                }
+
+                .geemap-dark .jupyter-button {
+                    --jp-layout-color3: #383838;
+                }
+
+                .geemap-colab {
+                    background-color: var(--colab-primary-surface-color, white);
+                }
+
+                .geemap-colab .jupyter-button {
+                    --jp-layout-color3: var(--colab-primary-surface-color, white);
+                }
+            </style>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=25c69c1f-831f-4683-9044-2fb863123ab0">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [56]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Some browsers can't render Maps after Pelican processing for Blog</span>
+<span class="c1"># so save as html, and display that</span>
+
+<span class="n">save_url_6</span> <span class="o">=</span> <span class="s2">"map06.html"</span>
+<span class="n">m</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span>
+    <span class="n">save_url_6</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"Extended Red-Yellow-Green palette"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">IFrame</span><span class="p">(</span><span class="s2">"map06.png"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">700</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -3266,191 +2601,21 @@ Values of water bodies are larger than 0.5. Vegetation has much smaller values, 
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[165]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[56]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<iframe "allowfullscreen"="" "mozallowfullscreen"="" "webkitallowfullscreen"="" height="600" srcdoc="&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-    
-    &lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
-    
-        &lt;script&gt;
-            L_NO_TOUCH = false;
-            L_DISABLE_3D = false;
-        &lt;/script&gt;
-    
-    &lt;style&gt;html, body {width: 100%;height: 100%;margin: 0;padding: 0;}&lt;/style&gt;
-    &lt;style&gt;#map {position:absolute;top:0;bottom:0;right:0;left:0;}&lt;/style&gt;
-    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js&quot;&gt;&lt;/script&gt;
-    &lt;script src=&quot;https://code.jquery.com/jquery-3.7.1.min.js&quot;&gt;&lt;/script&gt;
-    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js&quot;&gt;&lt;/script&gt;
-    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css&quot;/&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css&quot;/&gt;
-    
-            &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,
-                initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; /&gt;
-            &lt;style&gt;
-                #map_965d4e1dedd0f8306e8ab20a457c2aa0 {
-                    position: relative;
-                    width: 100.0%;
-                    height: 100.0%;
-                    left: 0.0%;
-                    top: 0.0%;
-                }
-                .leaflet-container { font-size: 1rem; }
-            &lt;/style&gt;
-        
-    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.min.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.css&quot;/&gt;
-    &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.css&quot;/&gt;
-    &lt;script src=&quot;https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js&quot;&gt;&lt;/script&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css&quot;/&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    
-    
-            &lt;div class=&quot;folium-map&quot; id=&quot;map_965d4e1dedd0f8306e8ab20a457c2aa0&quot; &gt;&lt;/div&gt;
-        
-&lt;/body&gt;
-&lt;script&gt;
-    
-    
-            var map_965d4e1dedd0f8306e8ab20a457c2aa0 = L.map(
-                &quot;map_965d4e1dedd0f8306e8ab20a457c2aa0&quot;,
-                {
-                    center: [20.0, 0.0],
-                    crs: L.CRS.EPSG3857,
-                    zoom: 2,
-                    zoomControl: true,
-                    preferCanvas: false,
-                    eeInitialize: true,
-                    addGoogleMap: false,
-                    pluginLatlngpopup: false,
-                    pluginFullscreen: true,
-                    pluginDraw: true,
-                    DrawExport: false,
-                    pluginMinimap: false,
-                    locateControl: false,
-                    searchControl: true,
-                    layersControl: true,
-                }
-            );
-
-            
-
-        
-    
-            var tile_layer_e9840b71fda2ecdc3b2f7773b4a4c328 = L.tileLayer(
-                &quot;https://tile.openstreetmap.org/{z}/{x}/{y}.png&quot;,
-                {&quot;attribution&quot;: &quot;\u0026copy; \u003ca href=\&quot;https://www.openstreetmap.org/copyright\&quot;\u003eOpenStreetMap\u003c/a\u003e contributors&quot;, &quot;detectRetina&quot;: false, &quot;maxNativeZoom&quot;: 19, &quot;maxZoom&quot;: 30, &quot;minZoom&quot;: 0, &quot;noWrap&quot;: false, &quot;opacity&quot;: 1, &quot;subdomains&quot;: &quot;abc&quot;, &quot;tms&quot;: false}
-            );
-        
-    
-            tile_layer_e9840b71fda2ecdc3b2f7773b4a4c328.addTo(map_965d4e1dedd0f8306e8ab20a457c2aa0);
-        
-    
-            L.control.fullscreen(
-                {&quot;forceSeparateButton&quot;: false, &quot;position&quot;: &quot;topleft&quot;, &quot;title&quot;: &quot;Full Screen&quot;, &quot;titleCancel&quot;: &quot;Exit Full Screen&quot;}
-            ).addTo(map_965d4e1dedd0f8306e8ab20a457c2aa0);
-        
-    
-            var options = {
-              position: &quot;topleft&quot;,
-              draw: {},
-              edit: {},
-            }
-                // FeatureGroup is to store editable layers.
-                var drawnItems_draw_control_863697a228370b0af399eafe29a9c0f1 =
-                    new L.featureGroup().addTo(
-                        map_965d4e1dedd0f8306e8ab20a457c2aa0
-                    );
-
-            options.edit.featureGroup = drawnItems_draw_control_863697a228370b0af399eafe29a9c0f1;
-            var draw_control_863697a228370b0af399eafe29a9c0f1 = new L.Control.Draw(
-                options
-            ).addTo( map_965d4e1dedd0f8306e8ab20a457c2aa0 );
-            map_965d4e1dedd0f8306e8ab20a457c2aa0.on(L.Draw.Event.CREATED, function(e) {
-                var layer = e.layer,
-                    type = e.layerType;
-                var coords = JSON.stringify(layer.toGeoJSON());
-                layer.on('click', function() {
-                    alert(coords);
-                    console.log(coords);
-                });
-                drawnItems_draw_control_863697a228370b0af399eafe29a9c0f1.addLayer(layer);
-            });
-            map_965d4e1dedd0f8306e8ab20a457c2aa0.on('draw:created', function(e) {
-                drawnItems_draw_control_863697a228370b0af399eafe29a9c0f1.addLayer(e.layer);
-            });
-
-            
-        
-    
-
-            var geocoderOpts_geocoder_45b8af8fb80cb7dd7c0866c1f2a99613 = {&quot;collapsed&quot;: true, &quot;defaultMarkGeocode&quot;: true, &quot;position&quot;: &quot;topleft&quot;, &quot;provider&quot;: &quot;nominatim&quot;, &quot;providerOptions&quot;: {}, &quot;zoom&quot;: 11};
-
-            // note: geocoder name should start with lowercase
-            var geocoderName_geocoder_45b8af8fb80cb7dd7c0866c1f2a99613 = geocoderOpts_geocoder_45b8af8fb80cb7dd7c0866c1f2a99613[&quot;provider&quot;];
-
-            var customGeocoder_geocoder_45b8af8fb80cb7dd7c0866c1f2a99613 = L.Control.Geocoder[ geocoderName_geocoder_45b8af8fb80cb7dd7c0866c1f2a99613 ](
-                geocoderOpts_geocoder_45b8af8fb80cb7dd7c0866c1f2a99613['providerOptions']
-            );
-            geocoderOpts_geocoder_45b8af8fb80cb7dd7c0866c1f2a99613[&quot;geocoder&quot;] = customGeocoder_geocoder_45b8af8fb80cb7dd7c0866c1f2a99613;
-
-            L.Control.geocoder(
-                geocoderOpts_geocoder_45b8af8fb80cb7dd7c0866c1f2a99613
-            ).on('markgeocode', function(e) {
-                var zoom = geocoderOpts_geocoder_45b8af8fb80cb7dd7c0866c1f2a99613['zoom'] || map_965d4e1dedd0f8306e8ab20a457c2aa0.getZoom();
-                map_965d4e1dedd0f8306e8ab20a457c2aa0.setView(e.geocode.center, zoom);
-            }).addTo(map_965d4e1dedd0f8306e8ab20a457c2aa0);
-
-        
-    
-            map_965d4e1dedd0f8306e8ab20a457c2aa0.fitBounds(
-                [[20, 0], [20, 0]],
-                {&quot;maxZoom&quot;: 2}
-            );
-        
-    
-            map_965d4e1dedd0f8306e8ab20a457c2aa0.fitBounds(
-                [[-26.5282752, 153.0890232], [-26.5282752, 153.0890232]],
-                {&quot;maxZoom&quot;: 14}
-            );
-        
-    
-            var tile_layer_42bc9d1b34582359b0ce4b4d1bd995f8 = L.tileLayer(
-                &quot;https://earthengine.googleapis.com/v1/projects/794909123592/maps/8c903ac8258f9192d21151e19eed6f4d-92535841cf3bff53d16ed7ce332a81e8/tiles/{z}/{x}/{y}&quot;,
-                {&quot;attribution&quot;: &quot;Google Earth Engine&quot;, &quot;detectRetina&quot;: false, &quot;maxZoom&quot;: 24, &quot;minZoom&quot;: 0, &quot;noWrap&quot;: false, &quot;opacity&quot;: 1.0, &quot;subdomains&quot;: &quot;abc&quot;, &quot;tms&quot;: false}
-            );
-        
-    
-            tile_layer_42bc9d1b34582359b0ce4b4d1bd995f8.addTo(map_965d4e1dedd0f8306e8ab20a457c2aa0);
-        
-    
-            var layer_control_dba6cf25447df773c7e1970aba909e0f_layers = {
-                base_layers : {
-                    &quot;openstreetmap&quot; : tile_layer_e9840b71fda2ecdc3b2f7773b4a4c328,
-                },
-                overlays :  {
-                    &quot;NDVI&quot; : tile_layer_42bc9d1b34582359b0ce4b4d1bd995f8,
-                },
-            };
-            let layer_control_dba6cf25447df773c7e1970aba909e0f = L.control.layers(
-                layer_control_dba6cf25447df773c7e1970aba909e0f_layers.base_layers,
-                layer_control_dba6cf25447df773c7e1970aba909e0f_layers.overlays,
-                {&quot;autoZIndex&quot;: true, &quot;collapsed&quot;: true, &quot;position&quot;: &quot;topright&quot;}
-            ).addTo(map_965d4e1dedd0f8306e8ab20a457c2aa0);
-
-        
-&lt;/script&gt;
-&lt;/html&gt;" style="border:none !important;" width="100%"></iframe>
+<iframe allowfullscreen="" frameborder="0" height="700" src="map06.png" width="1200"></iframe>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=484ef311-9fc1-413d-ad9a-a1a5b50e7bf6">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><a href="map06.html">Interactive map here</a></p>
 </div>
 </div>
 </div>
@@ -3484,7 +2649,7 @@ Values of water bodies are larger than 0.5. Vegetation has much smaller values, 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [166]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [57]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">watermark</span>
@@ -3526,7 +2691,7 @@ Values of water bodies are larger than 0.5. Vegetation has much smaller values, 
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Last updated: 2025-08-25T13:09:24.642609+10:00
+<pre>Last updated: 2025-08-31T10:47:04.621718+10:00
 
 Python implementation: CPython
 Python version       : 3.12.7
@@ -3550,7 +2715,7 @@ Architecture: 64bit
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [167]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [58]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">watermark</span> -co  -iv -v -h
@@ -3600,9 +2765,10 @@ conda environment: geospatial
 
 Hostname: INSPIRON16
 
-geemap    : 0.35.1
 ee        : 1.3.1
 matplotlib: 3.8.4
+IPython   : 8.29.0
+geemap    : 0.35.1
 
 </pre>
 </div>
