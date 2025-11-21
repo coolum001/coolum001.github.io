@@ -82,6 +82,8 @@
 	      <a href="./category/visualization-spatial.html ">Visualization Spatial</a>
 	    <li >
 	      <a href="./category/visualizations.html ">Visualizations</a>
+	    <li >
+	      <a href="./category/weeds.html ">weeds</a>
 	</ul>
       </div>
     </div> <!-- End of fluid row-->
@@ -99,19 +101,19 @@
 
     <div class='row-fluid''>
         <div class="article-title span9">
-            <a href="./ndvi.html"><h1>GEEMAP built-in palettes and NDVI</h1></a>
+            <a href="./wlog.html"><h1>Weeding Log</h1></a>
         </div>
     </div>
     <div class="row-fluid">
       <div class="span2">
-<p>Mon 25 August 2025 </p>
+<p>Thu 20 November 2025 </p>
 
 <p style="text-align: left;">
-Filed under <a href="./category/geemaps.html">geemaps</a>
+Filed under <a href="./category/weeds.html">weeds</a>
 </p>
 <p style="text-align: left;">
  
-    Tags <a href="./tag/geemaps.html">geemaps</a> </p>
+    Tags <a href="./tag/weeds.html">weeds</a> </p>
 <p>
 </p>
       </div>
@@ -190,2593 +192,268 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
  .highlight pre  .vg { color: #19177C } /* Name.Variable.Global */
  .highlight pre  .vi { color: #19177C } /* Name.Variable.Instance */
  .highlight pre  .vm { color: #19177C } /* Name.Variable.Magic */
- .highlight pre  .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c1d2efaf-6e8f-4cc5-aa05-b7180d57e52b">
+ .highlight pre  .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=97863024-d196-40b1-a577-adf2d6da3fd8">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="GEEMAP-built-in-palettes-and-NDVI">GEEMAP built-in palettes and NDVI<a class="anchor-link" href="#GEEMAP-built-in-palettes-and-NDVI">¶</a></h1><h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">¶</a></h2><h3 id="Purpose">Purpose<a class="anchor-link" href="#Purpose">¶</a></h3><p>This post is an exploration of the built-in palettes that come with <code>GEEMAP</code>.</p>
-<p><code>GEEMAP</code> is a  Python package for interactive geospatial analysis and visualization with Google Earth Engine.</p>
-<p><code>GEEPMAP</code> uses <code>Cartopy</code> which uses <code>matplotlib</code>, and so you get all the <code>matplotlib</code> color maps for free, but there a couple of extra ones thrown in.  These support two of the Spectral Indices that have been defined to allow analysis of LANDSAT images (or, indeed, any sort of multispectral remote imaging).</p>
-<p>To be more focussed, I thought I would look at the countryside around my home turf.  This article goes into some of the issues of visualizing sensor data.</p>
-<h3 id="NDVI-or-Normalized-difference-vegetation-index">NDVI or Normalized difference vegetation index<a class="anchor-link" href="#NDVI-or-Normalized-difference-vegetation-index">¶</a></h3><p>As Wikipedia says:</p>
-<pre><code>  The normalized difference vegetation index (NDVI) is a widely used metric for quantifying the health and density of vegetation using sensor data. It is calculated from spectrometric data at two specific bands: red and near-infrared. The spectrometric data is usually sourced from remote sensors, such as satellites.The metric is popular in industry because of its accuracy. It has a high correlation with the true state of vegetation on the ground.
-
-  The NDVI is calculated from these individual measurements as follows:
-
-    NDVI =  (NIR - RED) / (NIR + RED)
-
-  where Red and NIR stand for the spectral reflectance measurements acquired in the red (visible) and near-infrared regions
-</code></pre>
+<h1 id="Welcome-to-the-Weeding-Page">Welcome to the Weeding Page<a class="anchor-link" href="#Welcome-to-the-Weeding-Page">¶</a></h1><h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">¶</a></h2><p>I participate in dune and bushcare restoration activities, covering areas from Stumers Creek north of Coolum Beach south to Twin Waters/North Shore on the Maroochy River.</p>
+<p>This page shows records of weeds seen, being scans of a weeding log-book I (briefly) maintained for a while.</p>
+<h2 id="Siratro">Siratro<a class="anchor-link" href="#Siratro">¶</a></h2><blockquote>
+<p>"Siratro (Macroptilium atropurpureum)is a legume which is native to tropical America, and widely used in coastal eastern Queensland and coastal New South Wales as a pasture plant.
+Siratro is considered an environmental weed that smothers native plants, especially in south-eastern Queensland."</p>
+</blockquote>
+<p>We pulled out Sirato early on my weeding career, along the banks of Stumers Creek (about the only open area suitable on  my patch for this grass).</p>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8f96196c-2967-463e-bed9-9bd14c1172f5">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=affc5d60-9a55-4cbf-84bb-59580e9d7dcb">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<hr/>
-<h2 id="Implementation">Implementation<a class="anchor-link" href="#Implementation">¶</a></h2><h3 id="Set-up-environment">Set up environment<a class="anchor-link" href="#Set-up-environment">¶</a></h3><p>Import packages and Jupyter extensions</p>
-<p><code>lab_black</code> auto-formats Python code</p>
-<p><code>watermark</code> produces reproducability information</p>
+<h3 id="Log-book-page">Log book page<a class="anchor-link" href="#Log-book-page">¶</a></h3><img alt="Sirato Image" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/HL-Scan 2025-11-09_13-32-44-2.jpg"/>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=2c8d13e1-d965-4e3b-ad07-71f0fd364cf5">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [23]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> lab_black
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>The lab_black extension is already loaded. To reload it, use:
-  %reload_ext lab_black
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=4cae08d2-421f-42d1-816b-62c8f49a7683">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [24]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> watermark
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>The watermark extension is already loaded. To reload it, use:
-  %reload_ext watermark
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b8a96627-2553-44e2-bbc8-cbf2c8d8d431">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Imports">Imports<a class="anchor-link" href="#Imports">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=c2543368-bb63-4449-8563-b322e50f9d01">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [25]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">ee</span>
-<span class="kn">import</span> <span class="nn">geemap</span>
-<span class="kn">import</span> <span class="nn">geemap.foliumap</span> <span class="k">as</span> <span class="nn">gf</span>
-<span class="kn">import</span> <span class="nn">geemap.colormaps</span> <span class="k">as</span> <span class="nn">cm</span>
-
-<span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="kn">import</span> <span class="n">LinearSegmentedColormap</span>
-
-<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">IFrame</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=88daba15-d5c8-4556-a435-7c9f4ed125e8">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Analysis-of-Palettes">Analysis of Palettes<a class="anchor-link" href="#Analysis-of-Palettes">¶</a></h2><h3 id="List-the-extra-palettes">List the extra palettes<a class="anchor-link" href="#List-the-extra-palettes">¶</a></h3>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b810563c-cc42-4aae-a125-7fdf4e6a4c95">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>In order to list the <code>extra</code> palettes defined for us, I look at the difference between the normal colormap list, and the list with extras added.  I could have used Python sets to get this difference, but this works.</p>
-<p>We get three extra palettes:</p>
-<ul>
-<li>one for Digital Elevation Models (dem):</li>
-<li>one for Normalized difference vegetation index (ndvi),</li>
-<li>one for Normalized difference water index (ndwi)</li>
-</ul>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=00c6ed5a-9563-43ee-80ce-fbb5637c4490">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [26]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="p">[</span>
-    <span class="n">p</span>
-    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">geemap</span><span class="o">.</span><span class="n">colormaps</span><span class="o">.</span><span class="n">list_colormaps</span><span class="p">(</span><span class="n">add_extra</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">p</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">geemap</span><span class="o">.</span><span class="n">colormaps</span><span class="o">.</span><span class="n">list_colormaps</span><span class="p">(</span><span class="n">add_extra</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="p">]</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[26]:</div>
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>['dem', 'ndvi', 'ndwi']</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8b3c23e9-d100-41d3-8f1c-63f19bd7d6e1">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>We now examine the data associated with a palette.  It is a tuple of CSS-style Hex color strings.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=f59d023d-f365-4cbe-911b-883962736cbc">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [27]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">cm</span><span class="o">.</span><span class="n">palettes</span><span class="o">.</span><span class="n">ndvi</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[27]:</div>
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>('FFFFFF',
- 'CE7E45',
- 'DF923D',
- 'F1B555',
- 'FCD163',
- '99B718',
- '74A901',
- '66A000',
- '529400',
- '3E8601',
- '207401',
- '056201',
- '004C00',
- '023B01',
- '012E01',
- '011D01',
- '011301')</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6d5058d8-ba68-458b-91fd-3dd5a20a05f8">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Build-colormaps">Build colormaps<a class="anchor-link" href="#Build-colormaps">¶</a></h3><p>In order to visualize these palettes, I build a <code>matplotlib</code> colormap.  To do this, I need a function to convert the Hex string CSS colors to normalised RGB tuples</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=b99b22f1-61b2-4e02-94dd-56acc9a172cf">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [28]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">hex_to_rgb</span><span class="p">(</span><span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    hex_to_rgb: convert CSS-style color specification to RGB tuple</span>
-
-<span class="sd">    Parameters:</span>
-<span class="sd">    color - string of form HHHHHH or #HHHHHH (H = hex digit)</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">    tuple(float, float, float) normalised to 0.0&lt;-&gt;1.0</span>
-<span class="sd">    """</span>
-    <span class="n">col</span> <span class="o">=</span> <span class="n">color</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"#"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">col</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span>
-    <span class="n">g</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">col</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span>
-    <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">col</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-
-
-<span class="c1"># end hxe_to_rgb</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">hex_to_rgb</span><span class="p">(</span><span class="s2">"FF0000"</span><span class="p">))</span>  <span class="c1"># -&gt; (1,0,0)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">hex_to_rgb</span><span class="p">(</span><span class="s2">"00FF00"</span><span class="p">))</span>  <span class="c1"># -&gt; (0,1,0)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">hex_to_rgb</span><span class="p">(</span><span class="s2">"0000FF"</span><span class="p">))</span>  <span class="c1"># -&gt; (0,0,1)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>(1.0, 0.0, 0.0)
-(0.0, 1.0, 0.0)
-(0.0, 0.0, 1.0)
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9e162849-2a91-4f6f-a165-c612dbbb7aad">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Show-palettes-as-colormaps">Show palettes as colormaps<a class="anchor-link" href="#Show-palettes-as-colormaps">¶</a></h3><p>We ask for 20 different colors in the visualization</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=04a5b783-a5db-47e3-8e73-edec5d3b294e">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h4 id="NDVI">NDVI<a class="anchor-link" href="#NDVI">¶</a></h4>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=9e60286f-5357-4ebd-8e06-099d540b350a">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [29]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># convert NDVI palette (hex color string) to a list of RGB tuples</span>
-<span class="n">ndvi_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">hex_to_rgb</span><span class="p">(</span><span class="n">hex_color</span><span class="p">)</span> <span class="k">for</span> <span class="n">hex_color</span> <span class="ow">in</span> <span class="n">cm</span><span class="o">.</span><span class="n">palettes</span><span class="o">.</span><span class="n">ndvi</span><span class="p">]</span>
-
-<span class="c1"># create color map from list of RGB color tuples</span>
-<span class="n">cmap_ndvi</span> <span class="o">=</span> <span class="n">LinearSegmentedColormap</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="s2">"ndvi"</span><span class="p">,</span> <span class="n">ndvi_colors</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-
-<span class="c1"># display color map</span>
-<span class="n">cmap_ndvi</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[29]:</div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<div style="vertical-align: middle;"><strong>ndvi</strong> </div><div class="cmap"><img alt="ndvi colormap" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAABACAYAAABsv8+/AAAAE3RFWHRUaXRsZQBuZHZpIGNvbG9ybWFwMvN5vwAAABl0RVh0RGVzY3JpcHRpb24AbmR2aSBjb2xvcm1hcLlB6ScAAAAwdEVYdEF1dGhvcgBNYXRwbG90bGliIHYzLjguNCwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZ2TOsrQAAAAydEVYdFNvZnR3YXJlAE1hdHBsb3RsaWIgdjMuOC40LCBodHRwczovL21hdHBsb3RsaWIub3JnSmgtkwAAAaRJREFUeJzt1s1JREEYRNEacSWKuBTDMyQTMQdzcCe4E5FR50ecQeQZRTdCnZNAQX/Q3NWyLEsmeLy7nTGT0+PT8I3L67PhG0lycXM1fGN7fhy+kST3bw/DN5736+EbSbI9/A7f2HwPn0iSfHzN2VnvVsM3XjbDJ5Ikr5/jN37ep3zLyYw3m3D7JMl+wsZuwkaSHObMnMyZAQD+EwEAAIUEAAAUEgAAUEgAAEAhAQAAhQQAABQSAABQSAAAQCEBAACFBAAAFBIAAFBIAABAIQEAAIUEAAAUEgAAUEgAAEAhAQAAhQQAABQSAABQSAAAQCEBAACFBAAAFBIAAFBIAABAIQEAAIUEAAAUEgAAUEgAAEAhAQAAhQQAABQSAABQSAAAQCEBAACFBAAAFBIAAFBIAABAIQEAAIUEAAAUEgAAUEgAAEAhAQAAhQQAABQSAABQSAAAQCEBAACFBAAAFBIAAFBIAABAIQEAAIUEAAAUEgAAUEgAAEAhAQAAhQQAABQSAABQSAAAQCEBAACFBAAAFBIAAFBIAABAIQEAAIUEAAAU+gNtUyOUWP/A+wAAAABJRU5ErkJggg==" style="border: 1px solid #555;" title="ndvi"/></div><div style="vertical-align: middle; max-width: 514px; display: flex; justify-content: space-between;"><div style="float: left;"><div style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #ffffffff;" title="#ffffffff"></div> under</div><div style="margin: 0 auto; display: inline-block;">bad <div style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #00000000;" title="#00000000"></div></div><div style="float: right;">over <div style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #011301ff;" title="#011301ff"></div></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4fbe899a-cd20-4481-affd-082d95d9197c">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h4 id="NDWI">NDWI<a class="anchor-link" href="#NDWI">¶</a></h4>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=faf11d69-73b0-490c-b193-d3391501a0b2">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [30]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># convert NDWI palette (hex color string) to a list of RGB tuples</span>
-<span class="n">ndwi_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">hex_to_rgb</span><span class="p">(</span><span class="n">hex_color</span><span class="p">)</span> <span class="k">for</span> <span class="n">hex_color</span> <span class="ow">in</span> <span class="n">cm</span><span class="o">.</span><span class="n">palettes</span><span class="o">.</span><span class="n">ndwi</span><span class="p">]</span>
-
-<span class="c1"># create color map from list of RGB color tuples</span>
-<span class="n">ndwi_ndvi</span> <span class="o">=</span> <span class="n">LinearSegmentedColormap</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="s2">"ndwi"</span><span class="p">,</span> <span class="n">ndwi_colors</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-
-<span class="c1"># display color map</span>
-<span class="n">ndwi_ndvi</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[30]:</div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<div style="vertical-align: middle;"><strong>ndwi</strong> </div><div class="cmap"><img alt="ndwi colormap" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAABACAYAAABsv8+/AAAAE3RFWHRUaXRsZQBuZHdpIGNvbG9ybWFw832mfwAAABl0RVh0RGVzY3JpcHRpb24AbmR3aSBjb2xvcm1hcHjPNucAAAAwdEVYdEF1dGhvcgBNYXRwbG90bGliIHYzLjguNCwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZ2TOsrQAAAAydEVYdFNvZnR3YXJlAE1hdHBsb3RsaWIgdjMuOC40LCBodHRwczovL21hdHBsb3RsaWIub3JnSmgtkwAAAYRJREFUeJzt1gtKQ0EQBdHW/e9TlMSo+fqBuIo3iHXOBi7NMFAPu6eP+yxwvn6vmJnL7WfzjdNtzS3vn9vf8rZgY2bmsOBdXhfdsv/c/v1fFv2X58vXkp0V97ye1tyyYud8uW6+MTMzt+P/2JiZ+/mw/cZxt/nGzMyc9ktmHpesAAB/igAAgCABAABBAgAAggQAAAQJAAAIEgAAECQAACBIAABAkAAAgCABAABBAgAAggQAAAQJAAAIEgAAECQAACBIAABAkAAAgCABAABBAgAAggQAAAQJAAAIEgAAECQAACBIAABAkAAAgCABAABBAgAAggQAAAQJAAAIEgAAECQAACBIAABAkAAAgCABAABBAgAAggQAAAQJAAAIEgAAECQAACBIAABAkAAAgCABAABBAgAAggQAAAQJAAAIEgAAECQAACBIAABAkAAAgCABAABBAgAAggQAAAQJAAAIEgAAECQAACBIAABAkAAAgCABAABBAgAAggQAAAQJAAAIEgAAEPQLBTU4EaUJRfUAAAAASUVORK5CYII=" style="border: 1px solid #555;" title="ndwi"/></div><div style="vertical-align: middle; max-width: 514px; display: flex; justify-content: space-between;"><div style="float: left;"><div style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #ece7f2ff;" title="#ece7f2ff"></div> under</div><div style="margin: 0 auto; display: inline-block;">bad <div style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #00000000;" title="#00000000"></div></div><div style="float: right;">over <div style="display: inline-block; width: 1em; height: 1em; margin: 0; vertical-align: middle; border: 1px solid #555; background-color: #023858ff;" title="#023858ff"></div></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=eeec0379-c713-43c9-8867-b541b0554360">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Discussion">Discussion<a class="anchor-link" href="#Discussion">¶</a></h3><p>The NDVI color map ranges from Brown to very dark Green, as the vegetation cover increases.  My taste says that the end (maximum vegetation) Green is a little too dark.</p>
-<p>The NDWI is an index used for water-body detection.  Seeing that I live about one Kilometre from the Pacific Ocean, I need an index like this</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=919ef564-c171-42f4-a18b-cbb74a95299d">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b755df3d-ab7c-486d-be10-3644c8446ecc">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <hr/>
+<h2 id="Signal-Grass">Signal Grass<a class="anchor-link" href="#Signal-Grass">¶</a></h2><blockquote>
+<p>"Urochloa, commonly known as signal grass, is a genus of plants in the grass family,    native to tropical and subtropical regions of Eurasia, Africa, Australia, the Americas, and various island.    Signal grass (Urochloa decumbens) is regarded as an environmental weed in south-eastern Queensland."</p>
+</blockquote>
+<p>Initially, there were open areas that had Signal Grass growing, but as the upper canopy is providing more shade,
+ we don't see it much.  There is the occasional patch along walkways that get more sun.</p>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8720c43d-3e73-444b-8b26-7b320261b9d8">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=58d9c4cd-2076-46d6-951c-b11cc2f197c7">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Run-an-Example">Run an Example<a class="anchor-link" href="#Run-an-Example">¶</a></h2><h3 id="Data-Selection">Data Selection<a class="anchor-link" href="#Data-Selection">¶</a></h3><p>I elected to use the USGS Landsat 8, Collection 2, Tier 1, TOA Reflectance.</p>
-<p>An explanation of some of the terms (mostly summarised from  [https://www.usgs.gov/landsat-missions/] pages)</p>
-<ul>
-<li><p>Top-of-atmosphere reflectance (or TOA reflectance) is the reflectance measured by a space-based sensor flying higher than the earth's atmosphere. These reflectance values will include contributions from clouds and atmospheric aerosols and gases</p>
-</li>
-<li><p>Landsat Collection 2 represents the state-of-art (as opposed to LANDSAT Collection 1). A primary characteristic of Collection 2 is the substantial improvement in the absolute geolocation accuracy of the global ground reference dataset used in the Landsat Level-1 processing flow.</p>
-</li>
-<li><p>The USGS produces data in 3 tiers (categories) for each satellite: Tier 1 (T1) - Data that meets geometric and radiometric quality requirements.</p>
-</li>
-</ul>
-<p>For my purposes, I am not realy fussed about very high accuracy, or the effects of the atmosphere in distorting the measurements: I just want something easy to access, to compute a NDVI score.  If I was a Wheat Futures Trader, trying to accurately estimate the future grain production of Canada (say), I would probably use the best data available (which in this case, might be Surface Reflectance values, which remove atmospheric distortions).</p>
+<h3 id="Log-book-page">Log book page<a class="anchor-link" href="#Log-book-page">¶</a></h3><img alt="Signal Grass Image" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/HL-Scan 2025-11-09_13-33-47-2.jpg"/>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f379cb1a-a6f2-4254-94a2-4eec9bd2b3e0">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Setup-GEEMAP-and-Google-Earth-Engine">Setup GEEMAP and Google Earth Engine<a class="anchor-link" href="#Setup-GEEMAP-and-Google-Earth-Engine">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=4eaf645b-4b50-4763-a14e-7894b000e78b">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [31]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">ee</span><span class="o">.</span><span class="n">Authenticate</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[31]:</div>
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>True</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=bbfe854e-a725-44b6-aad1-0e6ccfc16b21">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [32]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b1acdb9f-f68b-46e6-9158-6d600d68bd80">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Specify the Google Earth Engine image collection we want to use</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=ccf998f3-b16d-43b7-83f8-db218c87f24b">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [33]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">toa_collection_name</span> <span class="o">=</span> <span class="s2">"LANDSAT/LC08/C02/T1_TOA"</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=fa7e655a-78ab-4279-97d0-7d27c3326960">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h4 id="Specify-image-subsets">Specify image subsets<a class="anchor-link" href="#Specify-image-subsets">¶</a></h4><p>Filter out all but images from the last 18 months, to avoid any droughts in the past</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=5dc13846-d64f-4ec3-ac7e-a0c7816a83b9">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [34]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">start_date</span> <span class="o">=</span> <span class="s2">"2024-01-01"</span>
-<span class="n">end_date</span> <span class="o">=</span> <span class="s2">"2025-06-30"</span>
-
-<span class="n">l8</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="n">toa_collection_name</span><span class="p">)</span><span class="o">.</span><span class="n">filterDate</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=686065f0-e776-4f28-931a-b3ba35ffd17e">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Show how many images in this date range</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=db7e4dc8-2981-433e-a0ef-3d98cfaa3c96">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [35]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">l8</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span><span class="si">}</span><span class="s2"> images in period </span><span class="si">{</span><span class="n">start_date</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">end_date</span><span class="si">}</span><span class="s2"> days of LANDSAT"</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>238473 images in period 2024-01-01 to 2025-06-30 days of LANDSAT
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=881f0f3e-085f-4a17-af8f-3d9e4cb34641">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Now filter out images that don't cover my home, and show the new count</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=11945b0b-3e4e-4d65-9775-c2cd3fb9b816">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [36]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># get a point close to home</span>
-<span class="n">home</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="o">-</span><span class="mf">26.5</span><span class="p">)</span>
-
-<span class="c1"># only use images that cover home</span>
-<span class="n">f3</span> <span class="o">=</span> <span class="n">l8</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">home</span><span class="p">))</span>
-
-<span class="c1"># show count of images</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">f3</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span><span class="si">}</span><span class="s2"> images covering home"</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>58 images covering home
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d2c57e87-8d5a-4647-8894-f89cc29441f2">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h4 id="Cloud-processing">Cloud processing<a class="anchor-link" href="#Cloud-processing">¶</a></h4><p>I know from experiance that some (if not all) of any random image will have clouds obscuring some of the countryside.</p>
-<p>We address this by specifying we want the <code>median</code> pixel out of the pixels that cover a given location.  An image with cloud cover will not move the median much.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=41b4cc5d-c345-47d8-88f4-8b51c2434d13">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [37]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># get the median value for each pixel (hopefully means clouds dont show)</span>
-<span class="n">best</span> <span class="o">=</span> <span class="n">f3</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=e76866fa-a044-43b0-af2a-da598574aab1">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Examine the bands for the image we have created.  It is as expected</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=6dc2637e-b5a0-4182-829b-d589da1d4883">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [38]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># show metadata relating to best image</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">best</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">())</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9', 'B10', 'B11', 'QA_PIXEL', 'QA_RADSAT', 'SAA', 'SZA', 'VAA', 'VZA']
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b86ff817-f9bc-493f-a22b-70321d9d78c0">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Visualisation">Visualisation<a class="anchor-link" href="#Visualisation">¶</a></h3>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d421b118-e742-45c1-a605-9a1e648015bd">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h4 id="Show-true-color">Show true color<a class="anchor-link" href="#Show-true-color">¶</a></h4><p>We adjust the <code>gamma</code> value to lighten the image a little</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=ca78950f-9622-4f4a-a581-9fbbc14c2c4c">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [39]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># set up for true color image</span>
-<span class="c1"># gamma value will lighten image</span>
-
-<span class="n">visParams</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">"bands"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"B4"</span><span class="p">,</span> <span class="s2">"B3"</span><span class="p">,</span> <span class="s2">"B2"</span><span class="p">],</span>
-    <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="s2">"max"</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">,</span>
-    <span class="s2">"gamma"</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">,</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=950174fb-b41b-4203-acbb-c842f28e6573">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Setup a default GEEMAP map that covers my home, and add the RGB True Color image to it as an overlay</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=7ac76a36-7b4b-4ac0-8e4b-ee57222f9b1d">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [40]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="nb">map</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
-<span class="nb">map</span><span class="o">.</span><span class="n">set_center</span><span class="p">(</span><span class="mf">153.0890232</span><span class="p">,</span> <span class="o">-</span><span class="mf">26.5282752</span><span class="p">,</span> <span class="mi">14</span><span class="p">)</span>
-<span class="nb">map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">best</span><span class="p">,</span> <span class="n">visParams</span><span class="p">,</span> <span class="s2">"Median"</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=8e0f55cf-25e7-4e4b-ab7c-837269a305bd">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [41]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Some browsers can't render Maps after Pelican processing for Blog</span>
-<span class="c1"># so save as html, and display that</span>
-
-<span class="n">save_url_1</span> <span class="o">=</span> <span class="s2">"map01.html"</span>
-<span class="nb">map</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span>
-    <span class="n">save_url_1</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">"True Color"</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">IFrame</span><span class="p">(</span><span class="s2">"map01.png"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">700</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[41]:</div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<iframe allowfullscreen="" frameborder="0" height="700" src="map01.png" width="1200"></iframe>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3c3a660c-e8e2-4696-b6d1-d987b98f58f2">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><a href="map01.html">Interactive map here</a></p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1d2f7575-cc5e-4869-9774-898688a7d344">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="NDVI-Calculation">NDVI Calculation<a class="anchor-link" href="#NDVI-Calculation">¶</a></h2><p>Computing the NDVI is easy, the tricky part is setting the min / max parameters so the color map looks OK</p>
-<p>Guidence from the Bureau of Meteorology:</p>
-<pre><code>NDVI in Australia typically ranges from 0.1 up to 0.7, with higher values associated with greater density and greenness of the plant canopy. NDVI decreases as leaves come under water stress, become diseased or die. Bare soil and snow values are close to zero, while water bodies have negative values.
-[https://www.bom.gov.au/climate/austmaps/about-ndvi-maps.shtml]
-</code></pre>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=21506d3b-ed22-4a7d-8447-94f9fd212687">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [42]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Calculate normalized difference vegetation index: (NIR - Red) / (NIR + Red).</span>
-<span class="n">nir_band</span> <span class="o">=</span> <span class="s2">"B5"</span>
-<span class="n">red_band</span> <span class="o">=</span> <span class="s2">"B4"</span>
-<span class="n">ndvi</span> <span class="o">=</span> <span class="n">best</span><span class="o">.</span><span class="n">normalizedDifference</span><span class="p">([</span><span class="n">nir_band</span><span class="p">,</span> <span class="n">red_band</span><span class="p">])</span>
-
-<span class="c1"># Display NDVI result on the map.</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
-<span class="n">m</span><span class="o">.</span><span class="n">set_center</span><span class="p">(</span><span class="mf">153.0890232</span><span class="p">,</span> <span class="o">-</span><span class="mf">26.5282752</span><span class="p">,</span> <span class="mi">14</span><span class="p">)</span>
-<span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span>
-    <span class="n">ndvi</span><span class="p">,</span>
-    <span class="p">{</span>
-        <span class="s2">"min"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-        <span class="s2">"max"</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span>
-        <span class="s2">"palette"</span><span class="p">:</span> <span class="s2">"ndvi"</span><span class="p">,</span>
-    <span class="p">},</span>
-    <span class="s2">"NDVI"</span><span class="p">,</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=04103af3-1d6c-4a7b-b360-39e5c457100c">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Show results</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=8162b0ec-36dc-4f58-a69a-f9b4a8daa8ab">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [43]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Some browsers can't render Maps after Pelican processing for Blog</span>
-<span class="c1"># so save as html, and display that</span>
-
-<span class="n">save_url_2</span> <span class="o">=</span> <span class="s2">"map02.html"</span>
-<span class="n">m</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span>
-    <span class="n">save_url_2</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">"ndvi palette"</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">IFrame</span><span class="p">(</span><span class="s2">"map02.png"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">700</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[43]:</div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<iframe allowfullscreen="" frameborder="0" height="700" src="map02.png" width="1200"></iframe>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b94d6941-326f-4e44-9b56-b252e231be28">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><a href="map02.html">Interactive map here</a></p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b4e5c348-110d-4521-92be-186dacac0508">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Assesment">Assesment<a class="anchor-link" href="#Assesment">¶</a></h3><p>This is quiet a good visualisation. I can see the un-vegetated areas of the Industrial Estate behind Coolum Beach, the lines of tree along fence lines, and even where power lines that have been cleared of most vegetation.  However, I feel that it is hard to get much detail from the dark green area.</p>
-<p>So next I decided to ise a color map of my own selection, namely the <code>matplotlib</code> Red to Yellow to Green ramp.  In the display of the color map below, note that there is no <code>under</code> or <code>over</code> colors specified, which show the color to display for pixel values outside our nominated range.  This will bite us, as can be seen soon.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4716b4d8-aa28-45da-937e-c0d7f2520282">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h4 id="Show-new-colormap">Show new colormap<a class="anchor-link" href="#Show-new-colormap">¶</a></h4>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=8facdab7-3ad2-4e77-820e-989931dbd21c">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [44]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">cm</span><span class="o">.</span><span class="n">plot_colormap</span><span class="p">(</span><span class="s2">"RdYlGn"</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedImage jp-OutputArea-output">
-<img alt="No description has been provided for this image" class="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAAyCAYAAADMUGp0AAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjguNCwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZy8fJSN1AAAACXBIWXMAAA9hAAAPYQGoP6dpAAACTklEQVR4nO3YS3LbMBAFQELKXXLk3MBnyaVEZBFSAkyIn0rKXrzujeTBcDiUtXilUmutEwAAMW7fvQAAAF9LAAQACCMAAgCEEQABAMIIgAAAYQRAAIAwAiAAQBgBEAAgzI+zjR/l5zRN03RrIuP6flgr7/tOz1heSymX+k/fc2fHvva3sdxfF5S11gxZz0e1227/bVA7ntX1jXYbzV/Objv93X0HzzTdtx/g89pP1/Wztnu0fZt7tWfLM5SuduJeO8/Uznjtf9ucXf+CH32x3s99ftdP3/M/7lGaszLoLyf6RmcHc0u5X+rf9JXBZ3Vyj7p8BLXOz6N5eV+nk7XldW7OnrVm7nrta9bj7ax23t5ue/OPd6ub/mdtqtvaqO/0jM/3vDa/fYZ/mrG8f9Rpc/aqTU2tdrVHc/aqNfPn475+/tk91vn9/u936/vaHR/zqFYP+x5zu2PterracG7/9/u5O3179xz0r/+L2pyt77taHdQ+9R3OODH36oyrO3a1X7+nM/wCCAAQRgAEAAgjAAIAhBEAAQDCCIAAAGEEQACAMAIgAEAYARAAIIwACAAQRgAEAAgjAAIAhBEAAQDCCIAAAGEEQACAMAIgAEAYARAAIIwACAAQRgAEAAgjAAIAhBEAAQDCCIAAAGEEQACAMAIgAEAYARAAIIwACAAQRgAEAAgjAAIAhBEAAQDCCIAAAGEEQACAMKXWWr97CQAAvo5fAAEAwgiAAABhBEAAgDACIABAGAEQACCMAAgAEEYABAAIIwACAIQRAAEAwvwBlyNkbJYTwXQAAAAASUVORK5CYII="/>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b9fb89de-e28c-430c-a04b-018afdabe60e">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h4 id="Map-new-Colormap">Map new Colormap<a class="anchor-link" href="#Map-new-Colormap">¶</a></h4><p>We use the same data range as before.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=680ab859-8cc3-4c3b-88dd-8d679c94ba9d">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [45]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Display NDVI result on the map.</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
-<span class="n">m</span><span class="o">.</span><span class="n">set_center</span><span class="p">(</span><span class="mf">153.0890232</span><span class="p">,</span> <span class="o">-</span><span class="mf">26.5282752</span><span class="p">,</span> <span class="mi">14</span><span class="p">)</span>
-<span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span>
-    <span class="n">ndvi</span><span class="p">,</span>
-    <span class="p">{</span>
-        <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s2">"max"</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span>
-        <span class="s2">"palette"</span><span class="p">:</span> <span class="s2">"RdYlGn"</span><span class="p">,</span>
-    <span class="p">},</span>
-    <span class="s2">"NDVI"</span><span class="p">,</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=4b67eeff-7b1a-4c97-8c21-900591a5d0a0">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [46]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Some browsers can't render Maps after Pelican processing for Blog</span>
-<span class="c1"># so save as html, and display that</span>
-
-<span class="n">save_url_3</span> <span class="o">=</span> <span class="s2">"map03.html"</span>
-<span class="n">m</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span>
-    <span class="n">save_url_3</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">"Red-Yellow-Green palette"</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">IFrame</span><span class="p">(</span><span class="s2">"map03.png"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">700</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[46]:</div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<iframe allowfullscreen="" frameborder="0" height="700" src="map03.png" width="1200"></iframe>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=fe31dd14-f61b-41d2-b4e7-89acc9b8cd7e">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><a href="map03.html">Interactive map here</a></p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=05111c5f-ec1c-43b9-84ec-e9b8e956d571">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h4 id="Assessment">Assessment<a class="anchor-link" href="#Assessment">¶</a></h4><p>I think this a better color map: you can see more detail (e.g. you can make out tree-lined narrow roads that you couldn't make out in the original <code>ndvi</code> palette.  The only trouble is the sea of blood to the east :)</p>
-<p>This is because when you set the <code>min</code> and <code>max</code> in <code>vis_params</code>, <code>GEEMAP</code>  will automatically display values below <code>min</code> in the lowest color of the palette and values above <code>max</code> in the highest color.  It is opposed to the behaviour for the <code>ndvi</code> palette, where white is used for pixel value below the minimum specified.  So all the ocean pixels that were white, are now deep red.</p>
-<p>What to do?  There are two ways to solve this.  The first is by using a waterbody mask</p>
-<p>There is an index specified that allows water body detection, the Normalized Difference Water Index (NDWI).</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=35e5982e-1f9f-4d37-851a-228a9e72bf9e">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="NDWI">NDWI<a class="anchor-link" href="#NDWI">¶</a></h2><p>To summarise from EOS Data Analytics:</p>
-<p>The NDWI is calculated using the GREEN-NIR (visible green and near-infrared) combination, which allows it to detect subtle changes in water content of the water bodies</p>
-<p>The visible green wavelengths maximize the typical reflectance of the water surface. The near-infrared wavelengths maximize the high reflectance of terrestrial vegetation and soil features, while minimizing the low reflectance of water features.</p>
-<p>The result of the NDWI equation is positive values for water features and negative ones (or zero) for soil and terrestrial vegetation.
-Values of water bodies are larger than 0.5. Vegetation has much smaller values, which results in distinguishing vegetation from water bodies easier. Built-up features have positive values between 0 and 0.2.</p>
-<p>The NDWI values correspond to the following ranges:</p>
-<ul>
-<li>0.2 &lt;–&gt; 1 – Water surface,</li>
-<li>0.0 &lt;–&gt; 0,2 – Flooding, humidity,</li>
-<li>-0.3 &lt;–&gt; 0.0 – Moderate drought, non-aqueous surfaces,</li>
-<li>-1 &lt;–&gt; -0.3 – Drought, non-aqueous surfaces</li>
-</ul>
-<p>[https://eos.com/make-an-analysis/ndwi/]</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=54feb8b9-735f-4452-a053-55c25aa67264">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [47]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Create an NDWI image, define visualization parameters and display.</span>
-<span class="n">ndwi</span> <span class="o">=</span> <span class="n">best</span><span class="o">.</span><span class="n">normalizedDifference</span><span class="p">([</span><span class="s2">"B3"</span><span class="p">,</span> <span class="s2">"B5"</span><span class="p">])</span>
-
-<span class="n">ndwi_viz</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"min"</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"palette"</span><span class="p">:</span> <span class="s2">"ndwi"</span><span class="p">}</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5ee1c81f-7859-4cb1-aa8c-5e4defb6b779">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h4 id="Show-NDWI-on-map">Show NDWI on map<a class="anchor-link" href="#Show-NDWI-on-map">¶</a></h4>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=e678b7d4-82b8-4f20-86a0-13e33a7b4aeb">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [48]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Display NDWI result on the map.</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
-<span class="n">m</span><span class="o">.</span><span class="n">set_center</span><span class="p">(</span><span class="mf">153.0890232</span><span class="p">,</span> <span class="o">-</span><span class="mf">26.5282752</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span>
-    <span class="n">ndwi</span><span class="p">,</span>
-    <span class="n">ndwi_viz</span><span class="p">,</span>
-    <span class="s2">"NDWI"</span><span class="p">,</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=5a653802-f519-4a6d-8329-e262b89fe9fc">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [49]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Some browsers can't render Maps after Pelican processing for Blog</span>
-<span class="c1"># so save as html, and display that</span>
-
-<span class="n">save_url_4</span> <span class="o">=</span> <span class="s2">"map04.html"</span>
-<span class="n">m</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span>
-    <span class="n">save_url_4</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">"ndwi palette"</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">IFrame</span><span class="p">(</span><span class="s2">"map04.png"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">700</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[49]:</div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<iframe allowfullscreen="" frameborder="0" height="700" src="map04.png" width="1200"></iframe>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=79797365-5446-4683-9cba-fea5b7d91d91">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><a href="map04.html">Interactive map here</a></p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5caf9f01-512c-498b-ae93-b72a5210e406">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>This exactly what we want.  We can use this NDWI image to create a mask that prevent NDVI value for the ocean, lake, etc to be shown.</p>
-<p>The NDWI threshold value was chosen by trial and error</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=146fe40f-06fd-4638-b967-f916baa7a5c6">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h4 id="Create-mask,-and-masked-image">Create mask, and masked image<a class="anchor-link" href="#Create-mask,-and-masked-image">¶</a></h4>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=31a5b1ff-6657-4b3b-aba6-03c5724c24f7">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [50]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">water_threshold</span> <span class="o">=</span> <span class="mf">0.25</span>
-
-<span class="n">ndwi_masked</span> <span class="o">=</span> <span class="n">ndwi</span><span class="o">.</span><span class="n">updateMask</span><span class="p">(</span><span class="n">ndwi</span><span class="o">.</span><span class="n">gte</span><span class="p">(</span><span class="n">water_threshold</span><span class="p">))</span>
-<span class="n">ndvi_masked</span> <span class="o">=</span> <span class="n">ndvi</span><span class="o">.</span><span class="n">updateMask</span><span class="p">(</span><span class="n">ndwi</span><span class="o">.</span><span class="n">lte</span><span class="p">(</span><span class="n">water_threshold</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=bb6bfc6a-1ff1-4a42-a2a5-01dfdf39f8a7">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h4 id="Display-masked-NDVI-image">Display masked NDVI image<a class="anchor-link" href="#Display-masked-NDVI-image">¶</a></h4><p>We could mosaic in the NDWI image, but are only concerned with land: the basemap is fine for the ocean.  So we just display the masked NDVI image</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=cbd18089-79c5-43eb-8070-12a706194ab7">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [51]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Display NDWI, NDVI combined result on the map.</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
-<span class="n">m</span><span class="o">.</span><span class="n">set_center</span><span class="p">(</span><span class="mf">153.0890232</span><span class="p">,</span> <span class="o">-</span><span class="mf">26.5282752</span><span class="p">,</span> <span class="mi">13</span><span class="p">)</span>
-
-<span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span>
-    <span class="n">ndvi_masked</span><span class="p">,</span>
-    <span class="p">{</span>
-        <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s2">"max"</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span>
-        <span class="s2">"palette"</span><span class="p">:</span> <span class="s2">"RdYlGn"</span><span class="p">,</span>
-    <span class="p">},</span>
-    <span class="s2">"NDVI"</span><span class="p">,</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=068a810e-b62a-4c2d-85e8-749bd844e04c">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [52]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Some browsers can't render Maps after Pelican processing for Blog</span>
-<span class="c1"># so save as html, and display that</span>
-
-<span class="n">save_url_5</span> <span class="o">=</span> <span class="s2">"map05.html"</span>
-<span class="n">m</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span>
-    <span class="n">save_url_5</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">"Masked Red-Yellow-Green palette"</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">IFrame</span><span class="p">(</span><span class="s2">"map05.png"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">700</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[52]:</div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<iframe allowfullscreen="" frameborder="0" height="700" src="map05.png" width="600"></iframe>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c2cf2447-fc8b-4a85-8053-ef6513ab3c11">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><a href="map05.html">Interactive map here</a></p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7d8a14ac-1251-4bff-8803-623f51218def">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Handcrafted-palette">Handcrafted palette<a class="anchor-link" href="#Handcrafted-palette">¶</a></h2><p>The second approach is to mimic the <code>under</code> value of a <code>matplotlib</code> color map.  We get the list of Hex strings corresponding to a chosen colormap, add white to the front (White = FFFFFF), and use that list of colors in a visualization parameter.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c537b3cf-0eb2-4c9f-a85e-4723b406cb98">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Get the colors used in the RdYlGn colormap</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=6b9f30f3-ca84-4bc4-a290-a31a9676c1f8">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [53]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">colors</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get_palette</span><span class="p">(</span>
-    <span class="n">cmap_name</span><span class="o">=</span><span class="s2">"RdYlGn"</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="c1"># show first 10 colors</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">colors</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>['a50026', 'a70226', 'a90426', 'ab0626', 'ad0826', 'af0926', 'b10b26', 'b30d26', 'b50f26', 'b71126']
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b8fa194d-c61f-4d06-940b-924a174f1149">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Append white to front</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=6d10ac62-c8ca-4dc8-9132-5f11ff211c4f">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [54]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">color_extd</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">"ffffff"</span><span class="p">,</span>
-<span class="p">]</span> <span class="o">+</span> <span class="n">colors</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2d8e6238-f18f-43ec-accf-270c82863551">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Show NDVI image, using extended palette to turn below-range pixels white.  If you look very carefully, there a few pixels that have an NDVI value right at the bottom edge of the valid range: they were Red, but are now White.  For my purposes, this is an acceptable distortion.  If we were really concerned, we could adjust the <code>min</code> value to show these pixels as Red.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=1a0e094a-3f98-47b4-89e5-061f761896d6">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [55]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Display NDVI result on the map.</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
-<span class="n">m</span><span class="o">.</span><span class="n">set_center</span><span class="p">(</span><span class="mf">153.0890232</span><span class="p">,</span> <span class="o">-</span><span class="mf">26.5282752</span><span class="p">,</span> <span class="mi">14</span><span class="p">)</span>
-<span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span>
-    <span class="n">ndvi</span><span class="p">,</span>
-    <span class="p">{</span>
-        <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s2">"max"</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span>
-        <span class="s2">"palette"</span><span class="p">:</span> <span class="n">color_extd</span><span class="p">,</span>
-    <span class="p">},</span>
-    <span class="s2">"NDVI"</span><span class="p">,</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=25c69c1f-831f-4683-9044-2fb863123ab0">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [56]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Some browsers can't render Maps after Pelican processing for Blog</span>
-<span class="c1"># so save as html, and display that</span>
-
-<span class="n">save_url_6</span> <span class="o">=</span> <span class="s2">"map06.html"</span>
-<span class="n">m</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span>
-    <span class="n">save_url_6</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">"Extended Red-Yellow-Green palette"</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">IFrame</span><span class="p">(</span><span class="s2">"map06.png"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">700</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[56]:</div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
-<iframe allowfullscreen="" frameborder="0" height="700" src="map06.png" width="1200"></iframe>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=484ef311-9fc1-413d-ad9a-a1a5b50e7bf6">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><a href="map06.html">Interactive map here</a></p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a3bce419-340b-4034-ad7d-de4981f00259">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cb6fb763-6fa7-4eaa-af4b-53fa2dca600e">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <hr/>
-<h2 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion">¶</a></h2><p>I am always surprised how easy it is to use Google Earth Engine to access LANDSAT datasets, and how easy <code>GEEMAP</code> make visualization.  Further, it is relatively easy to use different color maps to highlight aspects of an image</p>
-<p>Of course, a little knowledge can be a dangerous thing, and a professional remote sensing person would have to right across the fine detail of how LANDSAT does its data corrections, and the best algorithms for a given  task (e.g. Normalized Difference Water Index vs Normalized Difference Moisture Index)</p>
+<h2 id="Glory-Lilly">Glory Lilly<a class="anchor-link" href="#Glory-Lilly">¶</a></h2><blockquote>
+<p>"Glory lily is a poisonous, climbing plant with red, orange, and yellow flowers. It is toxic to people and animals, and all parts are poisonous."</p>
+</blockquote>
+<p>This plant is the one of the nastiest weeds, in that it is very hard to remove mechanically. It grows a very deep tap-root, with a tuber at the bottom. Pulling the plant up leave the tuber, which grows up again. We mostly just remove the surface growth (to prevent seeding), and I guess eventually the tuber will die.</p>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3cb08492-c33b-4fe8-8687-f0d47ef520fd">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=62a45e02-fe29-461d-ac43-fbe72f5fac1d">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Log-book-page">Log book page<a class="anchor-link" href="#Log-book-page">¶</a></h3><img alt="Glory Lilly Image" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/HL-Scan 2025-11-09_13-34-39-2.jpg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3dc7664a-8000-4e88-9120-2c86c9375e93">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <hr/>
-<h2 id="Reproducibilty">Reproducibilty<a class="anchor-link" href="#Reproducibilty">¶</a></h2>
+<h2 id="Asparagus-Fern">Asparagus Fern<a class="anchor-link" href="#Asparagus-Fern">¶</a></h2><blockquote>
+<p>"Asparagus aethiopicus is a branching perennial herb with tough green aerial stems which are sparsely covered with spines."</p>
+</blockquote>
+<p>This so-called fern represents the bulk of our weeding effort currently. Left unattended, it can completely cover the landscape. Thankfully, it is susceptable to mechanical removal, as the plant grows from a shallow corm, that can be easily cut or dug out (which is good, because complete removal of a mature weed mat would be very disruptive to surrounding plants).</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=f91f0a5c-a9be-4e0e-8fff-f38fd1897f59">
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5aa7d255-825c-4eb5-952f-9ea397ee2708">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [57]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">watermark</span>
-</pre></div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Log-book-page">Log book page<a class="anchor-link" href="#Log-book-page">¶</a></h3><img alt="Asparagus Fern Image" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/HL-Scan 2025-11-09_13-35-32-2.jpg"/>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Last updated: 2025-08-31T10:47:04.621718+10:00
-
-Python implementation: CPython
-Python version       : 3.12.7
-IPython version      : 8.29.0
-
-Compiler    : MSC v.1941 64 bit (AMD64)
-OS          : Windows
-Release     : 11
-Machine     : AMD64
-Processor   : Intel64 Family 6 Model 170 Stepping 4, GenuineIntel
-CPU cores   : 22
-Architecture: 64bit
-
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=ecb037f6-fe49-4153-9710-283a84baa169">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=460d7c37-603e-42b0-875e-d7d5e2337e4c">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [58]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">watermark</span> -co  -iv -v -h
-</pre></div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<hr/>
+<h2 id="Gidji-Gidji-Vine">Gidji Gidji Vine<a class="anchor-link" href="#Gidji-Gidji-Vine">¶</a></h2><blockquote>
+<p>"Gidgee Gidgee (Abrus precatorius) is a slender climbing plant with shiny, bright red seeds with a black spot. The seeds are poisonous if chewed and swallowed"</p>
+</blockquote>
+<p>This vine can be a weeder's heart-breaker. It grows up into the canopy (metres out of reach), where it develops seed pods with large numbers of small red seeds, just waiting to burst and scatter seeds over a large area. The seeds can remain viable for at least a few years, so even after removing all vines, you have to come back regularly to remove new seedlings. Thankfully, even though small seedlings quickly develop a deep tap root, they can be pulled out by hand, if you get to them early enough.</p>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=92ad7623-3b3f-47d6-bd80-c54de41ef5a6">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html">
-<style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Log-book-page">Log book page<a class="anchor-link" href="#Log-book-page">¶</a></h3><img alt="Asparagus Fern Image" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/HL-Scan 2025-11-09_13-36-21-2.jpg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c1dcdacc-b166-40e8-8e79-c73070b9a90c">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<hr/>
+<h2 id="Snake-Weed">Snake Weed<a class="anchor-link" href="#Snake-Weed">¶</a></h2><blockquote>
+<p>"Snakeweed (Stachytarpheta spp.) is an invasive plant in Queensland"</p>
+</blockquote>
+<p>Although this is in my weeding log, I can't remember where and when I pulled this one out. Shows the importance of an improved weeding log, with dates and locations.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=41bf830f-44f3-4d42-9f06-1fcb62789a5f">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Log-book-page">Log book page<a class="anchor-link" href="#Log-book-page">¶</a></h3><img alt="Asparagus Fern Image" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/HL-Scan 2025-11-09_13-37-05-2.jpg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6d35357e-7b61-4e59-b9a6-aa43a6a9e587">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<hr/>
+<h2 id="Pepper-Tree">Pepper Tree<a class="anchor-link" href="#Pepper-Tree">¶</a></h2><blockquote>
+<p>"Native to South America, broad-leaved pepper tree is a large, spreading tree. In Australia, it has escaped gardens and invaded coastal dune lands, wetlands and streambanks."</p>
+</blockquote>
+<p>Mostly we poison these trees, as they grow quite large, and are difficult to remove mechanically.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=50c79c6a-a9f2-40de-9552-f60e6820c3f7">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Log-book-page">Log book page<a class="anchor-link" href="#Log-book-page">¶</a></h3><img alt="Asparagus Fern Image" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/HL-Scan 2025-11-09_13-37-47-2.jpg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=e440f69e-3e86-463d-9354-bf678c6fbf98">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<hr/>
+<h2 id="Ochna">Ochna<a class="anchor-link" href="#Ochna">¶</a></h2><blockquote>
+<p>"Ochna (Ochna serrulata) is a significant environmental weed in Queensland "</p>
+</blockquote>
+<p>Another weed we use poison on, as their root system is hard to remove by just pulling them out by hand, once they pass the very small seedling stage. This one is quiet common, and easy to spot because of its serrated leaves.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=095d7dd0-3f8c-4f9b-8055-26422ab2f992">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Log-book-page">Log book page<a class="anchor-link" href="#Log-book-page">¶</a></h3><img alt="Asparagus Fern Image" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/HL-Scan 2025-11-09_13-38-49-2.jpg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8272c366-0ce8-45bf-8f9e-4d3659ff0dde">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<hr/>
+<h2 id="Brazilian-Cherry">Brazilian Cherry<a class="anchor-link" href="#Brazilian-Cherry">¶</a></h2><blockquote>
+<p>"Brazilian cherry (Eugenia uniflora) is regarded as a relatively important environmental weed in south-eastern Queensland, where it appears on the list of the top 200 environmental weeds."</p>
+</blockquote>
+<p>Again, another weed we use poison on, as their root system is hard to remove by just pulling them out by hand.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f4e0c6b3-18c3-4c5c-9f7d-345ffc508264">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Log-book-page">Log book page<a class="anchor-link" href="#Log-book-page">¶</a></h3><img alt="Asparagus Fern Image" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/HL-Scan 2025-11-09_13-39-44-2.jpg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ccac04f3-b0c7-40a2-bb2f-5baf5881afa8">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<hr/>
+<h2 id="More-to-come!">More to come!<a class="anchor-link" href="#More-to-come!">¶</a></h2><p>I found this weeding log at the bottom of my weeding tool-bag, and decided to put it on the Internet.</p>
+<p>I had teased a friend of mine who has started to grow cactus as a hobby - "I expect to see a web-page with photos of each individual plant, and Latin names".  So I thought I would be the change I wanted to see in the world (people documenting their hobbies in a longer form than Twitter / Bluesky allows).</p>
+<p>There are many weeds missing from this list, including Corky Passion, Lantana, Mother of Millions, etc.  Our patch is (thankfully) remote from ornamental gardens and gardeners, so people dumping cuttings in our bushland is not a major source of weeds.  I have been inspired to update the weeding log, so watch this space for more!</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ef9fd061-b51b-4f48-ad75-33e1c8917de1">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+</div>
+</div>
+</div>
+</div>
 
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Python implementation: CPython
-Python version       : 3.12.7
-IPython version      : 8.29.0
-
-conda environment: geospatial
-
-Hostname: INSPIRON16
-
-ee        : 1.3.1
-matplotlib: 3.8.4
-IPython   : 8.29.0
-geemap    : 0.35.1
-
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div></div>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var mathjaxscript = document.createElement('script');
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
@@ -2806,13 +483,46 @@ geemap    : 0.35.1
 }
 </script>
  
-	<a class="btn btn-mini xsmall" href="./ndvi.html">
+	<a class="btn btn-mini xsmall" href="./wlog.html">
           <i class="icon-comment"></i> Comment </a>
 	<hr />
       </div>
       
     </div>
     
+
+ 
+        
+
+
+
+    <div class='row-fluid'>
+      <div class='article-title span9'> 
+        <a href="./ndvi.html"><h1>GEEMAP built-in palettes and NDVI</h1></a>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span2">
+<p>Mon 25 August 2025 </p>
+
+<p style="text-align: left;">
+Filed under <a href="./category/geemaps.html">geemaps</a>
+</p>
+<p style="text-align: left;">
+ 
+    Tags <a href="./tag/geemaps.html">geemaps</a> </p>
+<p>
+</p>
+      </div>
+      <div class="summary span8">
+	<p>Displaying NDVI on GEEMAP Maps</p> 
+	<a class="btn btn-mini xsmall" href="./ndvi.html">
+          <i class="icon-plus-sign"></i> Read More </a>
+	<hr />
+      </div>
+      
+    </div>
+      
 
  
         
@@ -2873,39 +583,6 @@ Filed under <a href="./category/python.html">Python</a>
       <div class="summary span8">
 	<p>Examples of Mental Models Failing</p> 
 	<a class="btn btn-mini xsmall" href="./mbug.html">
-          <i class="icon-plus-sign"></i> Read More </a>
-	<hr />
-      </div>
-      
-    </div>
-      
-
- 
-        
-
-
-
-    <div class='row-fluid'>
-      <div class='article-title span9'> 
-        <a href="./rtree.html"><h1>Examples of RTree use</h1></a>
-      </div>
-    </div>
-    <div class="row-fluid">
-      <div class="span2">
-<p>Mon 26 May 2025 </p>
-
-<p style="text-align: left;">
-Filed under <a href="./category/visualization-spatial.html">Visualization Spatial</a>
-</p>
-<p style="text-align: left;">
- 
-    Tags <a href="./tag/rtree-geopandas.html">rtree geopandas</a> </p>
-<p>
-</p>
-      </div>
-      <div class="summary span8">
-	<p>Eaxmple of spatial queries with RTree</p> 
-	<a class="btn btn-mini xsmall" href="./rtree.html">
           <i class="icon-plus-sign"></i> Read More </a>
 	<hr />
       </div>
