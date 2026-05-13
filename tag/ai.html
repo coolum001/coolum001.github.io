@@ -103,19 +103,19 @@
 
     <div class='row-fluid''>
         <div class="article-title span9">
-            <a href="../cursor01.html"><h1>MicroPython and Cursor</h1></a>
+            <a href="../antigravity.html"><h1>Making a toy app with Google AntiGravity</h1></a>
         </div>
     </div>
     <div class="row-fluid">
       <div class="span2">
-<p>Tue 07 April 2026 </p>
+<p>Sun 10 May 2026 </p>
 
 <p style="text-align: left;">
 Filed under <a href="../category/ai.html">AI</a>
 </p>
 <p style="text-align: left;">
  
-    Tags <a href="../tag/cursor.html">cursor</a> <a href="../tag/ai.html">ai</a> <a href="../tag/micropython.html">micropython</a> </p>
+    Tags <a href="../tag/ai.html">ai</a> </p>
 <p>
 </p>
       </div>
@@ -194,213 +194,124 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
  .highlight pre  .vg { color: #19177C } /* Name.Variable.Global */
  .highlight pre  .vi { color: #19177C } /* Name.Variable.Instance */
  .highlight pre  .vm { color: #19177C } /* Name.Variable.Magic */
- .highlight pre  .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=92f5d6e2-4f4e-49b6-be71-3f8d2438a3f7">
+ .highlight pre  .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=220940e9-5248-43ea-b905-1f2b2d8cdae0">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Adventures-in-LLMs-and-microPython-land">Adventures in LLMs and microPython land<a class="anchor-link" href="#Adventures-in-LLMs-and-microPython-land">¶</a></h1><h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">¶</a></h2><p>I have been dabbling  in AI-supported software for a while, and was inspired to extend this to my other area of dabbling - ESP32 micro projects.  The inspiration came from the <a href="https://www.peregianhub.com.au/connect/technologists/">Coding from the Beach</a> recent workshops, which focused on programming external hardware.  These workshops used the Arduino C-oriented approach, but being a Python tragic, I chose micropython as my target.</p>
+<h1 id="Frivolous-Toy">Frivolous Toy<a class="anchor-link" href="#Frivolous-Toy">¶</a></h1><h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">¶</a></h2><p>I recently decided to explore the AI world of Google Antigravity, and whipped up a toy Javascript app that takes your gender and birth date, and tells you the expected seconds and days of remaining (expected) life.  It uses the latest Australia life tables.</p>
+<p>Try it <a href="extra/mortality.html">here</a></p>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cd6d6be3-aa11-42bb-8f4f-e9988b818aeb">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3f607b84-3674-40c5-bed4-e9ffdff2daa9">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Cursor">Cursor<a class="anchor-link" href="#Cursor">¶</a></h2><h2 id="Rationale-(why-Cursor)">Rationale (why Cursor)<a class="anchor-link" href="#Rationale-(why-Cursor)">¶</a></h2><p>I am using Cursor as my LLM provider.  I have free subscriptions to most of the usual providers (Perplexity, ChatGPT, Codex, etc), but decided to get a paid  subscription to Cursor.  The main reason was the familarity of a VS Code interface, and the fact there was a reasonable amount of documentation available at my level of skill (very low).</p>
-<h2 id="Initial-Reactions">Initial Reactions<a class="anchor-link" href="#Initial-Reactions">¶</a></h2><p>My first toe in the water was requesting a minor enhancement to a Dashboard-style web-base app for which I am currently the custodian (I do volunteer software work for a local environmental non-profit).  It uses the Dash framework, and the UI includes maps to display georeferenced data.  I wanted an extra dropdown to be an alternative to clicking an object on the map.  I was pleasently suprised at how good the result was.</p>
-<p>My next attempt was to ask Cursor to generate the test suite for the app, and again (after some nudging) it did a pretty good job of building unit level test suite.</p>
-<p>Cursor was even able to generate a viable simple demonstraion in R+shiney for displaying eco-data.</p>
-<h2 id="MicroPython:-a-little-harder">MicroPython: a little harder<a class="anchor-link" href="#MicroPython:-a-little-harder">¶</a></h2><p>The bar was raised a little, when I moved on to microPython, because I wanted to have the generated code to be automatically downloaded to the ESP32, and run there. I elected to assume the ESP32 had been equiped with microPython as a seperate process.</p>
-<p>Part of the problem is that it is quite hard in Windows 11 to determine the current owner of a serial port (e.g. COM 7).  A lot of the churning in my initial attempts was Cursor churning the trying to get access to the serial port connected (via USB) to the ESP32, because previous commands run by Cursor had left the Port in use.</p>
-<h3 id="Enter-Skills">Enter Skills<a class="anchor-link" href="#Enter-Skills">¶</a></h3><p><strong>Skills</strong> are a way for the user to specify a detailed process to achieve some goal.  I wound up defining three Skills:</p>
-<ul>
-<li>conda_run_from_environment</li>
-<li>copy_file</li>
-<li>esp32_python</li>
-</ul>
+<h2 id="Developent-process">Developent process<a class="anchor-link" href="#Developent-process">¶</a></h2><p>The log below shows my interaction with the Antigravity app (typo-s and all)</p>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=28d02b90-d97c-4ab1-82dc-43e23cd3f439">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2b6ac294-3309-4ffc-84c6-beec1470dc5e">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>I show these below in case they may be of use (suggestions for improvement welcome)</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4a44a53a-59b2-49c1-989e-dc997df7e0ff">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h4 id="conda_run_from_environment">conda_run_from_environment<a class="anchor-link" href="#conda_run_from_environment">¶</a></h4>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8e54335e-da33-45cc-af5e-896b234be803">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<pre><code class="language----">---
-name: conda_run_from_environment
-description: Use when running an application from a conda environment
----
-
-# conda run from environment
-
-## workflow
-
-1. confirm that conda.exe is available at C:\Users\donrc\anaconda3\Scripts\conda.exe
-2. confirm the environment is in the list of conda environments 
-3. confirm the application is present in the list returned by the `conda list` command line command
-2. run `C:\Users\donrc\anaconda3\Scripts\conda.exe -n "environment_name" application_name`
-
-## errors
-
-Inform the user if conda.exe is not available
-
-Inform the user if the application is not available in the conda environment
+<pre><code>Code me a web app thta takes a usersbbirthdate in the YYYMMDD, and display the dayus and seconds of expected life left.  Update the seconds counter every 1/10 second
 </code></pre>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=96493e44-6489-4d09-b8c0-8d9e6769bd3f">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cdd907f0-f07f-4699-98f3-5a5f62f33402">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h4 id="copy_file">copy_file<a class="anchor-link" href="#copy_file">¶</a></h4>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6e279409-b989-40f2-9fb7-07b52aa90047">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<pre><code class="language----">---
-name: copy_file
-description: Use when copying a file to an ESP32
----
-
-# copy file
-
-## workflow
-
-1. confirm that mpremote is available in a conda environment
-2. obtain the esp32 com port number by running `wmic path Win32_SerialPort get Caption, DeviceID`
-3. connect to the com port, reset the esp32,  run a micropython file by a command, and disconnect by a windows command `mpremote connect PORT_NAME  cp "file_name" :"file_name" `
-
-
-## errors
-
-Inform the user if mpremote is not available
-
-Inform the user if no esp32 COM port can be found
-
-Inform the user when the `mpremote` command returns
+<pre><code>app incoorect, says Please enter exactly 8 digits (YYYYMMDD). even on valid dates
 </code></pre>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7d2437fc-27f1-4901-937b-3292d74e5581">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=63a5c7b5-3f24-46f9-85f5-d75fe57d6b70">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h4 id="esp32_python">esp32_python<a class="anchor-link" href="#esp32_python">¶</a></h4>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ae0b76c2-602a-4961-bafe-5d2141843682">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<pre><code class="language----">---
-name: esp32_python
-description: Use when running a micropython program on an esp32
----
-
-# conda esp32_python
-
-## workflow
-
-1. confirm that mpremote is available in a conda environment
-2. obtain the esp32 com port number by running `wmic path Win32_SerialPort get Caption, DeviceID`
-3. connect to the com port, reset the esp32,  run a micropython file by a command, and disconnect by a windows command `mpremote connect PORT_NAME soft-reset run --no-follow "python_file_name" disconnect`
-
-
-## errors
-
-Inform the user if mpremote is not available
-
-Inform the user if no esp32 COM port can be found
-
-Inform the user when the `mpremote` command returns
+<pre><code>now add a switch for Male / Female
 </code></pre>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f81038d2-6f45-4a61-bc1f-66344a431ba5">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b86efc02-a86a-4c5a-b67e-0b2d67344434">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Initial-success">Initial success<a class="anchor-link" href="#Initial-success">¶</a></h3><p>So the very first program I tried to create  and download was the <code>Hello World</code> of microPython: blinking the on-board LED.  And it worked!</p>
-<p>This not a great effort saving event, because to be honest, the effort involved in use <strong>Thonny</strong> to load and run a python file is minimal.  However, with more complex systems with multiple packages to download,  the ability to run aumated checks might be very useful</p>
-<h3 id="Second-success">Second success<a class="anchor-link" href="#Second-success">¶</a></h3><p>In the next example, I was driving MAX7219 8x8 LED matrix displays (to display decimal digits), daisy chained to minimize GPIO Port usage.  Because of connection issues that precented abutting the 8x8 matrices, I had Cursor modify the MAX7219 library to (optionally) rotate programmatically each 8x8 display by either 90 or 270 degrees.  And Cursor did the job - there was a minor glitch where rotaed digits were mirror flipped, but Cursor fixed this up in one iteration.</p>
+<pre><code>now create a steampunk themed version
+</code></pre>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=e6d52cfa-58f3-4e69-ae47-bde036f4a29b">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=877eb8aa-8246-4f6f-a162-f29a4376b827">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Subsequent-failure">Subsequent failure<a class="anchor-link" href="#Subsequent-failure">¶</a></h3><p>Sadly when I tried to extend this approach to a slightly more complex problems (driving a MAX7219 7 segment 8 digit display), the wheels fell off!  It turns out that Cursor (unaided) has a very shakey grasp of what is allowed in microPython, calling for <strong>imports</strong> that microPython doesn't support.</p>
-<p>This is my fault:  I have no <strong>Rules</strong> defined at all:  I should have Rules that point to the microPython documentation.  I probably should also have  <strong>micropython-esp32-stubs</strong>, in my <strong>conda</strong> environment, so that Cursor can do the lint and type checking of the code it creates</p>
+<pre><code>the files male_expected_years_to_live.csv and female_expected_years_to_live.csv hold theexpected years more to live given survival to a given age.  Read these files and include the data hard-coded in the javascript to give a more accurate estimate of years more to live
+</code></pre>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f29a64dc-5849-4a1a-a295-ce78534a500d">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c08967d7-0f8a-443c-988c-c49983d08bd8">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Conclusions">Conclusions<a class="anchor-link" href="#Conclusions">¶</a></h2><p>Use of Cursor is clearly worth pursuing.  I will be attempting more informed automation in my ESP32 future.</p>
+<pre><code>the layout is to tall.  also, can you add a reset button
+</code></pre>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7e2aac2a-0571-4b36-a56b-284fbaa128d0">
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ee52fe17-9ab0-4513-8d2d-b01072987ed3">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<pre><code>just have male / female on the gender select buttons
+</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9ec9aba0-79b6-4922-9472-6919e46a3e06">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Conclusions">Conclusions<a class="anchor-link" href="#Conclusions">¶</a></h2><p>A fun little project!</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0f6cf595-fba6-4ea5-9eb1-47311daf47ba">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -445,13 +356,46 @@ Inform the user when the `mpremote` command returns
 }
 </script>
  
-	<a class="btn btn-mini xsmall" href="../cursor01.html">
+	<a class="btn btn-mini xsmall" href="../antigravity.html">
           <i class="icon-comment"></i> Comment </a>
 	<hr />
       </div>
       
     </div>
     
+
+ 
+        
+
+
+
+    <div class='row-fluid'>
+      <div class='article-title span9'> 
+        <a href="../cursor01.html"><h1>MicroPython and Cursor</h1></a>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span2">
+<p>Tue 07 April 2026 </p>
+
+<p style="text-align: left;">
+Filed under <a href="../category/ai.html">AI</a>
+</p>
+<p style="text-align: left;">
+ 
+    Tags <a href="../tag/cursor.html">cursor</a> <a href="../tag/ai.html">ai</a> <a href="../tag/micropython.html">micropython</a> </p>
+<p>
+</p>
+      </div>
+      <div class="summary span8">
+	<p>Initial adventures using micropython and cursor</p> 
+	<a class="btn btn-mini xsmall" href="../cursor01.html">
+          <i class="icon-plus-sign"></i> Read More </a>
+	<hr />
+      </div>
+      
+    </div>
+      
 <div class="pagination">
 <ul>
     <li class="prev disabled"><a href="#">&larr; Previous</a></li>
