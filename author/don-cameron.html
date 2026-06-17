@@ -47,6 +47,8 @@
 	    <li >
 	      <a href="../category/data-engineering.html ">Data Engineering</a>
 	    <li >
+	      <a href="../category/documents.html ">Documents</a>
+	    <li >
 	      <a href="../category/fastai.html ">fastai</a>
 	    <li >
 	      <a href="../category/folium.html ">Folium</a>
@@ -103,19 +105,19 @@
 
     <div class='row-fluid''>
         <div class="article-title span9">
-            <a href="../antigravity.html"><h1>Making a toy app with Google AntiGravity</h1></a>
+            <a href="../ulam.html"><h1>Ulam Sequences and Typst</h1></a>
         </div>
     </div>
     <div class="row-fluid">
       <div class="span2">
-<p>Sun 10 May 2026 </p>
+<p>Wed 17 June 2026 </p>
 
 <p style="text-align: left;">
-Filed under <a href="../category/ai.html">AI</a>
+Filed under <a href="../category/documents.html">Documents</a>
 </p>
 <p style="text-align: left;">
  
-    Tags <a href="../tag/ai.html">ai</a> </p>
+    Tags <a href="../tag/document.html">document</a> </p>
 <p>
 </p>
       </div>
@@ -194,124 +196,24 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
  .highlight pre  .vg { color: #19177C } /* Name.Variable.Global */
  .highlight pre  .vi { color: #19177C } /* Name.Variable.Instance */
  .highlight pre  .vm { color: #19177C } /* Name.Variable.Magic */
- .highlight pre  .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=220940e9-5248-43ea-b905-1f2b2d8cdae0">
+ .highlight pre  .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1a62a294-32a1-4dd6-ac28-f23dcc253596">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Frivolous-Toy">Frivolous Toy<a class="anchor-link" href="#Frivolous-Toy">¶</a></h1><h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">¶</a></h2><p>I recently decided to explore the AI world of Google Antigravity, and whipped up a toy Javascript app that takes your gender and birth date, and tells you the expected seconds and days of remaining (expected) life.  It uses the latest Australia life tables.</p>
-<p>Try it <a href="extra/mortality.html">here</a></p>
+<h1 id="Ulam-sequences-and-Typst">Ulam sequences and Typst<a class="anchor-link" href="#Ulam-sequences-and-Typst">¶</a></h1><h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">¶</a></h2><p>I recently ran across two areas of interest:</p>
+<ul>
+<li>Ulam numbers</li>
+<li>The <a href="https://typst.app/home">Typst</a> (sort-of) replacement for Tex, for producing publication ready, math heavy, documents.</li>
+</ul>
+<p>Seeing how Ulam sequences present a challenge for efficient computation, I though I would use Typst to generate a PDF describing my attempts to rise to the challenge.  The PDF is <a href="extra/ulam.pdf">here</a></p>
+<h2 id="Conclusions">Conclusions<a class="anchor-link" href="#Conclusions">¶</a></h2><p>Typst is certainly relatively easy to use, and I could achieve what I wanted in the area of displaying mathematical related diagrams.  It even created nice graphs for me.</p>
+<p>I will certainly be trying it out for future documents.  Sadly, the HTML generation is still a work in progress, and not quite there for what I want.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3f607b84-3674-40c5-bed4-e9ffdff2daa9">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Developent-process">Developent process<a class="anchor-link" href="#Developent-process">¶</a></h2><p>The log below shows my interaction with the Antigravity app (typo-s and all)</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2b6ac294-3309-4ffc-84c6-beec1470dc5e">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<pre><code>Code me a web app thta takes a usersbbirthdate in the YYYMMDD, and display the dayus and seconds of expected life left.  Update the seconds counter every 1/10 second
-</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cdd907f0-f07f-4699-98f3-5a5f62f33402">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<pre><code>app incoorect, says Please enter exactly 8 digits (YYYYMMDD). even on valid dates
-</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=63a5c7b5-3f24-46f9-85f5-d75fe57d6b70">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<pre><code>now add a switch for Male / Female
-</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b86efc02-a86a-4c5a-b67e-0b2d67344434">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<pre><code>now create a steampunk themed version
-</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=877eb8aa-8246-4f6f-a162-f29a4376b827">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<pre><code>the files male_expected_years_to_live.csv and female_expected_years_to_live.csv hold theexpected years more to live given survival to a given age.  Read these files and include the data hard-coded in the javascript to give a more accurate estimate of years more to live
-</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c08967d7-0f8a-443c-988c-c49983d08bd8">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<pre><code>the layout is to tall.  also, can you add a reset button
-</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ee52fe17-9ab0-4513-8d2d-b01072987ed3">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<pre><code>just have male / female on the gender select buttons
-</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9ec9aba0-79b6-4922-9472-6919e46a3e06">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Conclusions">Conclusions<a class="anchor-link" href="#Conclusions">¶</a></h2><p>A fun little project!</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0f6cf595-fba6-4ea5-9eb1-47311daf47ba">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8e0e8b9c-4595-48e4-88fe-dc47ae89a064">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -356,13 +258,46 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 }
 </script>
  
-	<a class="btn btn-mini xsmall" href="../antigravity.html">
+	<a class="btn btn-mini xsmall" href="../ulam.html">
           <i class="icon-comment"></i> Comment </a>
 	<hr />
       </div>
       
     </div>
     
+
+ 
+        
+
+
+
+    <div class='row-fluid'>
+      <div class='article-title span9'> 
+        <a href="../antigravity.html"><h1>Making a toy app with Google AntiGravity</h1></a>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span2">
+<p>Sun 10 May 2026 </p>
+
+<p style="text-align: left;">
+Filed under <a href="../category/ai.html">AI</a>
+</p>
+<p style="text-align: left;">
+ 
+    Tags <a href="../tag/ai.html">ai</a> </p>
+<p>
+</p>
+      </div>
+      <div class="summary span8">
+	<p>Making a toy app with AI</p> 
+	<a class="btn btn-mini xsmall" href="../antigravity.html">
+          <i class="icon-plus-sign"></i> Read More </a>
+	<hr />
+      </div>
+      
+    </div>
+      
 
  
         
@@ -423,39 +358,6 @@ Filed under <a href="../category/visualization.html">Visualization</a>
       <div class="summary span8">
 	<p>Exploration of visualizing many polygons</p> 
 	<a class="btn btn-mini xsmall" href="../polygon01.html">
-          <i class="icon-plus-sign"></i> Read More </a>
-	<hr />
-      </div>
-      
-    </div>
-      
-
- 
-        
-
-
-
-    <div class='row-fluid'>
-      <div class='article-title span9'> 
-        <a href="../cursor01.html"><h1>MicroPython and Cursor</h1></a>
-      </div>
-    </div>
-    <div class="row-fluid">
-      <div class="span2">
-<p>Tue 07 April 2026 </p>
-
-<p style="text-align: left;">
-Filed under <a href="../category/ai.html">AI</a>
-</p>
-<p style="text-align: left;">
- 
-    Tags <a href="../tag/cursor.html">cursor</a> <a href="../tag/ai.html">ai</a> <a href="../tag/micropython.html">micropython</a> </p>
-<p>
-</p>
-      </div>
-      <div class="summary span8">
-	<p>Initial adventures using micropython and cursor</p> 
-	<a class="btn btn-mini xsmall" href="../cursor01.html">
           <i class="icon-plus-sign"></i> Read More </a>
 	<hr />
       </div>
