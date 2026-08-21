@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <title>net-analysis.com Data Analysis Blog <small>weeding</small></title>
+    <meta name="description" content="">
+    <meta name="author" content="Don Cameron">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="../theme/html5.js"></script>
+    <![endif]-->
+
+
+    <!-- Le styles -->
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap.no-icons.min.css" rel="stylesheet">
+    <link href="../theme/local.css" rel="stylesheet">
+    <link href="../theme/pygments.css" rel="stylesheet">
+    <link href="../theme/font-awesome.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Gudea:400,400italic|Alegreya+SC' rel='stylesheet' type='text/css'>
+
+</head>
+
+<body>
+<header class="blog-header">
+  <div class="container">
+    <div class="row-fluid">
+      <div class="span9">
+	<a href=".." class="brand">net-analysis.com Data Analysis Blog</a>
+      </div>
+
+      <div class="span3" id="blog-nav">
+	<ul class="nav nav-pills pull-right">
+	    <li >
+	      <a href="../category/ai.html ">AI</a>
+	    <li >
+	      <a href="../category/anova.html ">ANOVA</a>
+	    <li >
+	      <a href="../category/arduino.html ">Arduino</a>
+	    <li >
+	      <a href="../category/basemap.html ">Basemap</a>
+	    <li >
+	      <a href="../category/botany.html ">Botany</a>
+	    <li >
+	      <a href="../category/cartopy.html ">Cartopy</a>
+	    <li >
+	      <a href="../category/cloud.html ">Cloud</a>
+	    <li >
+	      <a href="../category/data-engineering.html ">Data Engineering</a>
+	    <li >
+	      <a href="../category/documents.html ">Documents</a>
+	    <li >
+	      <a href="../category/fastai.html ">fastai</a>
+	    <li >
+	      <a href="../category/folium.html ">Folium</a>
+	    <li >
+	      <a href="../category/geemap.html ">geemap</a>
+	    <li >
+	      <a href="../category/geemaps.html ">geemaps</a>
+	    <li >
+	      <a href="../category/geopandas.html ">Geopandas</a>
+	    <li >
+	      <a href="../category/geoplot.html ">Geoplot</a>
+	    <li >
+	      <a href="../category/introduction.html ">Introduction</a>
+	    <li >
+	      <a href="../category/landsat.html ">LANDSAT</a>
+	    <li >
+	      <a href="../category/machine-learning.html ">Machine Learning</a>
+	    <li >
+	      <a href="../category/maths.html ">Maths</a>
+	    <li >
+	      <a href="../category/matplotlib.html ">Matplotlib</a>
+	    <li >
+	      <a href="../category/numpy.html ">numpy</a>
+	    <li >
+	      <a href="../category/osmnx.html ">OSMNX</a>
+	    <li >
+	      <a href="../category/python.html ">Python</a>
+	    <li >
+	      <a href="../category/scipy.html ">scipy</a>
+	    <li >
+	      <a href="../category/sympy.html ">sympy</a>
+	    <li >
+	      <a href="../category/testing.html ">Testing</a>
+	    <li >
+	      <a href="../category/visualization.html ">Visualization</a>
+	    <li >
+	      <a href="../category/visualization-spatial.html ">Visualization Spatial</a>
+	    <li >
+	      <a href="../category/visualizations.html ">Visualizations</a>
+	    <li >
+	      <a href="../category/weeds.html ">weeds</a>
+	</ul>
+      </div>
+    </div> <!-- End of fluid row-->
+  </div>   <!-- End of Container-->
+</header>
+    
+<div class="container">
+    <div class="content">
+    <div class="row-fluid">
+
+        <div class="span10">
+        
+
+        
+
+    <div class='row-fluid''>
+        <div class="article-title span9">
+            <a href="../notweeds.html"><h1>Australian native plants I weed around</h1></a>
+        </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span2">
+<p>Fri 21 August 2026 </p>
+
+<p style="text-align: left;">
+Filed under <a href="../category/botany.html">Botany</a>
+</p>
+<p style="text-align: left;">
+ 
+    Tags <a href="../tag/weeding.html">weeding</a> </p>
+<p>
+</p>
+      </div>
+      <div class="article-content span8">
+	<style type="text/css">pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+ .highlight pre  .hll { background-color: #ffffcc }
+ .highlight pre  { background: #f8f8f8; }
+ .highlight pre  .c { color: #3D7B7B; font-style: italic } /* Comment */
+ .highlight pre  .err { border: 1px solid #F00 } /* Error */
+ .highlight pre  .k { color: #008000; font-weight: bold } /* Keyword */
+ .highlight pre  .o { color: #666 } /* Operator */
+ .highlight pre  .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+ .highlight pre  .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+ .highlight pre  .cp { color: #9C6500 } /* Comment.Preproc */
+ .highlight pre  .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+ .highlight pre  .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+ .highlight pre  .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+ .highlight pre  .gd { color: #A00000 } /* Generic.Deleted */
+ .highlight pre  .ge { font-style: italic } /* Generic.Emph */
+ .highlight pre  .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+ .highlight pre  .gr { color: #E40000 } /* Generic.Error */
+ .highlight pre  .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+ .highlight pre  .gi { color: #008400 } /* Generic.Inserted */
+ .highlight pre  .go { color: #717171 } /* Generic.Output */
+ .highlight pre  .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+ .highlight pre  .gs { font-weight: bold } /* Generic.Strong */
+ .highlight pre  .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+ .highlight pre  .gt { color: #04D } /* Generic.Traceback */
+ .highlight pre  .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+ .highlight pre  .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+ .highlight pre  .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+ .highlight pre  .kp { color: #008000 } /* Keyword.Pseudo */
+ .highlight pre  .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+ .highlight pre  .kt { color: #B00040 } /* Keyword.Type */
+ .highlight pre  .m { color: #666 } /* Literal.Number */
+ .highlight pre  .s { color: #BA2121 } /* Literal.String */
+ .highlight pre  .na { color: #687822 } /* Name.Attribute */
+ .highlight pre  .nb { color: #008000 } /* Name.Builtin */
+ .highlight pre  .nc { color: #00F; font-weight: bold } /* Name.Class */
+ .highlight pre  .no { color: #800 } /* Name.Constant */
+ .highlight pre  .nd { color: #A2F } /* Name.Decorator */
+ .highlight pre  .ni { color: #717171; font-weight: bold } /* Name.Entity */
+ .highlight pre  .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+ .highlight pre  .nf { color: #00F } /* Name.Function */
+ .highlight pre  .nl { color: #767600 } /* Name.Label */
+ .highlight pre  .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+ .highlight pre  .nt { color: #008000; font-weight: bold } /* Name.Tag */
+ .highlight pre  .nv { color: #19177C } /* Name.Variable */
+ .highlight pre  .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+ .highlight pre  .w { color: #BBB } /* Text.Whitespace */
+ .highlight pre  .mb { color: #666 } /* Literal.Number.Bin */
+ .highlight pre  .mf { color: #666 } /* Literal.Number.Float */
+ .highlight pre  .mh { color: #666 } /* Literal.Number.Hex */
+ .highlight pre  .mi { color: #666 } /* Literal.Number.Integer */
+ .highlight pre  .mo { color: #666 } /* Literal.Number.Oct */
+ .highlight pre  .sa { color: #BA2121 } /* Literal.String.Affix */
+ .highlight pre  .sb { color: #BA2121 } /* Literal.String.Backtick */
+ .highlight pre  .sc { color: #BA2121 } /* Literal.String.Char */
+ .highlight pre  .dl { color: #BA2121 } /* Literal.String.Delimiter */
+ .highlight pre  .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+ .highlight pre  .s2 { color: #BA2121 } /* Literal.String.Double */
+ .highlight pre  .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+ .highlight pre  .sh { color: #BA2121 } /* Literal.String.Heredoc */
+ .highlight pre  .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+ .highlight pre  .sx { color: #008000 } /* Literal.String.Other */
+ .highlight pre  .sr { color: #A45A77 } /* Literal.String.Regex */
+ .highlight pre  .s1 { color: #BA2121 } /* Literal.String.Single */
+ .highlight pre  .ss { color: #19177C } /* Literal.String.Symbol */
+ .highlight pre  .bp { color: #008000 } /* Name.Builtin.Pseudo */
+ .highlight pre  .fm { color: #00F } /* Name.Function.Magic */
+ .highlight pre  .vc { color: #19177C } /* Name.Variable.Class */
+ .highlight pre  .vg { color: #19177C } /* Name.Variable.Global */
+ .highlight pre  .vi { color: #19177C } /* Name.Variable.Instance */
+ .highlight pre  .vm { color: #19177C } /* Name.Variable.Magic */
+ .highlight pre  .il { color: #666 } /* Literal.Number.Integer.Long */</style><div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=97863024-d196-40b1-a577-adf2d6da3fd8">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h1 id="Welcome-to-the-Not-weeds-Page">Welcome to the Not-weeds Page<a class="anchor-link" href="#Welcome-to-the-Not-weeds-Page">¶</a></h1><h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">¶</a></h2><p>I participate in dune and bushcare restoration activities, covering areas from Stumers Creek north of Coolum Beach south to Twin Waters/North Shore on the Maroochy River.</p>
+<p>I have a blog page that shows records of weeds seen, being scans of a weeding log-book I (briefly) maintained for a while.</p>
+<p>Then I realized that while I was concentrating on learning the scientific species names of the weeds I saw, I had been ignoring the Australian native plants.  So I set myself the goal of learning one Latin scientific name a week, documentating with photos taken during my weeding stints.  Caution:  assigment on names of the species is my own, guided by the Council specialists, and iNaturalist.</p>
+<hr/>
+<h2 id="Dune-Fan-Flower-(Scaevola-calendulacea)">Dune Fan Flower (Scaevola calendulacea)<a class="anchor-link" href="#Dune-Fan-Flower-(Scaevola-calendulacea)">¶</a></h2><p>The photos below were taken in the National Park to the north of Stumers Creek mouth (where we weed once a month).  I don't remember seeing Scaaevola calendulacea in our usual patch, that maybe because there are no weeds where it grows, so we don't go there, so I don't notice it  (this is not by any means a thorough species diversity survey!).  However, I think our usual patch as a slightly different canopy structure with shade trees growing quite close to the frontal dune, whereas these plants were in full sun, with no canopy providing shade.</p>
+<p>There was a program of planting <em>casuarina equisetifolia</em> along the frontal coastal dune closer to Coolum, and that may have deterred full-sun ground covers?.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=affc5d60-9a55-4cbf-84bb-59580e9d7dcb">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Images">Images<a class="anchor-link" href="#Images">¶</a></h3><h4 id="Ground-cover">Ground cover<a class="anchor-link" href="#Ground-cover">¶</a></h4><p>Scaevola calenulacea forms a thick mat covering the open, sea-facing side of the dune.  This area was getting the full sun, as there were no Casuarinas or Bankias providing shade.</p>
+<img alt="Dun Fan Flower" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/DuneFanFlower01.jpg"/>
+<h4 id="Flowers">Flowers<a class="anchor-link" href="#Flowers">¶</a></h4><p>Close-up of flowers</p>
+<img alt="Dun Fan Flower" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/DuneFanFlower02.jpg"/>
+<h4 id="Leaves">Leaves<a class="anchor-link" href="#Leaves">¶</a></h4><p>Close-up of leaves</p>
+<img alt="Dun Fan Flower" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/DuneFanFlower03.jpg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b755df3d-ab7c-486d-be10-3644c8446ecc">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<hr/>
+<h2 id="Wollastonia-Biflora">Wollastonia Biflora<a class="anchor-link" href="#Wollastonia-Biflora">¶</a></h2><p>One of the heartening things about weeding is ripping out a thick carpet of Asparagous Fern, and coming back later to see Wollastonai and Dianella covering the area.  Certainly we see more wallabies when Wollastonia replaces Asparagous Fern.  It seems to do well in partial shade, but in roadworks that repaired a landslide just to the south of Coolum, Wollstania is going gang-busters in the full sun.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=58d9c4cd-2076-46d6-951c-b11cc2f197c7">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Images">Images<a class="anchor-link" href="#Images">¶</a></h3><p>No pictures of flowers yet, so have a close-up of leaves</p>
+<img alt="Wallastonia" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/Wollastonia01.jpg"/>
+<p>A long shot of the vine covering what I think was recently disturbed earthworks</p>
+<img alt="Wallastonia ground cover" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/wollanstonia02.jpg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cb6fb763-6fa7-4eaa-af4b-53fa2dca600e">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<hr/>
+<h2 id="Banksia-Robur-(Swamp-Banksia)">Banksia Robur (Swamp Banksia)<a class="anchor-link" href="#Banksia-Robur-(Swamp-Banksia)">¶</a></h2><p>The images below are of a Banksia seen on pathway behind coastal dune: low spreading shrub, maybe regrowth from stump, mixed in with other plants. Leaves serrated, flower dark brown.</p>
+<p><em>Banksia Robur</em> always seem a little ratty to me: leaves mottled, flowers turn to a dingy brown, shrub format untidy.  Still, one feature of the other, larger mature Banksia trees is that they seem very prone being blown over in the strong on-shore winds. Given that a major fire went through this area some time in the 1990-s, maybe 30 years is the life-expectancy of larger Banksia trees (usually <em>Banksia integrifolia</em>).  I don't think I'll live long enough to see a stable climax (if there is one for coastal dune communities: apparently nutriment leaching eventually causes environment decline, even if the area was untouched by fires, coastal erosian, climate change, or introduced species)</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=62a45e02-fe29-461d-ac43-fbe72f5fac1d">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Images">Images<a class="anchor-link" href="#Images">¶</a></h3><h4 id="Leaf-form">Leaf form<a class="anchor-link" href="#Leaf-form">¶</a></h4><img alt="Banksia Robur" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/BanksiaRobur01.jpg"/>
+<h4 id="Mature-flower">Mature flower<a class="anchor-link" href="#Mature-flower">¶</a></h4><img alt="Banksia Robur" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/BanksiaRobur02.jpg"/>
+<h4 id="Shrub-form">Shrub form<a class="anchor-link" href="#Shrub-form">¶</a></h4><p>Mixed in with other vegetation</p>
+<img alt="Banksia Robur" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/BanksiaRobur03.jpg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3dc7664a-8000-4e88-9120-2c86c9375e93">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<hr/>
+<h2 id="Banksia-integrifolia-(Coastal-Banksia)">Banksia integrifolia (Coastal Banksia)<a class="anchor-link" href="#Banksia-integrifolia-(Coastal-Banksia)">¶</a></h2><p>A more tidy looking Banksia.  That said, this was one of those Banksias that had been blown over (but not snapped off a metre or so off the ground.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5aa7d255-825c-4eb5-952f-9ea397ee2708">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Images">Images<a class="anchor-link" href="#Images">¶</a></h3><h4 id="Flower-close-up">Flower close up<a class="anchor-link" href="#Flower-close-up">¶</a></h4><p>Note the rounded leaves.</p>
+<img alt="Banksia Integrifolia" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/BanksiaIntegrifolia01.jpg"/>
+<h4 id="Foliage">Foliage<a class="anchor-link" href="#Foliage">¶</a></h4><p>Tree was located on the sea-facing side of the fore dune, but some distance back in a more sheltered area</p>
+<img alt="Banksia Integrifolia" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/BanksiaIntegrifolia02.jpg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=460d7c37-603e-42b0-875e-d7d5e2337e4c">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<hr/>
+<h2 id="Hibbertia-scandens">Hibbertia scandens<a class="anchor-link" href="#Hibbertia-scandens">¶</a></h2><p>This dune vine was climbing over the Bansia described above.  This speciews also occasionally forms a thick ground cover out in the open fore-dune.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=92ad7623-3b3f-47d6-bd80-c54de41ef5a6">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Images">Images<a class="anchor-link" href="#Images">¶</a></h3><h4 id="Flower-side-view">Flower side-view<a class="anchor-link" href="#Flower-side-view">¶</a></h4><img alt="Hibbertia scandens" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/hibbertia01.jpg"/>
+<h4 id="Flower-from-above">Flower from above<a class="anchor-link" href="#Flower-from-above">¶</a></h4><p>Note the five petals</p>
+<img alt="Hibbertia scandens" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/hibbertia02.jpg"/>
+<h4 id="Climbing-leaning-tree-trunk">Climbing leaning tree trunk<a class="anchor-link" href="#Climbing-leaning-tree-trunk">¶</a></h4><img alt="Hibbertia scandens" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/hibbertia03.jpg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6be4bdea-1724-435e-a500-f0d52d468078">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<hr/>
+<h2 id="Pandanus-tectorius">Pandanus tectorius<a class="anchor-link" href="#Pandanus-tectorius">¶</a></h2><p>The iconic Pandanus palm: grows well on the sea-side slope of the first major dune, and occasionally deeper into the hind-dune forest.</p>
+<p>I was interested to learn that the Pandanus palm was key species for Polynesian sail making: some attribute the lack of Pandanus palms (cooler in NZ) for sail making as part of the explanation for the Maori not expanding from New Zealand.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c2790484-b227-496a-ba83-74e5eb4e77f2">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Images">Images<a class="anchor-link" href="#Images">¶</a></h3><p>Showing seed cluster (here green, bright yellow when ripe)</p>
+<img alt="Pandanus tectorius" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/pandanus01.jpg"/>
+<p>Illustrates how dense the palm canopy is:  <em>tectorius</em> means "used for thatching"</p>
+<img alt="Pandanus tectorius" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/pandanus02.jpg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ccac04f3-b0c7-40a2-bb2f-5baf5881afa8">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<hr/>
+<h2 id="More-to-come!">More to come!<a class="anchor-link" href="#More-to-come!">¶</a></h2><p>I will continue to update this web page, as I learn the names of more native vegetation species</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ef9fd061-b51b-4f48-ad75-33e1c8917de1">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+</div>
+</div>
+</div>
+</div>
+
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: 'center'," +
+        "    displayIndent: '0em'," +
+        "    showMathMenu: true," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['$','$'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        " linebreaks: { automatic: true, width: '95% container' }, " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'black ! important'} }" +
+        "    } " +
+        "}); ";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+ 
+	<a class="btn btn-mini xsmall" href="../notweeds.html">
+          <i class="icon-comment"></i> Comment </a>
+	<hr />
+      </div>
+      
+    </div>
+    
+<div class="pagination">
+<ul>
+    <li class="prev disabled"><a href="#">&larr; Previous</a></li>
+
+    <li class="active"><a href="../tag/weeding.html">1</a></li>
+
+    <li class="next disabled"><a href="#">&rarr; Next</a></li>
+
+</ul>
+</div>
+
+ 
+  
+        </div>
+        
+        
+    </div>     </div> </div>
+
+<!--footer-->
+<div class="container">
+  <div class="well" style="background-color: #E9EFF6">
+    <div id="blog-footer">
+      <div class="row-fluid">
+	<div class="social span2" align="center" id="socialist">
+	  <ul class="nav nav-list">
+	    <li class="nav-header">
+	      Social
+	    </li>
+	    <li><a href="https://www.linkedin.com/in/donrcameron/"><i class="icon-Linkedin Page" style="color: #1f334b"></i>Linkedin Page</a></li>
+	    <li><a href="https://www.flickr.com/photos/donrcameron/"><i class="icon-flickr Page" style="color: #1f334b"></i>flickr Page</a></li>
+            <a href="mailto:donrcameron@gmail.com"><i class="icon-envelope" style="color: #1f334b" ></i> email</a>
+
+	  </ul>
+	</div>
+<div class="span8" id="colophon">
+  <h2 align="center">About</h2>
+  <p align="justify"> 
+
+This series of blog posts is provided as a resource by 
+
+net-analysis.com - PO Box 857, Coolum Beach, QLD 4573, AUSTRALIA. ABN 19469649963.
+
+Ring 0413 208 746, or visit the company website:
+
+http://www.net-analysis.com.   It documents a learning process, and hence owes a debt of gratitude to all the people who have documented their own experiences on the web: the list is too large to enumerate.
+ </p>
+</div>
+        <div class="links span2" align="center">
+          <ul class="nav nav-list">
+            <li class="nav-header"> 
+              Links
+            </li>
+            
+            <li><a href="http://getpelican.com/">Pelican</a></li>
+            <li><a href="http://python.org/">Python.org</a></li>
+          </ul>
+        </div>
+	<div class="site-nav span2" align="center">
+          <ul class="nav nav-list" id="site-links">
+            <li class="nav-header"> 
+              Site
+            </li>
+            <li><a href=".."><i class="icon-home" style="color: #1f334b">
+                </i>Home</a></li>
+            <li><a href="../archives.html"><i class="icon-list" style="color: #1f334b">
+                </i>Archives</a></li>
+	    <li><a href="../tags.html"><i class="icon-tags" style="color: #1f334b">
+                </i>Tags</a></li>
+	    
+	  </ul>
+
+        </div>
+
+      </div> <!--end of fluid row-->
+    </div> <!--end of blog-footer-->
+    <hr />
+    <p align="center"><a href="..">net-analysis.com Data Analysis Blog</a>
+      &copy; Don Cameron
+    Powered by <a href="https://github.com/getpelican/pelican">Pelican</a> and
+        <a href="https://twitter.github.com/bootstrap">Twitter Bootstrap</a>. 
+        Icons by <a href="https://fortawesome.github.com/Font-Awesome">Font Awesome</a> and 
+        <a href="https://gregoryloucas.github.com/Font-Awesome-More">Font Awesome More</a></p>
+
+  </div> <!--end of well -->
+</div> <!--end of container -->
+
+<!--/footer-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+
+
+
+</body>
+</html>
