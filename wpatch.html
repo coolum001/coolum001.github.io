@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <title>An eco-history in images - net-analysis.com Data Analysis Blog</title>
+    <meta name="description" content="">
+    <meta name="author" content="Don Cameron">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+    <script src="./theme/html5.js"></script>
+    <![endif]-->
+
+
+    <!-- Le styles -->
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap.no-icons.min.css" rel="stylesheet">
+    <link href="./theme/local.css" rel="stylesheet">
+    <link href="./theme/pygments.css" rel="stylesheet">
+    <link href="./theme/font-awesome.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Gudea:400,400italic|Alegreya+SC' rel='stylesheet' type='text/css'>
+
+</head>
+
+<body>
+<header class="blog-header">
+  <div class="container">
+    <div class="row-fluid">
+      <div class="span9">
+	<a href="." class="brand">net-analysis.com Data Analysis Blog</a>
+      </div>
+
+      <div class="span3" id="blog-nav">
+	<ul class="nav nav-pills pull-right">
+	    <li >
+	      <a href="./category/ai.html ">AI</a>
+	    <li >
+	      <a href="./category/anova.html ">ANOVA</a>
+	    <li >
+	      <a href="./category/arduino.html ">Arduino</a>
+	    <li >
+	      <a href="./category/basemap.html ">Basemap</a>
+	    <li  class="active" >
+	      <a href="./category/botany.html ">Botany</a>
+	    <li >
+	      <a href="./category/cartopy.html ">Cartopy</a>
+	    <li >
+	      <a href="./category/cloud.html ">Cloud</a>
+	    <li >
+	      <a href="./category/data-engineering.html ">Data Engineering</a>
+	    <li >
+	      <a href="./category/documents.html ">Documents</a>
+	    <li >
+	      <a href="./category/fastai.html ">fastai</a>
+	    <li >
+	      <a href="./category/folium.html ">Folium</a>
+	    <li >
+	      <a href="./category/geemap.html ">geemap</a>
+	    <li >
+	      <a href="./category/geemaps.html ">geemaps</a>
+	    <li >
+	      <a href="./category/geopandas.html ">Geopandas</a>
+	    <li >
+	      <a href="./category/geoplot.html ">Geoplot</a>
+	    <li >
+	      <a href="./category/introduction.html ">Introduction</a>
+	    <li >
+	      <a href="./category/landsat.html ">LANDSAT</a>
+	    <li >
+	      <a href="./category/machine-learning.html ">Machine Learning</a>
+	    <li >
+	      <a href="./category/maths.html ">Maths</a>
+	    <li >
+	      <a href="./category/matplotlib.html ">Matplotlib</a>
+	    <li >
+	      <a href="./category/numpy.html ">numpy</a>
+	    <li >
+	      <a href="./category/osmnx.html ">OSMNX</a>
+	    <li >
+	      <a href="./category/python.html ">Python</a>
+	    <li >
+	      <a href="./category/scipy.html ">scipy</a>
+	    <li >
+	      <a href="./category/sympy.html ">sympy</a>
+	    <li >
+	      <a href="./category/testing.html ">Testing</a>
+	    <li >
+	      <a href="./category/visualization.html ">Visualization</a>
+	    <li >
+	      <a href="./category/visualization-spatial.html ">Visualization Spatial</a>
+	    <li >
+	      <a href="./category/visualizations.html ">Visualizations</a>
+	    <li >
+	      <a href="./category/weeds.html ">weeds</a>
+	</ul>
+      </div>
+    </div> <!-- End of fluid row-->
+  </div>   <!-- End of Container-->
+</header>
+    
+<div class="container">
+    <div class="content">
+    <div class="row-fluid">
+
+        <div class="span10">
+    <div class='article'>
+      <div class="row-fluid">
+           <div class="content-title span9">
+             <h1>An eco-history in images</h1>
+           </div>
+      </div>
+    <div class="row-fluid">
+      <div class="span2">
+<p>Sat 05 September 2026 </p>
+
+<p style="text-align: left;">
+Filed under <a href="./category/botany.html">Botany</a>
+</p>
+<p style="text-align: left;">
+ 
+    Tags <a href="./tag/weeding.html">weeding</a> </p>
+<p>
+</p>
+      </div>
+      
+      <div class="span8">
+	<style type="text/css">pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+ .highlight pre  .hll { background-color: #ffffcc }
+ .highlight pre  { background: #f8f8f8; }
+ .highlight pre  .c { color: #3D7B7B; font-style: italic } /* Comment */
+ .highlight pre  .err { border: 1px solid #F00 } /* Error */
+ .highlight pre  .k { color: #008000; font-weight: bold } /* Keyword */
+ .highlight pre  .o { color: #666 } /* Operator */
+ .highlight pre  .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+ .highlight pre  .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+ .highlight pre  .cp { color: #9C6500 } /* Comment.Preproc */
+ .highlight pre  .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+ .highlight pre  .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+ .highlight pre  .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+ .highlight pre  .gd { color: #A00000 } /* Generic.Deleted */
+ .highlight pre  .ge { font-style: italic } /* Generic.Emph */
+ .highlight pre  .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+ .highlight pre  .gr { color: #E40000 } /* Generic.Error */
+ .highlight pre  .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+ .highlight pre  .gi { color: #008400 } /* Generic.Inserted */
+ .highlight pre  .go { color: #717171 } /* Generic.Output */
+ .highlight pre  .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+ .highlight pre  .gs { font-weight: bold } /* Generic.Strong */
+ .highlight pre  .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+ .highlight pre  .gt { color: #04D } /* Generic.Traceback */
+ .highlight pre  .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+ .highlight pre  .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+ .highlight pre  .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+ .highlight pre  .kp { color: #008000 } /* Keyword.Pseudo */
+ .highlight pre  .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+ .highlight pre  .kt { color: #B00040 } /* Keyword.Type */
+ .highlight pre  .m { color: #666 } /* Literal.Number */
+ .highlight pre  .s { color: #BA2121 } /* Literal.String */
+ .highlight pre  .na { color: #687822 } /* Name.Attribute */
+ .highlight pre  .nb { color: #008000 } /* Name.Builtin */
+ .highlight pre  .nc { color: #00F; font-weight: bold } /* Name.Class */
+ .highlight pre  .no { color: #800 } /* Name.Constant */
+ .highlight pre  .nd { color: #A2F } /* Name.Decorator */
+ .highlight pre  .ni { color: #717171; font-weight: bold } /* Name.Entity */
+ .highlight pre  .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+ .highlight pre  .nf { color: #00F } /* Name.Function */
+ .highlight pre  .nl { color: #767600 } /* Name.Label */
+ .highlight pre  .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+ .highlight pre  .nt { color: #008000; font-weight: bold } /* Name.Tag */
+ .highlight pre  .nv { color: #19177C } /* Name.Variable */
+ .highlight pre  .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+ .highlight pre  .w { color: #BBB } /* Text.Whitespace */
+ .highlight pre  .mb { color: #666 } /* Literal.Number.Bin */
+ .highlight pre  .mf { color: #666 } /* Literal.Number.Float */
+ .highlight pre  .mh { color: #666 } /* Literal.Number.Hex */
+ .highlight pre  .mi { color: #666 } /* Literal.Number.Integer */
+ .highlight pre  .mo { color: #666 } /* Literal.Number.Oct */
+ .highlight pre  .sa { color: #BA2121 } /* Literal.String.Affix */
+ .highlight pre  .sb { color: #BA2121 } /* Literal.String.Backtick */
+ .highlight pre  .sc { color: #BA2121 } /* Literal.String.Char */
+ .highlight pre  .dl { color: #BA2121 } /* Literal.String.Delimiter */
+ .highlight pre  .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+ .highlight pre  .s2 { color: #BA2121 } /* Literal.String.Double */
+ .highlight pre  .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+ .highlight pre  .sh { color: #BA2121 } /* Literal.String.Heredoc */
+ .highlight pre  .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+ .highlight pre  .sx { color: #008000 } /* Literal.String.Other */
+ .highlight pre  .sr { color: #A45A77 } /* Literal.String.Regex */
+ .highlight pre  .s1 { color: #BA2121 } /* Literal.String.Single */
+ .highlight pre  .ss { color: #19177C } /* Literal.String.Symbol */
+ .highlight pre  .bp { color: #008000 } /* Name.Builtin.Pseudo */
+ .highlight pre  .fm { color: #00F } /* Name.Function.Magic */
+ .highlight pre  .vc { color: #19177C } /* Name.Variable.Class */
+ .highlight pre  .vg { color: #19177C } /* Name.Variable.Global */
+ .highlight pre  .vi { color: #19177C } /* Name.Variable.Instance */
+ .highlight pre  .vm { color: #19177C } /* Name.Variable.Magic */
+ .highlight pre  .il { color: #666 } /* Literal.Number.Integer.Long */</style><div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=97863024-d196-40b1-a577-adf2d6da3fd8">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h1 id="The-visual-history-of-my-weeding-patch">The visual history of my weeding patch<a class="anchor-link" href="#The-visual-history-of-my-weeding-patch">¶</a></h1><h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">¶</a></h2><p>I participate in dune and bushcare restoration activities, covering areas from Stumers Creek north of Coolum Beach south to Twin Waters/North Shore on the Maroochy River.</p>
+<p>I have a blog page that shows records of the Australian native plants I see, while ripping out introduced weeds.  As part of my musing about the recent storm blow-down of mature Banskia trees, I started to chase down the rabbit hole of "what is the vegetation stable climax of a dune eco-system?"</p>
+<p>The upshot was (I think) that this is not a well-formed query.  The environmental dynamic of the dune environment (erosian, severe sub-tropic storms, and fires) suggestes that a stable end-state eco-system is very unlikely to form.  Studies elsewhere in Queensland suggest that if one does form, it is only after most nutriments have been leached away, leading to very impoverished  vegetation.</p>
+<p>So then I though to get Claude to find images of my weeding patch, to see if I could identify trends.  The results are below.</p>
+<hr/>
+<h2 id="Orientation">Orientation<a class="anchor-link" href="#Orientation">¶</a></h2><p>The photos below were taken at the dates shown, and cover some or all of my weeding patch.  I have cropped the original  images and rotated them to have the ocean at the top of the image (east at top).  The north (left) boundary of the patch is Stumers Creek flowing to the east along a south-west to north east line. The south (right) boundary is the Council caravan park.  The Pacific Ocean form the east (top) border.</p>
+<p>A key orientating feature is the minor road that runs from David Low Way initially east (up) then north (left) to the mouth of Stumers Creek.  Where this minor road bends to the north, a foot track cuts through to the beach, and another foot track runs right (south) to the caravan park.  This minor road (and second foot track) forms the west (bottom) border of the weeding</p>
+<p>Each image comes with a commentary.  Caution - I am not a photo-interpretation expert, or a geographer.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7ec25963-78d1-4f5e-8500-43c96176f20e">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="But-first,-some-history">But first, some history<a class="anchor-link" href="#But-first,-some-history">¶</a></h2><p>To my mind it is impressive that this sign has survived for 25 years in the sea-side environment (and being a target for vandals).  Also amusing is that the sign has outlasted the administative entity in which it was created. The Maroochy
+Shire Council is no more, subsumed into the Sunshine Coast Council, as part of a consolidation push.</p>
+<p>The sign does give some information on the forces driving vegetation cover - forces that include benign human activity!  The reference to "area on the left" means the northern half of the weeding patch.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=142f07ed-453e-4921-be98-da4ae94a4737">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<img alt="Sign" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/patch_history.jpg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=e1764b1d-ba37-4a54-81ff-76c445415eb7">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="1974">1974<a class="anchor-link" href="#1974">¶</a></h3><h4 id="Description">Description<a class="anchor-link" href="#Description">¶</a></h4><p>This image, which covers the southern half of the weeding patch (and most of the northern half), is from over 50 years ago.  There seems very few mature trees, and I think the dark green area behind the fore-dunes are swamp areas (or maybe burn scars).  The caravan park appears to be rudimentary, or in the process of construction.  There are many foot or vehicle track along the dunes</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=affc5d60-9a55-4cbf-84bb-59580e9d7dcb">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<img alt="1974" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/weeding_patch_1974.jpg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=09db9149-c6d7-4674-a2c8-1d2945e1b7d4">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="1988">1988<a class="anchor-link" href="#1988">¶</a></h3><h4 id="Description">Description<a class="anchor-link" href="#Description">¶</a></h4><p>The image covers the northern part of the weeding patch (which is east (above) the dirt road to Stumers Creek, and the track to the caravan park (just off camera).  There are still areas of grassland, but forest covers abour half the site.  There are not many trees along the fore-dunes, but tracks along the dunes have decreased (maybe due to better fencing?)</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=094b65df-8357-4a74-b315-c78ef5fd065d">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<img alt="1998" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/weeding_patch_1988.jpg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=604d0db9-3ae3-4769-9cfb-1d3523d1ca19">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="1994">1994<a class="anchor-link" href="#1994">¶</a></h3><h4 id="Description">Description<a class="anchor-link" href="#Description">¶</a></h4><p>Tree cover has increased, and has started to move closer to the fore dunes.  The caravan park has been completed.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9a6d9e40-1378-4ed8-a77e-8c3075f9a5a0">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<img alt="1994" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/weeding_patch_1994.jpg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b684797f-42f0-452e-a6b0-3e45dcd6bf16">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="1996">1996<a class="anchor-link" href="#1996">¶</a></h3><h4 id="Description">Description<a class="anchor-link" href="#Description">¶</a></h4><p>The northern (left) end of the area shows many burn scars, and open areas with only grass cover.  The southern half appears untouched by fire</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b6ede88b-f6d8-4129-8ccf-2f274ea8f67d">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<img alt="1996" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/weeding_patch_1996.jpg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=fa50ba2c-a492-494c-b75a-f9585dbe2ce1">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="1999">1999<a class="anchor-link" href="#1999">¶</a></h3><h4 id="Descripting">Descripting<a class="anchor-link" href="#Descripting">¶</a></h4><p>The entire northern end of the area is now largely treeless, even worse than 1996.  Maybe trees killed or badly damaged by the fires in 1996 and later have died in the period to 1999</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c13501d8-671d-48d1-a701-fd453af8bc2d">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<img alt="1999" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/weeding_patch_1999.jpg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c0b23982-75ee-42f1-b5fe-e5fcedfa0125">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="2002">2002<a class="anchor-link" href="#2002">¶</a></h3><h4 id="Description">Description<a class="anchor-link" href="#Description">¶</a></h4><p>There maybe some recovery in the extreme northern part of the area, as burnt trees re-establish the leaf canopy.  The center part of the area is still bare.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c499662a-9f35-4c81-8972-1195a559b30e">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<img alt="2002" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/weeding_patch_2002.jpg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=aeabba5b-6574-4aa1-a1b5-6a4be2d5693d">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="2022">2022<a class="anchor-link" href="#2022">¶</a></h3><h4 id="Description">Description<a class="anchor-link" href="#Description">¶</a></h4><p>Twenty years later, and the tree canopy has been re-established over almot all the area, including the fore-dunes.  The track to the caravan park now has a canopy that almost hides the track</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=75aab34d-d732-4611-ae92-f4a283de528b">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<img alt="2022" border="2px solid #333" height="auto" max-height="909vh" max-width="90%" padding="15px" src="images/weeding_patch_2022.jpg"/>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ef9fd061-b51b-4f48-ad75-33e1c8917de1">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion">¶</a></h2><p>My takeaway from these images is that native bush regeneration can be done, but that it takes time!</p>
+</div>
+</div>
+</div>
+</div>
+
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: 'center'," +
+        "    displayIndent: '0em'," +
+        "    showMathMenu: true," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['$','$'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        " linebreaks: { automatic: true, width: '95% container' }, " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'black ! important'} }" +
+        "    } " +
+        "}); ";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+
+	<hr />
+      </div>
+    </div>
+    <div class="span10">
+      <h3>Comments</h3>
+    
+    </div>  
+    </div>
+        </div>
+        
+        
+    </div>     </div> </div>
+
+<!--footer-->
+<div class="container">
+  <div class="well" style="background-color: #E9EFF6">
+    <div id="blog-footer">
+      <div class="row-fluid">
+	<div class="social span2" align="center" id="socialist">
+	  <ul class="nav nav-list">
+	    <li class="nav-header">
+	      Social
+	    </li>
+	    <li><a href="https://www.linkedin.com/in/donrcameron/"><i class="icon-Linkedin Page" style="color: #1f334b"></i>Linkedin Page</a></li>
+	    <li><a href="https://www.flickr.com/photos/donrcameron/"><i class="icon-flickr Page" style="color: #1f334b"></i>flickr Page</a></li>
+            <a href="mailto:donrcameron@gmail.com"><i class="icon-envelope" style="color: #1f334b" ></i> email</a>
+
+	  </ul>
+	</div>
+<div class="span8" id="colophon">
+  <h2 align="center">About</h2>
+  <p align="justify"> 
+
+This series of blog posts is provided as a resource by 
+
+net-analysis.com - PO Box 857, Coolum Beach, QLD 4573, AUSTRALIA. ABN 19469649963.
+
+Ring 0413 208 746, or visit the company website:
+
+http://www.net-analysis.com.   It documents a learning process, and hence owes a debt of gratitude to all the people who have documented their own experiences on the web: the list is too large to enumerate.
+ </p>
+</div>
+        <div class="links span2" align="center">
+          <ul class="nav nav-list">
+            <li class="nav-header"> 
+              Links
+            </li>
+            
+            <li><a href="http://getpelican.com/">Pelican</a></li>
+            <li><a href="http://python.org/">Python.org</a></li>
+          </ul>
+        </div>
+	<div class="site-nav span2" align="center">
+          <ul class="nav nav-list" id="site-links">
+            <li class="nav-header"> 
+              Site
+            </li>
+            <li><a href="."><i class="icon-home" style="color: #1f334b">
+                </i>Home</a></li>
+            <li><a href="./archives.html"><i class="icon-list" style="color: #1f334b">
+                </i>Archives</a></li>
+	    <li><a href="./tags.html"><i class="icon-tags" style="color: #1f334b">
+                </i>Tags</a></li>
+	    
+	  </ul>
+
+        </div>
+
+      </div> <!--end of fluid row-->
+    </div> <!--end of blog-footer-->
+    <hr />
+    <p align="center"><a href=".">net-analysis.com Data Analysis Blog</a>
+      &copy; Don Cameron
+    Powered by <a href="https://github.com/getpelican/pelican">Pelican</a> and
+        <a href="https://twitter.github.com/bootstrap">Twitter Bootstrap</a>. 
+        Icons by <a href="https://fortawesome.github.com/Font-Awesome">Font Awesome</a> and 
+        <a href="https://gregoryloucas.github.com/Font-Awesome-More">Font Awesome More</a></p>
+
+  </div> <!--end of well -->
+</div> <!--end of container -->
+
+<!--/footer-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+
+
+
+</body>
+</html>
